@@ -83,7 +83,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
         with:
-          path: cromite
+          path: Spectre Browser
           fetch-depth: 1
 
       - name: Login to Docker Hub
@@ -123,7 +123,7 @@ jobs:
                 --build-arg VERSION=$CHR_VERSION \
                 --build-arg HTTP_PROXY="$PROXY_ADDR" \
                 --no-cache \
-                cromite/tools/images/build-deps/.
+                Spectre Browser/tools/images/build-deps/.
 
               docker push uazo/build-deps:$CHR_VERSION
               echo "NEW_VERSION=$CHR_VERSION" >> $GITHUB_ENV
@@ -141,7 +141,7 @@ jobs:
                 --progress plain \
                 --build-arg VERSION=$CHR_VERSION \
                 --build-arg HTTP_PROXY="$PROXY_ADDR" \
-                cromite/tools/images/chr-source/.
+                Spectre Browser/tools/images/chr-source/.
 
               docker push uazo/chromium:$CHR_VERSION
               echo "NEW_VERSION=$CHR_VERSION" >> $GITHUB_ENV
@@ -156,7 +156,7 @@ jobs:
           wget https://github.com/cli/cli/releases/download/v2.18.1/gh_2.18.1_linux_amd64.tar.gz
           tar xfz gh_2.18.1_linux_amd64.tar.gz
 
-          cd cromite/tools
+          cd Spectre Browser/tools
           echo ${{ secrets.GITHUB_TOKEN }} | $GH auth login --with-token
 
           echo Custom Release $CHR_VERSION >body.txt
@@ -181,7 +181,7 @@ jobs:
       - name: Update files under control 
         shell: bash
         run: |
-          cd cromite
+          cd Spectre Browser
           RELEASE=$(cat build/RELEASE | xargs)
 
           cd tools/under-control
@@ -218,8 +218,8 @@ jobs:
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c #v6.1.0
         if: env.CHANGES == '1'
         with:
-          token: ${{ secrets.CROMITE_PULLS }}
-          path: cromite
+          token: ${{ secrets.Spectre Browser_PULLS }}
+          path: Spectre Browser
           add-paths: |
             tools/under-control/*
           commit-message: '[AUTO][FILECONTROL] - version ${{ env.NEW_VERSION }}'

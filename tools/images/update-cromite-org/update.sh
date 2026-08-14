@@ -86,8 +86,8 @@ do
 
   popd
 
-  $rclone sync filters ftp:www.cromite.org/filters --log-level INFO
-  $rclone sync filters ftp:www.cromite.org/filters --log-level INFO
+  $rclone sync filters ftp:www.Spectre Browser.org/filters --log-level INFO
+  $rclone sync filters ftp:www.Spectre Browser.org/filters --log-level INFO
 
   echo "You can stop now"
   sleep 24h

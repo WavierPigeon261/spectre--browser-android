@@ -13,7 +13,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/url_formatter/url_fixer.cc         |  3 ++
  ...lag-for-omnibox-autocomplete-filtering.inc | 32 +++++++++++++++++++
  5 files changed, 52 insertions(+)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-flag-for-omnibox-autocomplete-filtering.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Add-flag-for-omnibox-autocomplete-filtering.inc
 
 diff --git a/components/omnibox/browser/autocomplete_controller.cc b/components/omnibox/browser/autocomplete_controller.cc
 --- a/components/omnibox/browser/autocomplete_controller.cc
@@ -96,10 +96,10 @@ diff --git a/components/url_formatter/url_fixer.cc b/components/url_formatter/ur
        url.append(kChromeUIDefaultHost);
      }
      FixupPort(trimmed, parts.port, &url);
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Add-flag-for-omnibox-autocomplete-filtering.inc b/cromite_flags/chrome/browser/about_flags_cc/Add-flag-for-omnibox-autocomplete-filtering.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-flag-for-omnibox-autocomplete-filtering.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-flag-for-omnibox-autocomplete-filtering.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Add-flag-for-omnibox-autocomplete-filtering.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-flag-for-omnibox-autocomplete-filtering.inc
 @@ -0,0 +1,32 @@
 +#if BUILDFLAG(IS_ANDROID)
 +

@@ -11,7 +11,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  device/gamepad/public/cpp/gamepad_features.h              | 2 ++
  .../blink/renderer/modules/gamepad/navigator_gamepad.cc   | 6 ++++++
  5 files changed, 25 insertions(+)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-a-flag-to-disable-GamePad-API.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Add-a-flag-to-disable-GamePad-API.inc
 
 diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.cc
 --- a/content/child/runtime_features.cc
@@ -25,10 +25,10 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
            {wf::EnableSecurePaymentConfirmation,
             raw_ref(features::kSecurePaymentConfirmation)},
            {wf::EnableSecurePaymentConfirmationDebug,
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Add-a-flag-to-disable-GamePad-API.inc b/cromite_flags/chrome/browser/about_flags_cc/Add-a-flag-to-disable-GamePad-API.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-a-flag-to-disable-GamePad-API.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-a-flag-to-disable-GamePad-API.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Add-a-flag-to-disable-GamePad-API.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-a-flag-to-disable-GamePad-API.inc
 @@ -0,0 +1,7 @@
 +#ifdef FLAG_SECTION
 +
@@ -44,7 +44,7 @@ diff --git a/device/gamepad/public/cpp/gamepad_features.cc b/device/gamepad/publ
    return false;
  }
  
-+CROMITE_FEATURE(kRestrictGamepadAccess,
++Spectre Browser_FEATURE(kRestrictGamepadAccess,
 +                "RestrictGamepadAccess",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
 +

@@ -35,8 +35,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/core/loader/document_loader.cc   |  7 ----
  .../platform/loader/fetch/resource_request.h  |  1 -
  27 files changed, 30 insertions(+), 91 deletions(-)
- create mode 100644 cromite_flags/net/base/features_cc/Disable-fetching-of-all-field-trials.inc
- create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-fetching-of-all-field-trials.inc
+ create mode 100644 Spectre Browser_flags/net/base/features_cc/Disable-fetching-of-all-field-trials.inc
+ create mode 100644 Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-fetching-of-all-field-trials.inc
 
 diff --git a/android_webview/browser/aw_browser_context.cc b/android_webview/browser/aw_browser_context.cc
 --- a/android_webview/browser/aw_browser_context.cc
@@ -443,16 +443,16 @@ diff --git a/content/renderer/variations_render_thread_observer.cc b/content/ren
  }
  
  void VariationsRenderThreadObserver::RegisterMojoInterfaces(
-diff --git a/cromite_flags/net/base/features_cc/Disable-fetching-of-all-field-trials.inc b/cromite_flags/net/base/features_cc/Disable-fetching-of-all-field-trials.inc
+diff --git a/Spectre Browser_flags/net/base/features_cc/Disable-fetching-of-all-field-trials.inc b/Spectre Browser_flags/net/base/features_cc/Disable-fetching-of-all-field-trials.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/net/base/features_cc/Disable-fetching-of-all-field-trials.inc
++++ b/Spectre Browser_flags/net/base/features_cc/Disable-fetching-of-all-field-trials.inc
 @@ -0,0 +1 @@
 +// empty file
-diff --git a/cromite_flags/services/network/public/cpp/features_cc/Disable-fetching-of-all-field-trials.inc b/cromite_flags/services/network/public/cpp/features_cc/Disable-fetching-of-all-field-trials.inc
+diff --git a/Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-fetching-of-all-field-trials.inc b/Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-fetching-of-all-field-trials.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/services/network/public/cpp/features_cc/Disable-fetching-of-all-field-trials.inc
++++ b/Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-fetching-of-all-field-trials.inc
 @@ -0,0 +1 @@
 +// empty file
 diff --git a/third_party/blink/renderer/core/loader/document_loader.cc b/third_party/blink/renderer/core/loader/document_loader.cc

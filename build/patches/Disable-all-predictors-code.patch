@@ -124,14 +124,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../document_speculation_rules.cc             |   1 +
  .../platform/runtime_enabled_features.json5   |   2 +-
  118 files changed, 368 insertions(+), 414 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
- create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
- create mode 100644 cromite_flags/components/password_manager/core/browser/features/password_features_cc/Disable-all-predictors-code.inc
- create mode 100644 cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
- create mode 100644 cromite_flags/net/base/features_cc/Disable-all-predictors-code.inc
- create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-all-predictors-code.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-all-predictors-code.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
+ create mode 100644 Spectre Browser_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
+ create mode 100644 Spectre Browser_flags/components/password_manager/core/browser/features/password_features_cc/Disable-all-predictors-code.inc
+ create mode 100644 Spectre Browser_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
+ create mode 100644 Spectre Browser_flags/net/base/features_cc/Disable-all-predictors-code.inc
+ create mode 100644 Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-all-predictors-code.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_cc/Disable-all-predictors-code.inc
 
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
@@ -245,7 +245,7 @@ diff --git a/chrome/browser/history_embeddings/history_embeddings_utils.cc b/chr
  
  // These are the kill switches for the launched history embeddings features.
  BASE_FEATURE(kLaunchedHistoryEmbeddings, kEnabledByDefaultForDesktopOnly);
-+SET_CROMITE_FEATURE_DISABLED(kLaunchedHistoryEmbeddings);
++SET_Spectre Browser_FEATURE_DISABLED(kLaunchedHistoryEmbeddings);
  
  bool IsHistoryEmbeddingsEnabledForProfile(Profile* profile) {
    if (!IsHistoryEmbeddingsFeatureEnabled()) {
@@ -1141,9 +1141,9 @@ diff --git a/chrome/browser/preloading/prefetch/search_prefetch/field_trial_sett
    return ShouldSuppressPrefetchForUnsupportedMode(match.destination_url);
  }
 +
-+SET_CROMITE_FEATURE_DISABLED(kSearchPrefetchServicePrefetching);
-+SET_CROMITE_FEATURE_DISABLED(kSearchPrefetchWithNoVarySearchDiskCache);
-+SET_CROMITE_FEATURE_DISABLED(kSearchNavigationPrefetch);
++SET_Spectre Browser_FEATURE_DISABLED(kSearchPrefetchServicePrefetching);
++SET_Spectre Browser_FEATURE_DISABLED(kSearchPrefetchWithNoVarySearchDiskCache);
++SET_Spectre Browser_FEATURE_DISABLED(kSearchNavigationPrefetch);
 diff --git a/chrome/browser/preloading/prefetch/search_prefetch/search_prefetch_url_loader_interceptor.cc b/chrome/browser/preloading/prefetch/search_prefetch/search_prefetch_url_loader_interceptor.cc
 --- a/chrome/browser/preloading/prefetch/search_prefetch/search_prefetch_url_loader_interceptor.cc
 +++ b/chrome/browser/preloading/prefetch/search_prefetch/search_prefetch_url_loader_interceptor.cc
@@ -2054,7 +2054,7 @@ diff --git a/components/history_embeddings/core/history_embeddings_features.cc b
  // is client-side launched on desktop platforms in US only, so it remains
  // disabled by default for other regions.
  BASE_FEATURE(kHistoryEmbeddings, base::FEATURE_DISABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kHistoryEmbeddings);
++SET_Spectre Browser_FEATURE_DISABLED(kHistoryEmbeddings);
  
  // This feature specifies whether to answer queries using an answerer; it can be
  // considered a toggle for v2 answering functionality. Parameters are all kept
@@ -2065,7 +2065,7 @@ diff --git a/components/omnibox/browser/aim_eligibility_service_features.cc b/co
  namespace omnibox {
  
  BASE_FEATURE(kAimEnabled, base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kAimEnabled); // Disable AI Mode starter pack
++SET_Spectre Browser_FEATURE_DISABLED(kAimEnabled); // Disable AI Mode starter pack
  
  BASE_FEATURE(kAimServerEligibilityEnabled, base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -2218,7 +2218,7 @@ diff --git a/components/optimization_guide/core/hints/hints_manager.cc b/compone
    hint_cache_->RemoveHintsForHosts(std::move(on_success), hint_keys);
  }
  
-+SET_CROMITE_FEATURE_DISABLED(kHintsBatchUpdateForActiveTabsAndTopHosts);
++SET_Spectre Browser_FEATURE_DISABLED(kHintsBatchUpdateForActiveTabsAndTopHosts);
  }  // namespace optimization_guide
 diff --git a/components/optimization_guide/core/optimization_guide_features.cc b/components/optimization_guide/core/optimization_guide_features.cc
 --- a/components/optimization_guide/core/optimization_guide_features.cc
@@ -2249,12 +2249,12 @@ diff --git a/components/optimization_guide/core/optimization_guide_features.cc b
    return kGetAIPageContentMainFrameTimeoutParam.Get();
  }
  
-+SET_CROMITE_FEATURE_DISABLED(kOptimizationHints);
-+SET_CROMITE_FEATURE_DISABLED(kOptimizationTargetPrediction);
-+SET_CROMITE_FEATURE_DISABLED(kPreventLongRunningPredictionModels);
-+SET_CROMITE_FEATURE_DISABLED(kOptimizationGuideFetchingForSRP);
-+SET_CROMITE_FEATURE_DISABLED(kOptimizationGuideOnDeviceModel);
-+SET_CROMITE_FEATURE_DISABLED(kLogOnDeviceMetricsOnStartup);
++SET_Spectre Browser_FEATURE_DISABLED(kOptimizationHints);
++SET_Spectre Browser_FEATURE_DISABLED(kOptimizationTargetPrediction);
++SET_Spectre Browser_FEATURE_DISABLED(kPreventLongRunningPredictionModels);
++SET_Spectre Browser_FEATURE_DISABLED(kOptimizationGuideFetchingForSRP);
++SET_Spectre Browser_FEATURE_DISABLED(kOptimizationGuideOnDeviceModel);
++SET_Spectre Browser_FEATURE_DISABLED(kLogOnDeviceMetricsOnStartup);
  }  // namespace optimization_guide::features
 diff --git a/components/optimization_guide/features.gni b/components/optimization_guide/features.gni
 --- a/components/optimization_guide/features.gni
@@ -2365,9 +2365,9 @@ diff --git a/components/page_content_annotations/core/page_content_annotations_f
    return IsSupportedCountry(country_code, value);
  }
  
-+SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotations);
-+SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotationsValidation);
-+SET_CROMITE_FEATURE_DISABLED(kRemotePageMetadata);
++SET_Spectre Browser_FEATURE_DISABLED(kPageContentAnnotations);
++SET_Spectre Browser_FEATURE_DISABLED(kPageContentAnnotationsValidation);
++SET_Spectre Browser_FEATURE_DISABLED(kRemotePageMetadata);
  }  // namespace page_content_annotations::features
 diff --git a/components/page_content_annotations/core/page_content_annotations_model_manager.cc b/components/page_content_annotations/core/page_content_annotations_model_manager.cc
 --- a/components/page_content_annotations/core/page_content_annotations_model_manager.cc
@@ -2691,60 +2691,60 @@ diff --git a/content/utility/services.cc b/content/utility/services.cc
  #if BUILDFLAG(IS_WIN) || (BUILDFLAG(GOOGLE_CHROME_BRANDING) && \
                            (BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX)))
    services.Add(RunShapeDetectionService);
-diff --git a/cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc b/cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
+diff --git a/Spectre Browser_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc b/Spectre Browser_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
++++ b/Spectre Browser_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
 @@ -0,0 +1,2 @@
-+SET_CROMITE_FEATURE_ENABLED(kBookmarkTriggerForPrerender2KillSwitch);
-+SET_CROMITE_FEATURE_DISABLED(kNewTabPageTriggerForPrerender2);
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
++SET_Spectre Browser_FEATURE_ENABLED(kBookmarkTriggerForPrerender2KillSwitch);
++SET_Spectre Browser_FEATURE_DISABLED(kNewTabPageTriggerForPrerender2);
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
 @@ -0,0 +1 @@
 +// Empty file
-diff --git a/cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc b/cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
+diff --git a/Spectre Browser_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc b/Spectre Browser_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
++++ b/Spectre Browser_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kPrerenderFallbackToPreconnect);
-diff --git a/cromite_flags/components/password_manager/core/browser/features/password_features_cc/Disable-all-predictors-code.inc b/cromite_flags/components/password_manager/core/browser/features/password_features_cc/Disable-all-predictors-code.inc
++SET_Spectre Browser_FEATURE_DISABLED(kPrerenderFallbackToPreconnect);
+diff --git a/Spectre Browser_flags/components/password_manager/core/browser/features/password_features_cc/Disable-all-predictors-code.inc b/Spectre Browser_flags/components/password_manager/core/browser/features/password_features_cc/Disable-all-predictors-code.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/components/password_manager/core/browser/features/password_features_cc/Disable-all-predictors-code.inc
++++ b/Spectre Browser_flags/components/password_manager/core/browser/features/password_features_cc/Disable-all-predictors-code.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kProactivelyDownloadModelForPasswordChange);
-diff --git a/cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc b/cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
++SET_Spectre Browser_FEATURE_DISABLED(kProactivelyDownloadModelForPasswordChange);
+diff --git a/Spectre Browser_flags/components/permissions/features_cc/Disable-all-predictors-code.inc b/Spectre Browser_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
++++ b/Spectre Browser_flags/components/permissions/features_cc/Disable-all-predictors-code.inc
 @@ -0,0 +1,5 @@
-+SET_CROMITE_FEATURE_DISABLED(kPermissionPredictionsV2);
++SET_Spectre Browser_FEATURE_DISABLED(kPermissionPredictionsV2);
 +
 +#if BUILDFLAG(IS_ANDROID)
-+SET_CROMITE_FEATURE_DISABLED(kPermissionDedicatedCpssSettingAndroid);
++SET_Spectre Browser_FEATURE_DISABLED(kPermissionDedicatedCpssSettingAndroid);
 +#endif
-diff --git a/cromite_flags/net/base/features_cc/Disable-all-predictors-code.inc b/cromite_flags/net/base/features_cc/Disable-all-predictors-code.inc
+diff --git a/Spectre Browser_flags/net/base/features_cc/Disable-all-predictors-code.inc b/Spectre Browser_flags/net/base/features_cc/Disable-all-predictors-code.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/net/base/features_cc/Disable-all-predictors-code.inc
++++ b/Spectre Browser_flags/net/base/features_cc/Disable-all-predictors-code.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kHttpCacheNoVarySearch);
-diff --git a/cromite_flags/services/network/public/cpp/features_cc/Disable-all-predictors-code.inc b/cromite_flags/services/network/public/cpp/features_cc/Disable-all-predictors-code.inc
++SET_Spectre Browser_FEATURE_DISABLED(kHttpCacheNoVarySearch);
+diff --git a/Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-all-predictors-code.inc b/Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-all-predictors-code.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/services/network/public/cpp/features_cc/Disable-all-predictors-code.inc
++++ b/Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-all-predictors-code.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kNetworkContextPrefetch);
-diff --git a/cromite_flags/third_party/blink/common/features_cc/Disable-all-predictors-code.inc b/cromite_flags/third_party/blink/common/features_cc/Disable-all-predictors-code.inc
++SET_Spectre Browser_FEATURE_DISABLED(kNetworkContextPrefetch);
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_cc/Disable-all-predictors-code.inc b/Spectre Browser_flags/third_party/blink/common/features_cc/Disable-all-predictors-code.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_cc/Disable-all-predictors-code.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_cc/Disable-all-predictors-code.inc
 @@ -0,0 +1,2 @@
-+SET_CROMITE_FEATURE_DISABLED(kNavigationPredictor);
-+SET_CROMITE_FEATURE_DISABLED(kPreloadingHeuristicsMLModel);
++SET_Spectre Browser_FEATURE_DISABLED(kNavigationPredictor);
++SET_Spectre Browser_FEATURE_DISABLED(kPreloadingHeuristicsMLModel);
 diff --git a/media/webrtc/BUILD.gn b/media/webrtc/BUILD.gn
 --- a/media/webrtc/BUILD.gn
 +++ b/media/webrtc/BUILD.gn
@@ -2959,12 +2959,12 @@ diff --git a/services/on_device_model/public/cpp/features.cc b/services/on_devic
  namespace on_device_model::features {
  
  BASE_FEATURE(kUseFakeChromeML, base::FEATURE_DISABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_ENABLED(kUseFakeChromeML);
++SET_Spectre Browser_FEATURE_ENABLED(kUseFakeChromeML);
  
  BASE_FEATURE(kOnDeviceModelForceCpuBackend, base::FEATURE_DISABLED_BY_DEFAULT);
  
  BASE_FEATURE(kOnDeviceModelCpuBackend, base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kOnDeviceModelCpuBackend);
++SET_Spectre Browser_FEATURE_DISABLED(kOnDeviceModelCpuBackend);
  
  BASE_FEATURE(kOnDeviceModelLitertLmBackend, base::FEATURE_DISABLED_BY_DEFAULT);
  

@@ -5127,7 +5127,7 @@ diff --git a/third_party/androidx/customizations.gni b/third_party/androidx/cust
  }
  
 -template("androidx_android_aar_prebuilt") {
-+template("androidx_android_aar_prebuilt_cromite") {
++template("androidx_android_aar_prebuilt_Spectre Browser") {
    _androidx_prebuilt(target_name) {
      forward_variables_from(invoker, "*")
      target_type = "android_aar_prebuilt"
@@ -5141,7 +5141,7 @@ diff --git a/third_party/androidx/customizations.gni b/third_party/androidx/cust
 +    forward_variables_from(invoker, "*")
 +    not_needed(["deps", "aar_path", "info_path", "enable_bytecode_checks"])
 +  } else {
-+    androidx_android_aar_prebuilt_cromite(target_name) {
++    androidx_android_aar_prebuilt_Spectre Browser(target_name) {
 +      forward_variables_from(invoker, "*")
 +    }
 +  }

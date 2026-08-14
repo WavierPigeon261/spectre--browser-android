@@ -24,9 +24,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/core/loader/frame_fetch_context.cc |  4 +++-
  .../platform/runtime_enabled_features.json5     |  5 +++++
  16 files changed, 62 insertions(+), 14 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Client-hints-overrides.inc
- create mode 100644 cromite_flags/content/common/features_cc/Client-hints-overrides.inc
- create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Client-hints-overrides.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Client-hints-overrides.inc
+ create mode 100644 Spectre Browser_flags/content/common/features_cc/Client-hints-overrides.inc
+ create mode 100644 Spectre Browser_flags/services/network/public/cpp/features_cc/Client-hints-overrides.inc
 
 diff --git a/android_webview/support_library/java/src/org/chromium/support_lib_glue/SupportLibWebViewChromiumFactory.java b/android_webview/support_library/java/src/org/chromium/support_lib_glue/SupportLibWebViewChromiumFactory.java
 --- a/android_webview/support_library/java/src/org/chromium/support_lib_glue/SupportLibWebViewChromiumFactory.java
@@ -127,10 +127,10 @@ diff --git a/content/browser/client_hints/client_hints.cc b/content/browser/clie
    if (container_policy.empty()) {
      return;
    }
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Client-hints-overrides.inc b/cromite_flags/chrome/browser/about_flags_cc/Client-hints-overrides.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Client-hints-overrides.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Client-hints-overrides.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Client-hints-overrides.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Client-hints-overrides.inc
 @@ -0,0 +1,9 @@
 +#ifdef FLAG_SECTION
 +
@@ -141,18 +141,18 @@ new file mode 100644
 +     FEATURE_VALUE_TYPE(blink::features::kUserAgentClientHint)},
 +
 +#endif
-diff --git a/cromite_flags/content/common/features_cc/Client-hints-overrides.inc b/cromite_flags/content/common/features_cc/Client-hints-overrides.inc
+diff --git a/Spectre Browser_flags/content/common/features_cc/Client-hints-overrides.inc b/Spectre Browser_flags/content/common/features_cc/Client-hints-overrides.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/common/features_cc/Client-hints-overrides.inc
++++ b/Spectre Browser_flags/content/common/features_cc/Client-hints-overrides.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kCriticalClientHint);
-diff --git a/cromite_flags/services/network/public/cpp/features_cc/Client-hints-overrides.inc b/cromite_flags/services/network/public/cpp/features_cc/Client-hints-overrides.inc
++SET_Spectre Browser_FEATURE_ENABLED(kCriticalClientHint);
+diff --git a/Spectre Browser_flags/services/network/public/cpp/features_cc/Client-hints-overrides.inc b/Spectre Browser_flags/services/network/public/cpp/features_cc/Client-hints-overrides.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/services/network/public/cpp/features_cc/Client-hints-overrides.inc
++++ b/Spectre Browser_flags/services/network/public/cpp/features_cc/Client-hints-overrides.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kAcceptCHFrame);
++SET_Spectre Browser_FEATURE_ENABLED(kAcceptCHFrame);
 diff --git a/net/http/http_network_transaction.cc b/net/http/http_network_transaction.cc
 --- a/net/http/http_network_transaction.cc
 +++ b/net/http/http_network_transaction.cc

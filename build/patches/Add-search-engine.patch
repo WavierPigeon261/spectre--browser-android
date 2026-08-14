@@ -10,8 +10,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../search_engine_choice/default_favicon.png  | Bin 0 -> 903 bytes
  components/search_engines/BUILD.gn            |   3 ++
- components/search_engines/cromite/BUILD.gn    |  12 ++++++
- .../cromite/cromite_prepopulated_engines.json |  37 ++++++++++++++++++
+ components/search_engines/Spectre Browser/BUILD.gn    |  12 ++++++
+ .../Spectre Browser/Spectre Browser_prepopulated_engines.json |  37 ++++++++++++++++++
  .../search_engine_choice_utils.cc             |   9 +----
  .../search_engines/search_engine_type.h       |   5 +++
  .../template_url_prepopulate_data.cc          |  21 +++++++++-
@@ -22,8 +22,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  tools/variations/fieldtrial_to_struct.py      |   4 +-
  12 files changed, 113 insertions(+), 32 deletions(-)
  create mode 100644 components/resources/default_100_percent/search_engine_choice/default_favicon.png
- create mode 100644 components/search_engines/cromite/BUILD.gn
- create mode 100644 components/search_engines/cromite/cromite_prepopulated_engines.json
+ create mode 100644 components/search_engines/Spectre Browser/BUILD.gn
+ create mode 100644 components/search_engines/Spectre Browser/Spectre Browser_prepopulated_engines.json
 
 diff --git a/components/resources/default_100_percent/search_engine_choice/default_favicon.png b/components/resources/default_100_percent/search_engine_choice/default_favicon.png
 new file mode 100644
@@ -59,7 +59,7 @@ diff --git a/components/search_engines/BUILD.gn b/components/search_engines/BUIL
      "//third_party/metrics_proto",
      "//third_party/omnibox_proto",
      "//third_party/search_engines_data:prepopulated_engines",
-+    "cromite:cromite_prepopulated_engines",
++    "Spectre Browser:Spectre Browser_prepopulated_engines",
    ]
  
    deps = [
@@ -67,7 +67,7 @@ diff --git a/components/search_engines/BUILD.gn b/components/search_engines/BUIL
      "//components/regional_capabilities",
      "//components/regional_capabilities:switches",
      "//third_party/search_engines_data:prepopulated_engines",
-+    "cromite:cromite_prepopulated_engines",
++    "Spectre Browser:Spectre Browser_prepopulated_engines",
    ]
  
    deps = [ "//url" ]
@@ -75,31 +75,31 @@ diff --git a/components/search_engines/BUILD.gn b/components/search_engines/BUIL
      "//testing/gtest",
      "//third_party/search_engines_data:prepopulated_engines",
      "//third_party/search_engines_data:regional_settings",
-+    "cromite:cromite_prepopulated_engines",
++    "Spectre Browser:Spectre Browser_prepopulated_engines",
      "//ui/base",
      "//url",
    ]
-diff --git a/components/search_engines/cromite/BUILD.gn b/components/search_engines/cromite/BUILD.gn
+diff --git a/components/search_engines/Spectre Browser/BUILD.gn b/components/search_engines/Spectre Browser/BUILD.gn
 new file mode 100644
 --- /dev/null
-+++ b/components/search_engines/cromite/BUILD.gn
++++ b/components/search_engines/Spectre Browser/BUILD.gn
 @@ -0,0 +1,12 @@
 +import("//tools/json_to_struct/json_to_struct.gni")
 +
-+json_to_struct("cromite_prepopulated_engines") {
++json_to_struct("Spectre Browser_prepopulated_engines") {
 +  visibility = [ "//components/search_engines:*" ]
 +
-+  source = "cromite_prepopulated_engines.json"
++  source = "Spectre Browser_prepopulated_engines.json"
 +  schema_file = "//third_party/search_engines_data/prepopulated_engines_schema.json"
 +  namespace = "TemplateURLPrepopulateData"
 +  excludetype = true
 +
 +  deps = [ "//base" ]
 +}
-diff --git a/components/search_engines/cromite/cromite_prepopulated_engines.json b/components/search_engines/cromite/cromite_prepopulated_engines.json
+diff --git a/components/search_engines/Spectre Browser/Spectre Browser_prepopulated_engines.json b/components/search_engines/Spectre Browser/Spectre Browser_prepopulated_engines.json
 new file mode 100644
 --- /dev/null
-+++ b/components/search_engines/cromite/cromite_prepopulated_engines.json
++++ b/components/search_engines/Spectre Browser/Spectre Browser_prepopulated_engines.json
 @@ -0,0 +1,37 @@
 +{
 +    "additionals_includes": {
@@ -153,7 +153,7 @@ diff --git a/components/search_engines/search_engine_choice/search_engine_choice
 -      base::PumaType::kRc, kPumaSearchChoiceScreenSelectedEngineIndexHistogram,
 -      selected_engine_index,
 -      TemplateURLPrepopulateData::kMaxEeaPrepopulatedEngines);
-+  // do nothing in Cromite
++  // do nothing in Spectre Browser
  }
  
  void RecordChoiceScreenPositionsCountryMismatch(bool has_mismatch) {
@@ -184,7 +184,7 @@ diff --git a/components/search_engines/template_url_prepopulate_data.cc b/compon
  #include "components/search_engines/template_url_data_util.h"
  #include "third_party/search_engines_data/resources/definitions/prepopulated_engines.h"
  
-+#include "components/search_engines/cromite/cromite_prepopulated_engines.h"
++#include "components/search_engines/Spectre Browser/Spectre Browser_prepopulated_engines.h"
 +
  namespace TemplateURLPrepopulateData {
  

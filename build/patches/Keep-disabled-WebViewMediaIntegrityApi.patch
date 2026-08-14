@@ -6,7 +6,7 @@ Disables a new mechanism similar to Web Environment Integrity API in use in webv
 see https://issuetracker.google.com/issues/327186031
 https://android-developers.googleblog.com/2023/11/increasing-trust-for-embedded-media.html
 
-need: Add-cromite-flags-support.patch
+need: Add-Spectre Browser-flags-support.patch
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  android_webview/renderer/aw_content_renderer_client.cc | 5 -----

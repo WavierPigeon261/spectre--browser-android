@@ -93,10 +93,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/AlwaysIncognitoLinkInterceptor.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/IncognitoSettings.java
  create mode 100644 chrome/browser/ui/messages/android/java/src/org/chromium/chrome/browser/ui/messages/snackbar/INeedSnackbarManager.java
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/add-an-always-incognito-mode.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-an-always-incognito-mode.inc
- create mode 100644 cromite_flags/components/offline_pages/core/offline_page_feature_cc/add-an-always-incognito-mode.inc
- create mode 100644 cromite_flags/components/offline_pages/core/offline_page_feature_h/add-an-always-incognito-mode.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/add-an-always-incognito-mode.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-an-always-incognito-mode.inc
+ create mode 100644 Spectre Browser_flags/components/offline_pages/core/offline_page_feature_cc/add-an-always-incognito-mode.inc
+ create mode 100644 Spectre Browser_flags/components/offline_pages/core/offline_page_feature_h/add-an-always-incognito-mode.inc
 
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
@@ -2383,10 +2383,10 @@ diff --git a/components/omnibox/browser/search_provider.cc b/components/omnibox/
           omnibox::IsLensSearchbox(input.current_page_classification()));
    return client()
        ->GetRemoteSuggestionsService(/*create_if_necessary=*/true)
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/add-an-always-incognito-mode.inc b/cromite_flags/chrome/browser/about_flags_cc/add-an-always-incognito-mode.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/add-an-always-incognito-mode.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/add-an-always-incognito-mode.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/add-an-always-incognito-mode.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/add-an-always-incognito-mode.inc
 @@ -0,0 +1,13 @@
 +#ifdef FLAG_SECTION
 +
@@ -2401,24 +2401,24 @@ new file mode 100644
 +#endif
 +
 +#endif
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-an-always-incognito-mode.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-an-always-incognito-mode.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-an-always-incognito-mode.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-an-always-incognito-mode.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-an-always-incognito-mode.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-an-always-incognito-mode.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kCCTIncognitoAvailableToThirdParty);
-diff --git a/cromite_flags/components/offline_pages/core/offline_page_feature_cc/add-an-always-incognito-mode.inc b/cromite_flags/components/offline_pages/core/offline_page_feature_cc/add-an-always-incognito-mode.inc
++SET_Spectre Browser_FEATURE_ENABLED(kCCTIncognitoAvailableToThirdParty);
+diff --git a/Spectre Browser_flags/components/offline_pages/core/offline_page_feature_cc/add-an-always-incognito-mode.inc b/Spectre Browser_flags/components/offline_pages/core/offline_page_feature_cc/add-an-always-incognito-mode.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/components/offline_pages/core/offline_page_feature_cc/add-an-always-incognito-mode.inc
++++ b/Spectre Browser_flags/components/offline_pages/core/offline_page_feature_cc/add-an-always-incognito-mode.inc
 @@ -0,0 +1,3 @@
-+CROMITE_FEATURE(kOfflinePagesAutoSaveFeature,
++Spectre Browser_FEATURE(kOfflinePagesAutoSaveFeature,
 +                "OfflinePagesAutoSaveEnabled",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
-diff --git a/cromite_flags/components/offline_pages/core/offline_page_feature_h/add-an-always-incognito-mode.inc b/cromite_flags/components/offline_pages/core/offline_page_feature_h/add-an-always-incognito-mode.inc
+diff --git a/Spectre Browser_flags/components/offline_pages/core/offline_page_feature_h/add-an-always-incognito-mode.inc b/Spectre Browser_flags/components/offline_pages/core/offline_page_feature_h/add-an-always-incognito-mode.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/components/offline_pages/core/offline_page_feature_h/add-an-always-incognito-mode.inc
++++ b/Spectre Browser_flags/components/offline_pages/core/offline_page_feature_h/add-an-always-incognito-mode.inc
 @@ -0,0 +1 @@
 +BASE_DECLARE_FEATURE(kOfflinePagesAutoSaveFeature);
 --

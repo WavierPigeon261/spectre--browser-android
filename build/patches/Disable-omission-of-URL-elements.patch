@@ -93,10 +93,10 @@ diff --git a/chrome/browser/ui/views/page_info/page_info_main_view.cc b/chrome/b
 -                                    button->GetInsets());
 -              })))
 -      .Build();
-+  auto cromite_header = std::make_unique<views::ScrollView>();
-+  cromite_header->SetVerticalScrollBarMode(views::ScrollView::ScrollBarMode::kHiddenButEnabled);
-+  cromite_header->SetHorizontalScrollBarMode(views::ScrollView::ScrollBarMode::kDisabled);
-+  cromite_header->ClipHeightTo(0, 30);
++  auto Spectre Browser_header = std::make_unique<views::ScrollView>();
++  Spectre Browser_header->SetVerticalScrollBarMode(views::ScrollView::ScrollBarMode::kHiddenButEnabled);
++  Spectre Browser_header->SetHorizontalScrollBarMode(views::ScrollView::ScrollBarMode::kDisabled);
++  Spectre Browser_header->ClipHeightTo(0, 30);
 +  auto scroll_contents = std::make_unique<views::View>();
 +  scroll_contents->SetLayoutManager(std::make_unique<views::FlexLayout>())
 +      ->SetInteriorMargin(gfx::Insets::VH(0, 20))
@@ -126,9 +126,9 @@ diff --git a/chrome/browser/ui/views/page_info/page_info_main_view.cc b/chrome/b
 +  close_button->SetProperty(views::kInternalPaddingKey,
 +                            close_button->GetInsets());
 +  scroll_contents->AddChildView(close_button.release());
-+  cromite_header->SetContents(std::move(scroll_contents));
++  Spectre Browser_header->SetContents(std::move(scroll_contents));
 +
-+  return cromite_header;
++  return Spectre Browser_header;
  }
  
  std::unique_ptr<views::View> PageInfoMainView::CreateAboutThisSiteButton(

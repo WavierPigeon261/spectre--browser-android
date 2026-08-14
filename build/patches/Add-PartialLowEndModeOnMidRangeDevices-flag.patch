@@ -10,7 +10,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  content/renderer/render_process_impl.cc              |  9 +++++++++
  .../Add-PartialLowEndModeOnMidRangeDevices-flag.inc  | 12 ++++++++++++
  3 files changed, 25 insertions(+)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-PartialLowEndModeOnMidRangeDevices-flag.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Add-PartialLowEndModeOnMidRangeDevices-flag.inc
 
 diff --git a/base/features.cc b/base/features.cc
 --- a/base/features.cc
@@ -20,7 +20,7 @@ diff --git a/base/features.cc b/base/features.cc
  }
  
 +#if BUILDFLAG(IS_ANDROID)
-+SET_CROMITE_FEATURE_DISABLED(kPartialLowEndModeOnMidRangeDevices);
++SET_Spectre Browser_FEATURE_DISABLED(kPartialLowEndModeOnMidRangeDevices);
 +#endif
 +
  void Init() {
@@ -56,10 +56,10 @@ diff --git a/content/renderer/render_process_impl.cc b/content/renderer/render_p
  
      ////////////////////////////////////////////////////////////////////////////
      // V8 flags are typically set in gin/v8_initializer.cc. Only those flags
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Add-PartialLowEndModeOnMidRangeDevices-flag.inc b/cromite_flags/chrome/browser/about_flags_cc/Add-PartialLowEndModeOnMidRangeDevices-flag.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-PartialLowEndModeOnMidRangeDevices-flag.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-PartialLowEndModeOnMidRangeDevices-flag.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Add-PartialLowEndModeOnMidRangeDevices-flag.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-PartialLowEndModeOnMidRangeDevices-flag.inc
 @@ -0,0 +1,12 @@
 +#if BUILDFLAG(IS_ANDROID)
 +

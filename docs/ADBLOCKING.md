@@ -1,8 +1,8 @@
-# Cromite AdBlock engine
+# Spectre Browser AdBlock engine
 
-## Modified version of Adblock plus integrated in cromite
+## Modified version of Adblock plus integrated in Spectre Browser
 
-Cromite uses a modified version of adblock plus.
+Spectre Browser uses a modified version of adblock plus.
 
 Some adblock plus rules cannot be used:
 - removed support for header and csp filter option
@@ -15,13 +15,13 @@ Some improvements have been included:
 - Block of WebSockets and WebTransport urls
 - Block of service workers fetchs
 
-All default filters are downloaded from www.cromite.org/filters urls. You can enter your lists via the settings: http url redirection is prohibited.
+All default filters are downloaded from www.Spectre Browser.org/filters urls. You can enter your lists via the settings: http url redirection is prohibited.
 
 ### Update mechanism
 
-The Cromite AdBlock Update Service checks every day if new filters are published.
+The Spectre Browser AdBlock Update Service checks every day if new filters are published.
 
-www.cromite.org does not record any logs.
+www.Spectre Browser.org does not record any logs.
 
 ## Legacy bromite adblock engine
 
@@ -29,7 +29,7 @@ Since v77 Bromite uses [Chromium subresource filter](https://github.com/chromium
 
 This engine does not currently support CSS rules; as a result some sites will show ads.
 
-In cromite it is disabled by default.
+In Spectre Browser it is disabled by default.
 
 ### Update mechanism
 

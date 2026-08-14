@@ -6,7 +6,7 @@ disable pointerEvent.deviceId for Windows devices that are able to provide a GUI
 or serial number and id making them identical to the mouse pointer-id.
 see https://groups.google.com/a/chromium.org/g/blink-dev/c/3eU-AHH8x4k
 
-Need: Add-cromite-flags-support.patch
+Need: Add-Spectre Browser-flags-support.patch
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../Disable_pointer_deviceid_support.inc             | 12 ++++++++++++
@@ -14,14 +14,14 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../features_h/Disable_pointer_deviceid_support.inc  |  7 +++++++
  ui/views/win/pen_id_handler.cc                       |  5 +++++
  4 files changed, 32 insertions(+)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Disable_pointer_deviceid_support.inc
- create mode 100644 cromite_flags/ui/base/features_cc/Disable_pointer_deviceid_support.inc
- create mode 100644 cromite_flags/ui/base/features_h/Disable_pointer_deviceid_support.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Disable_pointer_deviceid_support.inc
+ create mode 100644 Spectre Browser_flags/ui/base/features_cc/Disable_pointer_deviceid_support.inc
+ create mode 100644 Spectre Browser_flags/ui/base/features_h/Disable_pointer_deviceid_support.inc
 
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Disable_pointer_deviceid_support.inc b/cromite_flags/chrome/browser/about_flags_cc/Disable_pointer_deviceid_support.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Disable_pointer_deviceid_support.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Disable_pointer_deviceid_support.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Disable_pointer_deviceid_support.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Disable_pointer_deviceid_support.inc
 @@ -0,0 +1,12 @@
 +#ifdef FLAG_SECTION
 +
@@ -35,23 +35,23 @@ new file mode 100644
 +#endif // BUILDFLAG(IS_WIN)
 +
 +#endif // ifdef FLAG_SECTION
-diff --git a/cromite_flags/ui/base/features_cc/Disable_pointer_deviceid_support.inc b/cromite_flags/ui/base/features_cc/Disable_pointer_deviceid_support.inc
+diff --git a/Spectre Browser_flags/ui/base/features_cc/Disable_pointer_deviceid_support.inc b/Spectre Browser_flags/ui/base/features_cc/Disable_pointer_deviceid_support.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/ui/base/features_cc/Disable_pointer_deviceid_support.inc
++++ b/Spectre Browser_flags/ui/base/features_cc/Disable_pointer_deviceid_support.inc
 @@ -0,0 +1,8 @@
 +
 +#if BUILDFLAG(IS_WIN)
 +
-+CROMITE_FEATURE(kEnablePointerEventDeviceId,
++Spectre Browser_FEATURE(kEnablePointerEventDeviceId,
 +                "EnablePointerEventDeviceId",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
 +
 +#endif
-diff --git a/cromite_flags/ui/base/features_h/Disable_pointer_deviceid_support.inc b/cromite_flags/ui/base/features_h/Disable_pointer_deviceid_support.inc
+diff --git a/Spectre Browser_flags/ui/base/features_h/Disable_pointer_deviceid_support.inc b/Spectre Browser_flags/ui/base/features_h/Disable_pointer_deviceid_support.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/ui/base/features_h/Disable_pointer_deviceid_support.inc
++++ b/Spectre Browser_flags/ui/base/features_h/Disable_pointer_deviceid_support.inc
 @@ -0,0 +1,7 @@
 +
 +#if BUILDFLAG(IS_WIN)

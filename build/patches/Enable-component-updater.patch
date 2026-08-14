@@ -4,7 +4,7 @@ Subject: Enable component updater
 
 Activates component updaters in one-shot mode: downloading occurs
 only once and updates are inhibited.
-Only cromite-specific components can be enabled.
+Only Spectre Browser-specific components can be enabled.
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
@@ -71,7 +71,7 @@ diff --git a/android_webview/nonembedded/component_updater/registration.cc b/and
        component_installer_list;
  
 +  std::vector<std::unique_ptr<component_updater::ComponentInstallerPolicy>>
-+      component_installer_list_cromite;
++      component_installer_list_Spectre Browser;
 +
    component_installer_list.push_back(
        std::make_unique<
@@ -80,8 +80,8 @@ diff --git a/android_webview/nonembedded/component_updater/registration.cc b/and
    base::RepeatingClosure barrier_closure = base::BarrierClosure(
 -      component_installer_list.size(), std::move(on_finished));
 -  for (auto& component : component_installer_list) {
-+    component_installer_list_cromite.size(), std::move(on_finished));
-+  for (auto& component : component_installer_list_cromite) {
++    component_installer_list_Spectre Browser.size(), std::move(on_finished));
++  for (auto& component : component_installer_list_Spectre Browser) {
      base::MakeRefCounted<component_updater::ComponentInstaller>(
          std::make_unique<AwComponentInstallerPolicyShim>(std::move(component)))
          ->Register(base::OnceCallback<bool(
@@ -401,7 +401,7 @@ diff --git a/components/component_updater/component_updater_url_constants.cc b/c
  // --component-updater=url-source=someurl.
  const char kUpdaterJSONDefaultUrl[] =
 -    "https://update.googleapis.com/service/update2/json";
-+    "https://uazo.github.io/cromite/components/query4_0.json";
++    "https://uazo.github.io/Spectre Browser/components/query4_0.json";
  
  const char kUpdaterJSONFallbackUrl[] =
 -    "http://update.googleapis.com/service/update2/json";
@@ -494,7 +494,7 @@ diff --git a/components/crx_file/crx_verifier.cc b/components/crx_file/crx_verif
  
  // The SHA256 hash of the DER SPKI "ecdsa_2017_public" Crx3 key.
 -constexpr KeyHash kPublisherKeyHash = {
-+constexpr KeyHash kPublisherKeyHashCromite = {
++constexpr KeyHash kPublisherKeyHashSpectre Browser = {
 +    0x9F, 0x4A, 0x10, 0x80, 0x0F, 0x84, 0x13, 0xCB, 0x8F, 0x69, 0x92,
 +    0xA6, 0x03, 0x44, 0x9D, 0xC5, 0xFE, 0x01, 0x4D, 0x00, 0xF3, 0x4E,
 +    0x16, 0x79, 0xA1, 0x81, 0x95, 0x77, 0x1C, 0x5A, 0x21, 0x24};
@@ -522,7 +522,7 @@ diff --git a/components/crx_file/crx_verifier.cc b/components/crx_file/crx_verif
        }
        auto key_hash = crypto::hash::Sha256(key);
        required_key_set.erase(key_hash);
-+      auto kPublisherKey = is_extension ? kPublisherKeyHashGoogle : kPublisherKeyHashCromite;
++      auto kPublisherKey = is_extension ? kPublisherKeyHashGoogle : kPublisherKeyHashSpectre Browser;
        found_publisher_key =
 -          found_publisher_key || key_hash == kPublisherKeyHash ||
 +          found_publisher_key || key_hash == kPublisherKey ||

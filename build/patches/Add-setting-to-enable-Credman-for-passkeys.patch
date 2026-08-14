@@ -22,7 +22,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  device/fido/public/features.cc                |  1 +
  .../authentication_credentials_container.cc   |  5 ++++
  11 files changed, 73 insertions(+), 33 deletions(-)
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-setting-to-enable-Credman-for-passkeys.grdp
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Add-setting-to-enable-Credman-for-passkeys.grdp
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/password_manager/settings/PasswordSettings.java
@@ -39,7 +39,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
  import org.chromium.chrome.browser.ui.messages.snackbar.Snackbar;
  import org.chromium.chrome.browser.lifetime.ApplicationLifetime;
  
-+import org.chromium.chrome.browser.flags.CromiteNativeUtils;
++import org.chromium.chrome.browser.flags.Spectre BrowserNativeUtils;
 +import org.chromium.components.webauthn.WebauthnFeatureMap;
 +import org.chromium.components.webauthn.WebauthnFeatures;
 +
@@ -71,7 +71,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
 +            credManSwitch.setEnabled(false);
 +        }
 +        credManSwitch.setOnPreferenceChangeListener((preference, newValue) -> {
-+            CromiteNativeUtils.setFlagEnabled("WebAuthenticationAndroidPasskey", (boolean)newValue);
++            Spectre BrowserNativeUtils.setFlagEnabled("WebAuthenticationAndroidPasskey", (boolean)newValue);
 +            if (!mSnackbarManagerSupplier.get().isShowing())
 +                mSnackbarManagerSupplier.get().showSnackbar(mSnackbar);
 +            return true;
@@ -101,10 +101,10 @@ diff --git a/chrome/browser/touch_to_fill/password_manager/touch_to_fill_control
  }
  
  DisplayTarget TouchToFillController::GetResponsibleDisplayTarget(
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-setting-to-enable-Credman-for-passkeys.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-setting-to-enable-Credman-for-passkeys.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Add-setting-to-enable-Credman-for-passkeys.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Add-setting-to-enable-Credman-for-passkeys.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-setting-to-enable-Credman-for-passkeys.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Add-setting-to-enable-Credman-for-passkeys.grdp
 @@ -0,0 +1,12 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>
@@ -294,7 +294,7 @@ diff --git a/components/webauthn/features.cc b/components/webauthn/features.cc
  BASE_FEATURE(kWebAuthnConditionalUiSuppressedOnWebView,
               base::FEATURE_ENABLED_BY_DEFAULT);
  
-+CROMITE_FEATURE(kWebAuthnAndroidPasskey,
++Spectre Browser_FEATURE(kWebAuthnAndroidPasskey,
 +                "WebAuthenticationAndroidPasskey",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
 +
@@ -321,7 +321,7 @@ diff --git a/device/fido/public/features.cc b/device/fido/public/features.cc
  BASE_FEATURE(kWebAuthnImmediateGet,
               "WebAuthenticationImmediateGet",
               base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kWebAuthnImmediateGet);
++SET_Spectre Browser_FEATURE_DISABLED(kWebAuthnImmediateGet);
  
  BASE_FEATURE_PARAM(int,
                     kWebAuthnImmediateMediationTimeoutMilliseconds,

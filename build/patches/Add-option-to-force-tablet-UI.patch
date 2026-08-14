@@ -47,7 +47,7 @@ diff --git a/chrome/android/java/res/layout/custom_tabs_control_container.xml b/
              android:inflatedId="@+id/find_toolbar"
              android:visibility="gone"
 -            android:layout_marginTop="@dimen/tab_strip_height"
-+            android:layout_marginTop="@dimen/tab_strip_height_cromite"
++            android:layout_marginTop="@dimen/tab_strip_height_Spectre Browser"
              android:layout_width="match_parent"
              android:layout_height="@dimen/custom_tabs_control_container_height"
              android:layout="@layout/find_toolbar" />
@@ -59,7 +59,7 @@ diff --git a/chrome/android/java/res/layout/recent_tabs_page.xml b/chrome/androi
      android:layout_width="match_parent"
      android:layout_height="match_parent"
 -    android:paddingTop="@dimen/tab_strip_height" >
-+    android:paddingTop="@dimen/tab_strip_height_cromite" >
++    android:paddingTop="@dimen/tab_strip_height_Spectre Browser" >
  
      <org.chromium.chrome.browser.ntp.NativePageRootFrameLayout
          android:id="@+id/recent_tabs_root"
@@ -71,7 +71,7 @@ diff --git a/chrome/android/java/res/values-sw600dp/dimens.xml b/chrome/android/
  
      <!-- Full Screen Dimensions -->
 -    <dimen name="control_container_height">96dp</dimen>
-+    <dimen name="control_container_height_cromite">96dp</dimen>
++    <dimen name="control_container_height_Spectre Browser">96dp</dimen>
 +    <dimen name="control_container_height_tabletui">56dp</dimen>
  
      <!-- NTP dimensions -->
@@ -84,7 +84,7 @@ diff --git a/chrome/android/java/res/values/dimens.xml b/chrome/android/java/res
  
      <!-- Should match toolbar_height_no_shadow -->
 -    <dimen name="control_container_height">@dimen/default_action_bar_height</dimen>
-+    <dimen name="control_container_height_cromite">@dimen/default_action_bar_height</dimen>
++    <dimen name="control_container_height_Spectre Browser">@dimen/default_action_bar_height</dimen>
 +    <dimen name="control_container_height_tabletui">56dp</dimen>
      <dimen name="custom_tabs_control_container_height">@dimen/default_action_bar_height</dimen>
  
@@ -207,7 +207,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/over
 +        mScrollableStripHeight =
 +            (DeviceFormFactor.isForceTabletUI()
 +                ? res.getDimension(R.dimen.tab_strip_height_tabletui)
-+                : res.getDimension(R.dimen.tab_strip_height_cromite)) / mDensity;
++                : res.getDimension(R.dimen.tab_strip_height_Spectre Browser)) / mDensity;
          mHeight =
                  mIsHeaderCustomizationSupported
                          ? toolbarManager.getTabStripHeightSupplier().get() / mDensity
@@ -258,7 +258,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
 -        return R.dimen.control_container_height;
 +        if (DeviceFormFactor.isForceTabletUI())
 +            return R.dimen.control_container_height_tabletui;
-+        return R.dimen.control_container_height_cromite;
++        return R.dimen.control_container_height_Spectre Browser;
      }
  
      @Override
@@ -403,7 +403,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/res/layout/control_container
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
 -    android:minHeight="@dimen/control_container_height">
-+    android:minHeight="@dimen/control_container_height_cromite">
++    android:minHeight="@dimen/control_container_height_Spectre Browser">
  
      <view
          class="org.chromium.chrome.browser.toolbar.top.ToolbarControlContainer$ToolbarViewResourceCoordinatorLayout"
@@ -412,7 +412,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/res/layout/control_container
              android:id="@+id/toolbar_stub"
              android:layout_width="match_parent"
 -            android:layout_marginTop="@dimen/tab_strip_height"
-+            android:layout_marginTop="@dimen/tab_strip_height_cromite"
++            android:layout_marginTop="@dimen/tab_strip_height_Spectre Browser"
              android:layout_marginBottom="@dimen/toolbar_hairline_height"
              android:layout_height="@dimen/toolbar_height_no_shadow" />
  
@@ -421,14 +421,14 @@ diff --git a/chrome/browser/ui/android/toolbar/java/res/layout/control_container
              android:layout_gravity="bottom"
              app:layout_anchorGravity="bottom"
 -            />
-+            android:layout_marginTop="@dimen/control_container_height_cromite" />
++            android:layout_marginTop="@dimen/control_container_height_Spectre Browser" />
  
          <ViewStub
              android:id="@+id/find_toolbar_stub"
              android:inflatedId="@+id/find_toolbar"
              android:visibility="gone"
 -            android:layout_marginTop="@dimen/tab_strip_height"
-+            android:layout_marginTop="@dimen/tab_strip_height_cromite"
++            android:layout_marginTop="@dimen/tab_strip_height_Spectre Browser"
              android:layout_width="match_parent"
              android:layout_height="@dimen/toolbar_height_no_shadow"
              android:layout="@layout/find_toolbar" />
@@ -453,9 +453,9 @@ diff --git a/chrome/browser/ui/android/toolbar/java/res/values-sw600dp/dimens.xm
      <!-- Tab Strip Dimensions -->
 -    <dimen name="tab_strip_height">40dp</dimen>
 -    <dimen name="tab_strip_reserved_top_padding">2dp</dimen>
-+    <dimen name="tab_strip_height_cromite">40dp</dimen>
++    <dimen name="tab_strip_height_Spectre Browser">40dp</dimen>
 +    <dimen name="tab_strip_height_tabletui">40dp</dimen>
-+    <dimen name="tab_strip_reserved_top_padding_cromite">2dp</dimen>
++    <dimen name="tab_strip_reserved_top_padding_Spectre Browser">2dp</dimen>
  </resources>
 diff --git a/chrome/browser/ui/android/toolbar/java/res/values/dimens.xml b/chrome/browser/ui/android/toolbar/java/res/values/dimens.xml
 --- a/chrome/browser/ui/android/toolbar/java/res/values/dimens.xml
@@ -466,9 +466,9 @@ diff --git a/chrome/browser/ui/android/toolbar/java/res/values/dimens.xml b/chro
      <!-- Tab Strip Dimensions -->
 -    <dimen name="tab_strip_height">0dp</dimen>
 -    <dimen name="tab_strip_reserved_top_padding">0dp</dimen>
-+    <dimen name="tab_strip_height_cromite">0dp</dimen>
++    <dimen name="tab_strip_height_Spectre Browser">0dp</dimen>
 +    <dimen name="tab_strip_height_tabletui">40dp</dimen>
-+    <dimen name="tab_strip_reserved_top_padding_cromite">0dp</dimen>
++    <dimen name="tab_strip_reserved_top_padding_Spectre Browser">0dp</dimen>
 +    <dimen name="tab_strip_reserved_top_padding_tabletui">2dp</dimen>
  
      <dimen name="ntp_search_box_height">64dp</dimen>
@@ -514,7 +514,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
 -        return getResources().getDimensionPixelSize(R.dimen.tab_strip_height);
 +        if (DeviceFormFactor.isForceTabletUI())
 +            return getResources().getDimensionPixelSize(R.dimen.tab_strip_height_tabletui);
-+        return getResources().getDimensionPixelSize(R.dimen.tab_strip_height_cromite);
++        return getResources().getDimensionPixelSize(R.dimen.tab_strip_height_Spectre Browser);
      }
  
      /** Triggered when the content view for the specified tab has changed. */
@@ -556,7 +556,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
 +                        .getDimensionPixelSize(
 +                            DeviceFormFactor.isForceTabletUI()
 +                                ? R.dimen.tab_strip_reserved_top_padding_tabletui
-+                                : R.dimen.tab_strip_reserved_top_padding_cromite);
++                                : R.dimen.tab_strip_reserved_top_padding_Spectre Browser);
  
          mOnLayoutChangedListener =
                  (view, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {

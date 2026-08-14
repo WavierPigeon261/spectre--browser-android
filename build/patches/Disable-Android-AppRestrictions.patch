@@ -8,16 +8,16 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/enterprise/util/BUILD.gn       |  1 +
  .../enterprise/util/EnterpriseInfoImpl.java   |  5 +++
  chrome/browser/flags/BUILD.gn                 |  1 +
- .../cromite/sEnableAndroidAppRestriction.java | 39 +++++++++++++++++++
+ .../Spectre Browser/sEnableAndroidAppRestriction.java | 39 +++++++++++++++++++
  .../policy/AppRestrictionsProvider.java       | 12 ++++++
  .../DisableAndroidAppRestriction.inc          | 13 +++++++
  .../disable-android-app-restriction.inc       |  3 ++
  .../disable-android-app-restriction.inc       |  1 +
  9 files changed, 77 insertions(+), 2 deletions(-)
- create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sEnableAndroidAppRestriction.java
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/DisableAndroidAppRestriction.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/disable-android-app-restriction.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/disable-android-app-restriction.inc
+ create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sEnableAndroidAppRestriction.java
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/DisableAndroidAppRestriction.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/disable-android-app-restriction.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/disable-android-app-restriction.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/AppHooks.java b/chrome/android/java/src/org/chromium/chrome/browser/AppHooks.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/AppHooks.java
@@ -77,29 +77,29 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
      "//third_party/android_deps:guava_android_java",
      "//third_party/androidx:androidx_annotation_annotation_java",
      "//third_party/jni_zero:jni_zero_java",
-diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sEnableAndroidAppRestriction.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sEnableAndroidAppRestriction.java
+diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sEnableAndroidAppRestriction.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sEnableAndroidAppRestriction.java
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sEnableAndroidAppRestriction.java
++++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sEnableAndroidAppRestriction.java
 @@ -0,0 +1,39 @@
 +/*
-+    This file is part of Cromite.
++    This file is part of Spectre Browser.
 +
-+    Cromite is free software: you can redistribute it and/or modify
++    Spectre Browser is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
 +    the Free Software Foundation, either version 3 of the License, or
 +    (at your option) any later version.
 +
-+    Cromite is distributed in the hope that it will be useful,
++    Spectre Browser is distributed in the hope that it will be useful,
 +    but WITHOUT ANY WARRANTY; without even the implied warranty of
 +    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +    GNU General Public License for more details.
 +
 +    You should have received a copy of the GNU General Public License
-+    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++    along with Spectre Browser. If not, see <https://www.gnu.org/licenses/>.
 +*/
 +
-+package org.chromium.chrome.browser.flags.cromite;
++package org.chromium.chrome.browser.flags.Spectre Browser;
 +
 +import org.chromium.components.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureMap;
@@ -150,10 +150,10 @@ diff --git a/components/policy/android/java/src/org/chromium/components/policy/A
          try {
              Bundle bundle = userManager.getApplicationRestrictions(packageName);
              Log.i(TAG, "#getApplicationRestrictionsFromUserManager() " + bundle);
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/DisableAndroidAppRestriction.inc b/cromite_flags/chrome/browser/about_flags_cc/DisableAndroidAppRestriction.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/DisableAndroidAppRestriction.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/DisableAndroidAppRestriction.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/DisableAndroidAppRestriction.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/DisableAndroidAppRestriction.inc
 @@ -0,0 +1,13 @@
 +#ifdef FLAG_SECTION
 +
@@ -168,18 +168,18 @@ new file mode 100644
 +#endif
 +
 +#endif
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/disable-android-app-restriction.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/disable-android-app-restriction.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/disable-android-app-restriction.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/disable-android-app-restriction.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/disable-android-app-restriction.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/disable-android-app-restriction.inc
 @@ -0,0 +1,3 @@
-+CROMITE_FEATURE(kEnableAndroidAppRestriction,
++Spectre Browser_FEATURE(kEnableAndroidAppRestriction,
 +                "EnableAndroidAppRestriction",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/disable-android-app-restriction.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/disable-android-app-restriction.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/disable-android-app-restriction.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/disable-android-app-restriction.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/disable-android-app-restriction.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/disable-android-app-restriction.inc
 @@ -0,0 +1 @@
 +BASE_DECLARE_FEATURE(kEnableAndroidAppRestriction);
 --

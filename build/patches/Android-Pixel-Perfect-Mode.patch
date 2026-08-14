@@ -32,7 +32,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../tracing/settings/DeveloperSettings.java   | 10 ++++
  .../android/compositor/tab_content_manager.cc |  6 ++-
  .../overlay_panel/overlay_panel_content.cc    |  2 +-
- .../browser/flags/cromite/sPixelPerfect.java  | 33 +++++++++++++
+ .../browser/flags/Spectre Browser/sPixelPerfect.java  | 33 +++++++++++++
  .../settings/ChromeBaseSettingsFragment.java  |  4 ++
  .../Pixel-perfect-mode.grdp                   |  9 ++++
  components/input/BUILD.gn                     |  2 +
@@ -108,11 +108,11 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ui/display/screen_info.h                      |  1 +
  ui/events/blink/blink_event_util.cc           |  2 +-
  97 files changed, 530 insertions(+), 138 deletions(-)
- create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sPixelPerfect.java
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Pixel-perfect-mode.grdp
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Pixel-perfect-mode.inc
- create mode 100644 cromite_flags/content/public/common/content_features_cc/Pixel-perfect-mode.inc
- create mode 100644 cromite_flags/content/public/common/content_features_h/Pixel-perfect-mode.inc
+ create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sPixelPerfect.java
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Pixel-perfect-mode.grdp
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Pixel-perfect-mode.inc
+ create mode 100644 Spectre Browser_flags/content/public/common/content_features_cc/Pixel-perfect-mode.inc
+ create mode 100644 Spectre Browser_flags/content/public/common/content_features_h/Pixel-perfect-mode.inc
 
 diff --git a/android_webview/browser/aw_contents.cc b/android_webview/browser/aw_contents.cc
 --- a/android_webview/browser/aw_contents.cc
@@ -514,7 +514,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
  import androidx.annotation.VisibleForTesting;
  
 +import android.util.DisplayMetrics;
-+import org.chromium.chrome.browser.flags.cromite.sPixelPerfect;
++import org.chromium.chrome.browser.flags.Spectre Browser.sPixelPerfect;
 +
  import org.chromium.base.ActivityState;
  import org.chromium.base.ApplicationStatus;
@@ -598,7 +598,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tracing/setting
  import org.chromium.components.browser_ui.settings.SettingsUtils;
  import org.chromium.components.browser_ui.settings.search.SettingsIndexData;
  import org.chromium.chrome.browser.util.PlatformUtil;
-+import org.chromium.chrome.browser.flags.CromiteNativeUtils;
++import org.chromium.chrome.browser.flags.Spectre BrowserNativeUtils;
  
  /** Settings fragment containing preferences aimed at Chrome and web developers. */
  @NullMarked
@@ -616,8 +616,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tracing/setting
 +
 +        Preference mPixelPerfect = findPreference(PIXEL_PERFECT_MODE_KEY);
 +        mPixelPerfect.setOnPreferenceChangeListener((preference, newValue) -> {
-+            CromiteNativeUtils.setFlagEnabled("AndroidPixelPerfect", (boolean)newValue);
-+            CromiteNativeUtils.setFlagEnabled("pixel-perfect-mode", (boolean)newValue);
++            Spectre BrowserNativeUtils.setFlagEnabled("AndroidPixelPerfect", (boolean)newValue);
++            Spectre BrowserNativeUtils.setFlagEnabled("pixel-perfect-mode", (boolean)newValue);
 +            getRequestRestartDelegateSupplier().get().RequireRestart();
 +            return true;
 +        });
@@ -659,29 +659,29 @@ diff --git a/chrome/browser/android/overlay_panel/overlay_panel_content.cc b/chr
  }
  
  void OverlayPanelContent::SetWebContents(
-diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sPixelPerfect.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sPixelPerfect.java
+diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sPixelPerfect.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sPixelPerfect.java
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sPixelPerfect.java
++++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sPixelPerfect.java
 @@ -0,0 +1,33 @@
 +/*
-+    This file is part of Cromite.
++    This file is part of Spectre Browser.
 +
-+    Cromite is free software: you can redistribute it and/or modify
++    Spectre Browser is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
 +    the Free Software Foundation, either version 3 of the License, or
 +    (at your option) any later version.
 +
-+    Cromite is distributed in the hope that it will be useful,
++    Spectre Browser is distributed in the hope that it will be useful,
 +    but WITHOUT ANY WARRANTY; without even the implied warranty of
 +    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +    GNU General Public License for more details.
 +
 +    You should have received a copy of the GNU General Public License
-+    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++    along with Spectre Browser. If not, see <https://www.gnu.org/licenses/>.
 +*/
 +
-+package org.chromium.chrome.browser.flags.cromite;
++package org.chromium.chrome.browser.flags.Spectre Browser;
 +
 +import org.chromium.components.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureMap;
@@ -708,13 +708,13 @@ diff --git a/chrome/browser/settings/android/java/src/org/chromium/chrome/browse
 +        return mRequireRestartDelegateSupplier;
 +    }
 +
-     public void onCreatePreferencesCromite(Bundle savedInstanceState, String rootKey) {
+     public void onCreatePreferencesSpectre Browser(Bundle savedInstanceState, String rootKey) {
      }
  
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Pixel-perfect-mode.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Pixel-perfect-mode.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Pixel-perfect-mode.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Pixel-perfect-mode.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Pixel-perfect-mode.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Pixel-perfect-mode.grdp
 @@ -0,0 +1,9 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>
@@ -1308,7 +1308,7 @@ diff --git a/content/public/common/content_features.cc b/content/public/common/c
  
  namespace features {
  
-+CROMITE_FEATURE(kPixelPerfect,
++Spectre Browser_FEATURE(kPixelPerfect,
 +                "AndroidPixelPerfect",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
 +
@@ -1327,10 +1327,10 @@ diff --git a/content/public/test/android/javatests/src/org/chromium/content_publ
  
      @Override
      public int getWidth() {
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Pixel-perfect-mode.inc b/cromite_flags/chrome/browser/about_flags_cc/Pixel-perfect-mode.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Pixel-perfect-mode.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Pixel-perfect-mode.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Pixel-perfect-mode.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Pixel-perfect-mode.inc
 @@ -0,0 +1,7 @@
 +#ifdef FLAG_SECTION
 +
@@ -1339,16 +1339,16 @@ new file mode 100644
 +     FEATURE_VALUE_TYPE(features::kPixelPerfect)},
 +
 +#endif
-diff --git a/cromite_flags/content/public/common/content_features_cc/Pixel-perfect-mode.inc b/cromite_flags/content/public/common/content_features_cc/Pixel-perfect-mode.inc
+diff --git a/Spectre Browser_flags/content/public/common/content_features_cc/Pixel-perfect-mode.inc b/Spectre Browser_flags/content/public/common/content_features_cc/Pixel-perfect-mode.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/public/common/content_features_cc/Pixel-perfect-mode.inc
++++ b/Spectre Browser_flags/content/public/common/content_features_cc/Pixel-perfect-mode.inc
 @@ -0,0 +1 @@
 +// empty for now
-diff --git a/cromite_flags/content/public/common/content_features_h/Pixel-perfect-mode.inc b/cromite_flags/content/public/common/content_features_h/Pixel-perfect-mode.inc
+diff --git a/Spectre Browser_flags/content/public/common/content_features_h/Pixel-perfect-mode.inc b/Spectre Browser_flags/content/public/common/content_features_h/Pixel-perfect-mode.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/public/common/content_features_h/Pixel-perfect-mode.inc
++++ b/Spectre Browser_flags/content/public/common/content_features_h/Pixel-perfect-mode.inc
 @@ -0,0 +1 @@
 +CONTENT_EXPORT BASE_DECLARE_FEATURE(kPixelPerfect);
 diff --git a/services/viz/public/mojom/compositing/layer_context.mojom b/services/viz/public/mojom/compositing/layer_context.mojom

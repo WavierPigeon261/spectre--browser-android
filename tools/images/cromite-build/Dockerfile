@@ -1,7 +1,7 @@
-ARG CROMITE_SHA
+ARG Spectre Browser_SHA
 ARG VERSION
 
-FROM uazo/cromite:$VERSION-$CROMITE_SHA
+FROM uazo/Spectre Browser:$VERSION-$Spectre Browser_SHA
 
 ARG HTTP_PROXY
 ENV HTTP_PROXY=$HTTP_PROXY

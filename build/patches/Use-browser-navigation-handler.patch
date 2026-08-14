@@ -14,7 +14,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../browser/gesturenav/NavigationHandler.java | 12 +++++--
  .../browser/gesturenav/SideSlideLayout.java   | 25 +++++++++++---
  .../tabbed_mode/TabbedRootUiCoordinator.java  |  4 ++-
- .../cromite/sUseBrowserNavigationHandler.java | 33 +++++++++++++++++++
+ .../Spectre Browser/sUseBrowserNavigationHandler.java | 33 +++++++++++++++++++
  .../Use-browser-navigation-handler.grdp       | 12 +++++++
  .../res/xml/accessibility_preferences.xml     |  9 +++++
  .../widget/CoordinatorLayoutForPointer.java   | 20 +++++++++++
@@ -22,11 +22,11 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../Use-browser-navigation-handler.inc        |  3 ++
  .../Use-browser-navigation-handler.inc        |  1 +
  14 files changed, 134 insertions(+), 17 deletions(-)
- create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sUseBrowserNavigationHandler.java
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Use-browser-navigation-handler.grdp
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Use-browser-navigation-handler.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Use-browser-navigation-handler.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Use-browser-navigation-handler.inc
+ create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sUseBrowserNavigationHandler.java
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Use-browser-navigation-handler.grdp
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Use-browser-navigation-handler.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Use-browser-navigation-handler.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Use-browser-navigation-handler.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/GestureNavigationProperties.java b/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/GestureNavigationProperties.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/GestureNavigationProperties.java
@@ -78,7 +78,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/gesturenav/Hist
  import org.chromium.build.annotations.NullMarked;
  import org.chromium.build.annotations.NullUnmarked;
  import org.chromium.build.annotations.Nullable;
-+import org.chromium.chrome.browser.flags.cromite.sUseBrowserNavigationHandler;
++import org.chromium.chrome.browser.flags.Spectre Browser.sUseBrowserNavigationHandler;
  import org.chromium.chrome.browser.fullscreen.FullscreenManager;
  import org.chromium.chrome.browser.fullscreen.FullscreenOptions;
  import org.chromium.chrome.browser.lifecycle.ActivityLifecycleDispatcher;
@@ -219,7 +219,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
  import org.chromium.chrome.browser.flags.ActivityType;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
  import org.chromium.chrome.browser.flags.ChromeSwitches;
-+import org.chromium.chrome.browser.flags.cromite.sUseBrowserNavigationHandler;
++import org.chromium.chrome.browser.flags.Spectre Browser.sUseBrowserNavigationHandler;
  import org.chromium.chrome.browser.fullscreen.BrowserControlsManager;
  import org.chromium.chrome.browser.fullscreen.FullscreenManager;
  import org.chromium.chrome.browser.gesturenav.BackActionDelegate;
@@ -233,29 +233,29 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
          super.onInflationComplete();
  
          ViewStub loadingStub = mActivity.findViewById(R.id.loading_stub);
-diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sUseBrowserNavigationHandler.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sUseBrowserNavigationHandler.java
+diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sUseBrowserNavigationHandler.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sUseBrowserNavigationHandler.java
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sUseBrowserNavigationHandler.java
++++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sUseBrowserNavigationHandler.java
 @@ -0,0 +1,33 @@
 +/*
-+    This file is part of Cromite.
++    This file is part of Spectre Browser.
 +
-+    Cromite is free software: you can redistribute it and/or modify
++    Spectre Browser is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
 +    the Free Software Foundation, either version 3 of the License, or
 +    (at your option) any later version.
 +
-+    Cromite is distributed in the hope that it will be useful,
++    Spectre Browser is distributed in the hope that it will be useful,
 +    but WITHOUT ANY WARRANTY; without even the implied warranty of
 +    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +    GNU General Public License for more details.
 +
 +    You should have received a copy of the GNU General Public License
-+    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++    along with Spectre Browser. If not, see <https://www.gnu.org/licenses/>.
 +*/
 +
-+package org.chromium.chrome.browser.flags.cromite;
++package org.chromium.chrome.browser.flags.Spectre Browser;
 +
 +import org.chromium.components.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureMap;
@@ -271,10 +271,10 @@ new file mode 100644
 +        return sInstance;
 +    }
 +}
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Use-browser-navigation-handler.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Use-browser-navigation-handler.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Use-browser-navigation-handler.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Use-browser-navigation-handler.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Use-browser-navigation-handler.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Use-browser-navigation-handler.grdp
 @@ -0,0 +1,12 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>
@@ -342,10 +342,10 @@ diff --git a/components/browser_ui/widget/android/java/src/org/chromium/componen
      @Override
      public PointerIcon onResolvePointerIcon(MotionEvent event, int pointerIndex) {
          final int x = (int) event.getX(pointerIndex);
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Use-browser-navigation-handler.inc b/cromite_flags/chrome/browser/about_flags_cc/Use-browser-navigation-handler.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Use-browser-navigation-handler.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Use-browser-navigation-handler.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Use-browser-navigation-handler.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Use-browser-navigation-handler.inc
 @@ -0,0 +1,12 @@
 +#if BUILDFLAG(IS_ANDROID)
 +
@@ -359,18 +359,18 @@ new file mode 100644
 +#endif
 +
 +#endif
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Use-browser-navigation-handler.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Use-browser-navigation-handler.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Use-browser-navigation-handler.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Use-browser-navigation-handler.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Use-browser-navigation-handler.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Use-browser-navigation-handler.inc
 @@ -0,0 +1,3 @@
-+CROMITE_FEATURE(kUseBrowserNavigationHandler,
++Spectre Browser_FEATURE(kUseBrowserNavigationHandler,
 +                "UseBrowserNavigationHandler",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Use-browser-navigation-handler.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Use-browser-navigation-handler.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Use-browser-navigation-handler.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Use-browser-navigation-handler.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Use-browser-navigation-handler.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Use-browser-navigation-handler.inc
 @@ -0,0 +1 @@
 +BASE_DECLARE_FEATURE(kUseBrowserNavigationHandler);
 --

@@ -31,7 +31,7 @@ diff --git a/components/media_device_salt/media_device_salt_service.cc b/compone
  
  BASE_FEATURE(kMediaDeviceIdPartitioning, base::FEATURE_ENABLED_BY_DEFAULT);
  
-+SET_CROMITE_FEATURE_ENABLED(kMediaDeviceIdPartitioning);
++SET_Spectre Browser_FEATURE_ENABLED(kMediaDeviceIdPartitioning);
 +
  namespace {
  

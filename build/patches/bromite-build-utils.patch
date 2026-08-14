@@ -14,9 +14,9 @@ Subject: bromite build utils
  build/config/android/rules.gni                |   6 +-
  .../ChromeAccessibilitySettingsDelegate.java  |   5 +
  chrome/browser/flags/BUILD.gn                 |   8 +-
- .../flags/android/cromite_native_utils.cc     |  94 +++++++++++++++
- .../flags/android/cromite_native_utils.h      |  14 +++
- .../browser/flags/CromiteNativeUtils.java     |  46 ++++++++
+ .../flags/android/Spectre Browser_native_utils.cc     |  94 +++++++++++++++
+ .../flags/android/Spectre Browser_native_utils.h      |  14 +++
+ .../browser/flags/Spectre BrowserNativeUtils.java     |  46 ++++++++
  mojo/public/tools/mojom/mojom_parser.py       |  22 +++-
  tools/grit/grit/grd_reader.py                 |  27 ++++-
  tools/grit/grit_rule.gni                      |   2 +-
@@ -27,9 +27,9 @@ Subject: bromite build utils
  create mode 100644 build/bromite/gyp/cpp_bromite_include.pydeps
  create mode 100644 build/bromite/gyp/java_bromite_impl.py
  create mode 100644 build/bromite/gyp/java_bromite_impl.pydeps
- create mode 100755 chrome/browser/flags/android/cromite_native_utils.cc
- create mode 100755 chrome/browser/flags/android/cromite_native_utils.h
- create mode 100755 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
+ create mode 100755 chrome/browser/flags/android/Spectre Browser_native_utils.cc
+ create mode 100755 chrome/browser/flags/android/Spectre Browser_native_utils.h
+ create mode 100755 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre BrowserNativeUtils.java
 
 diff --git a/build/android/gyp/java_cpp_enum.py b/build/android/gyp/java_cpp_enum.py
 --- a/build/android/gyp/java_cpp_enum.py
@@ -462,7 +462,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
  import org.chromium.content_public.browser.BrowserContextHandle;
  
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
-+import org.chromium.chrome.browser.flags.CromiteNativeUtils;
++import org.chromium.chrome.browser.flags.Spectre BrowserNativeUtils;
 +import org.chromium.chrome.browser.preferences.ChromePreferenceKeys;
 +import org.chromium.chrome.browser.preferences.ChromeSharedPreferences;
 +
@@ -477,7 +477,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
  
  android_library("java") {
 -  sources = [
-+  sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
++  sources = [ "android/java/src/org/chromium/chrome/browser/flags/Spectre BrowserNativeUtils.java" ]
 +  sources += [
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureList.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
@@ -487,7 +487,7 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
  
  generate_jni("jni_headers") {
 -  sources = [
-+  sources = [ "android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java" ]
++  sources = [ "android/java/src/org/chromium/chrome/browser/flags/Spectre BrowserNativeUtils.java" ]
 +  sources += [
      "android/java/src/org/chromium/chrome/browser/flags/ChromeFeatureMap.java",
      "android/java/src/org/chromium/chrome/browser/flags/ChromeSessionState.java",
@@ -496,28 +496,28 @@ diff --git a/chrome/browser/flags/BUILD.gn b/chrome/browser/flags/BUILD.gn
  
  static_library("flags_android") {
    sources = [
-+    "android/cromite_native_utils.cc",
-+    "android/cromite_native_utils.h",
++    "android/Spectre Browser_native_utils.cc",
++    "android/Spectre Browser_native_utils.h",
      "android/chrome_feature_list.h",
      "android/chrome_session_state.cc",
      "android/chrome_session_state.h",
-diff --git a/chrome/browser/flags/android/cromite_native_utils.cc b/chrome/browser/flags/android/cromite_native_utils.cc
+diff --git a/chrome/browser/flags/android/Spectre Browser_native_utils.cc b/chrome/browser/flags/android/Spectre Browser_native_utils.cc
 new file mode 100755
 --- /dev/null
-+++ b/chrome/browser/flags/android/cromite_native_utils.cc
++++ b/chrome/browser/flags/android/Spectre Browser_native_utils.cc
 @@ -0,0 +1,94 @@
-+#include "chrome/browser/flags/android/cromite_native_utils.h"
++#include "chrome/browser/flags/android/Spectre Browser_native_utils.h"
 +
 +#include "chrome/browser/browser_process.h"
 +#include "chrome/browser/about_flags.h"
-+#include "chrome/browser/flags/jni_headers/CromiteNativeUtils_jni.h"
++#include "chrome/browser/flags/jni_headers/Spectre BrowserNativeUtils_jni.h"
 +#include "components/webui/flags/pref_service_flags_storage.h"
 +
 +#include "base/android/jni_string.h"
 +
 +using base::android::JavaRef;
 +
-+static void JNI_CromiteNativeUtils_SetEnabled(JNIEnv* env,
++static void JNI_Spectre BrowserNativeUtils_SetEnabled(JNIEnv* env,
 +    const JavaRef<jstring>& featureName, bool isEnabled) {
 +  flags_ui::PrefServiceFlagsStorage flags_storage(
 +      g_browser_process->local_state());
@@ -560,7 +560,7 @@ new file mode 100755
 +  flags_storage.CommitPendingWrites();
 +}
 +
-+static jboolean JNI_CromiteNativeUtils_IsFlagEnabled(JNIEnv* env,
++static jboolean JNI_Spectre BrowserNativeUtils_IsFlagEnabled(JNIEnv* env,
 +    const JavaRef<jstring>& featureName) {
 +  auto internal_name = base::android::ConvertJavaStringToUTF8(env, featureName);
 +
@@ -599,14 +599,14 @@ new file mode 100755
 +  return false;
 +}
 +
-+DEFINE_JNI(CromiteNativeUtils)
-diff --git a/chrome/browser/flags/android/cromite_native_utils.h b/chrome/browser/flags/android/cromite_native_utils.h
++DEFINE_JNI(Spectre BrowserNativeUtils)
+diff --git a/chrome/browser/flags/android/Spectre Browser_native_utils.h b/chrome/browser/flags/android/Spectre Browser_native_utils.h
 new file mode 100755
 --- /dev/null
-+++ b/chrome/browser/flags/android/cromite_native_utils.h
++++ b/chrome/browser/flags/android/Spectre Browser_native_utils.h
 @@ -0,0 +1,14 @@
-+#ifndef CHROME_BROWSER_FLAGS_ANDROID_CROMITE_NATIVE_UTILS_H_
-+#define CHROME_BROWSER_FLAGS_ANDROID_CROMITE_NATIVE_UTILS_H_
++#ifndef CHROME_BROWSER_FLAGS_ANDROID_Spectre Browser_NATIVE_UTILS_H_
++#define CHROME_BROWSER_FLAGS_ANDROID_Spectre Browser_NATIVE_UTILS_H_
 +
 +#include <jni.h>
 +
@@ -618,11 +618,11 @@ new file mode 100755
 +}  // namespace android
 +}  // namespace chrome
 +
-+#endif  // CHROME_BROWSER_FLAGS_ANDROID_CROMITE_NATIVE_UTILS_H_
-diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
++#endif  // CHROME_BROWSER_FLAGS_ANDROID_Spectre Browser_NATIVE_UTILS_H_
+diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre BrowserNativeUtils.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre BrowserNativeUtils.java
 new file mode 100755
 --- /dev/null
-+++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/CromiteNativeUtils.java
++++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre BrowserNativeUtils.java
 @@ -0,0 +1,46 @@
 +package org.chromium.chrome.browser.flags;
 +
@@ -633,7 +633,7 @@ new file mode 100755
 +import org.jni_zero.CalledByNative;
 +import org.jni_zero.NativeMethods;
 +
-+public class CromiteNativeUtils {
++public class Spectre BrowserNativeUtils {
 +    /**
 +     * Allows the modification of the flag value on the java side.
 +     * Currently only the feature flag with on / off values is managed.
@@ -649,7 +649,7 @@ new file mode 100755
 +    }
 +
 +    public static void setFlagEnabled(String featureName, String flagName, Boolean newValue) {
-+        CromiteNativeUtilsJni.get().setEnabled(flagName, newValue);
++        Spectre BrowserNativeUtilsJni.get().setEnabled(flagName, newValue);
 +
 +        if (!featureName.isEmpty()) {
 +            CachedFlag cachedFlag = ChromeFeatureList.sAllCachedFlags.get(featureName);
@@ -661,7 +661,7 @@ new file mode 100755
 +    }
 +
 +    public static boolean isFlagEnabled(String featureName) {
-+        return CromiteNativeUtilsJni.get().isFlagEnabled(featureName);
++        return Spectre BrowserNativeUtilsJni.get().isFlagEnabled(featureName);
 +    }
 +
 +    @NativeMethods

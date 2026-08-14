@@ -14,7 +14,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../search_engines/android/template_url_service_android.cc    | 1 +
  .../always-use-new-tab-page-for-default-home-page.inc         | 1 +
  7 files changed, 6 insertions(+), 6 deletions(-)
- create mode 100755 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/always-use-new-tab-page-for-default-home-page.inc
+ create mode 100755 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/always-use-new-tab-page-for-default-home-page.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java b/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/homepage/HomepageManager.java
@@ -87,10 +87,10 @@ diff --git a/components/search_engines/android/template_url_service_android.cc b
    // The function is scheduled to run only when the service is loaded, see
    // `TemplateUrlService#runWhenLoaded()`.
    CHECK(template_url_service_->loaded());
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/always-use-new-tab-page-for-default-home-page.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/always-use-new-tab-page-for-default-home-page.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/always-use-new-tab-page-for-default-home-page.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/always-use-new-tab-page-for-default-home-page.inc
 new file mode 100755
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/always-use-new-tab-page-for-default-home-page.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/always-use-new-tab-page-for-default-home-page.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kPartnerCustomizationsUma);
++SET_Spectre Browser_FEATURE_DISABLED(kPartnerCustomizationsUma);
 --

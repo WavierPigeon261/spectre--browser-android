@@ -9,17 +9,17 @@ see https://chromium-review.googlesource.com/c/chromium/src/+/5540782
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- .../build/scripts/cromite_feature_gen.py      | 63 +++++++++++++++++++
+ .../build/scripts/Spectre Browser_feature_gen.py      | 63 +++++++++++++++++++
  .../core/css/parser/css_supports_parser.cc    |  4 +-
  .../document_rule_predicate.cc                |  2 +-
  third_party/blink/renderer/platform/BUILD.gn  | 21 +++++++
  4 files changed, 88 insertions(+), 2 deletions(-)
- create mode 100644 third_party/blink/renderer/build/scripts/cromite_feature_gen.py
+ create mode 100644 third_party/blink/renderer/build/scripts/Spectre Browser_feature_gen.py
 
-diff --git a/third_party/blink/renderer/build/scripts/cromite_feature_gen.py b/third_party/blink/renderer/build/scripts/cromite_feature_gen.py
+diff --git a/third_party/blink/renderer/build/scripts/Spectre Browser_feature_gen.py b/third_party/blink/renderer/build/scripts/Spectre Browser_feature_gen.py
 new file mode 100644
 --- /dev/null
-+++ b/third_party/blink/renderer/build/scripts/cromite_feature_gen.py
++++ b/third_party/blink/renderer/build/scripts/Spectre Browser_feature_gen.py
 @@ -0,0 +1,63 @@
 +#!/usr/bin/env python3
 +import sys
@@ -32,7 +32,7 @@ new file mode 100644
 +
 +def main():
 +    if len(sys.argv) < 4:
-+        print("Uso: cromite_feature_gen.py <input.json5> <output.h> <output.cc>")
++        print("Uso: Spectre Browser_feature_gen.py <input.json5> <output.h> <output.cc>")
 +        sys.exit(1)
 +
 +    input_file = sys.argv[1]
@@ -47,19 +47,19 @@ new file mode 100644
 +        if status == 'stable' or (isinstance(status, dict) and status.get('default') == 'stable'):
 +            stable_features.append(feature['name'])
 +
-+    h_code = """#ifndef THIRD_PARTY_BLINK_CROMITE_ENABLED_FEATURES_H_
-+#define THIRD_PARTY_BLINK_CROMITE_ENABLED_FEATURES_H_
++    h_code = """#ifndef THIRD_PARTY_BLINK_Spectre Browser_ENABLED_FEATURES_H_
++#define THIRD_PARTY_BLINK_Spectre Browser_ENABLED_FEATURES_H_
 +
 +#include <string>
 +#include "third_party/blink/renderer/core/core_export.h"
 +
 +namespace blink {
-+class CORE_EXPORT CromiteCSSFeatures {
++class CORE_EXPORT Spectre BrowserCSSFeatures {
 + public:
 +  static bool IsFeatureStableFromString(const std::string& name);
 +};
 +}  // namespace blink
-+#endif  // THIRD_PARTY_BLINK_CROMITE_ENABLED_FEATURES_H_
++#endif  // THIRD_PARTY_BLINK_Spectre Browser_ENABLED_FEATURES_H_
 +"""
 +    with open(out_h_path, 'w') as f:
 +        f.write(h_code)
@@ -70,10 +70,10 @@ new file mode 100644
 +
 +    joined_elements = "\n".join(cc_elements)
 +
-+    cc_code = f"""#include "third_party/blink/renderer/platform/cromite_enabled_features.h"
++    cc_code = f"""#include "third_party/blink/renderer/platform/Spectre Browser_enabled_features.h"
 +
 +namespace blink {{
-+bool CromiteCSSFeatures::IsFeatureStableFromString(const std::string& name) {{
++bool Spectre BrowserCSSFeatures::IsFeatureStableFromString(const std::string& name) {{
 +{joined_elements}
 +  return false;
 +}}
@@ -91,7 +91,7 @@ diff --git a/third_party/blink/renderer/core/css/parser/css_supports_parser.cc b
  #include "third_party/blink/renderer/core/css/style_rule.h"
  #include "third_party/blink/renderer/core/css_value_keywords.h"
  #include "third_party/blink/renderer/platform/runtime_enabled_features.h"
-+#include "third_party/blink/renderer/platform/cromite_enabled_features.h"
++#include "third_party/blink/renderer/platform/Spectre Browser_enabled_features.h"
  
  namespace blink {
  
@@ -100,7 +100,7 @@ diff --git a/third_party/blink/renderer/core/css/parser/css_supports_parser.cc b
    if (stream.Peek().GetType() == kIdentToken) {
      const CSSParserToken& feature_name = stream.ConsumeIncludingWhitespace();
 -    if (RuntimeEnabledFeatures::IsFeatureEnabledFromString(
-+    if (CromiteCSSFeatures::IsFeatureStableFromString(
++    if (Spectre BrowserCSSFeatures::IsFeatureStableFromString(
              feature_name.Value().Utf8()) &&
          guard.Release()) {
        stream.ConsumeWhitespace();
@@ -127,14 +127,14 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
    output_dir = blink_platform_output_dir
  }
  
-+blink_python_runner("generate_cromite_enabled_features") {
-+  script = "../build/scripts/cromite_feature_gen.py"
++blink_python_runner("generate_Spectre Browser_enabled_features") {
++  script = "../build/scripts/Spectre Browser_feature_gen.py"
 +
 +  inputs = [ "runtime_enabled_features.json5" ]
 +
 +  outputs = [
-+    "$blink_platform_output_dir/cromite_enabled_features.h",
-+    "$blink_platform_output_dir/cromite_enabled_features.cc",
++    "$blink_platform_output_dir/Spectre Browser_enabled_features.h",
++    "$blink_platform_output_dir/Spectre Browser_enabled_features.cc",
 +  ]
 +
 +  args = [
@@ -151,7 +151,7 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
      ":color_data",
      ":font_family_names",
      ":runtime_enabled_features",
-+    ":generate_cromite_enabled_features",
++    ":generate_Spectre Browser_enabled_features",
      ":runtime_feature_state_override_context",
      "//third_party/blink/public:buildflags",
      "//third_party/blink/public/common:buildflags",
@@ -159,7 +159,7 @@ diff --git a/third_party/blink/renderer/platform/BUILD.gn b/third_party/blink/re
        sources += [ _output ]
      }
    }
-+  foreach(_output, get_target_outputs(":generate_cromite_enabled_features")) {
++  foreach(_output, get_target_outputs(":generate_Spectre Browser_enabled_features")) {
 +    sources += [ _output ]
 +  }
  

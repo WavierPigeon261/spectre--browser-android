@@ -62,7 +62,7 @@ if (target_os == "android" || target_os == "win") {
 enable_platform_dts_audio = false
 
 # disabled the use of the context snapshot
-# see https://github.com/uazo/cromite/pull/317 for context
+# see https://github.com/uazo/Spectre Browser/pull/317 for context
 use_v8_context_snapshot = false
 
 # disable automatic update of sync-related cookies
@@ -93,9 +93,9 @@ if (target_os == "android") {
   target_os = "android" # fix traffic annotation auditor
   #enable_kythe_annotations = true
 
-  chrome_public_manifest_package = "org.cromite.cromite"
-  system_webview_package_name="org.cromite.webview" #"com.android.webview"
-  system_webview_shell_package_name="org.cromite.webview_shell"
+  chrome_public_manifest_package = "org.Spectre Browser.Spectre Browser"
+  system_webview_package_name="org.Spectre Browser.webview" #"com.android.webview"
+  system_webview_shell_package_name="org.Spectre Browser.webview_shell"
 
   chrome_pgo_phase = 2 # enable pgo
 
@@ -105,12 +105,12 @@ if (target_os == "android") {
   dfmify_dev_ui = false
 
   if (getenv("USE_KEYSTORE") != "") {
-    android_keystore_path = "/home/lg/working_dir/cromite.keystore"
-    android_keystore_name = "cromite"
+    android_keystore_path = "/home/lg/working_dir/Spectre Browser.keystore"
+    android_keystore_name = "Spectre Browser"
     android_keystore_password = getenv("KEYSTORE_PASSWORD")
   }
 
-  cromite_pref_hash_seed_bin = getenv("CROMITE_PREF_HASH_SEED_BIN")
+  Spectre Browser_pref_hash_seed_bin = getenv("Spectre Browser_PREF_HASH_SEED_BIN")
 
   disable_android_lint = true
 

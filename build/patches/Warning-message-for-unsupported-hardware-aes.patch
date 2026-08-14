@@ -20,9 +20,9 @@ you can remove the message by going to chrome://flags/#no-hw-aes-warning
  .../Warning-message-for-unsupported-hardware-aes.inc   |  4 ++++
  .../Warning-message-for-unsupported-hardware-aes.inc   |  1 +
  9 files changed, 43 insertions(+)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Warning-message-for-unsupported-hardware-aes.inc
- create mode 100644 cromite_flags/content/public/common/content_features_cc/Warning-message-for-unsupported-hardware-aes.inc
- create mode 100644 cromite_flags/content/public/common/content_features_h/Warning-message-for-unsupported-hardware-aes.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Warning-message-for-unsupported-hardware-aes.inc
+ create mode 100644 Spectre Browser_flags/content/public/common/content_features_cc/Warning-message-for-unsupported-hardware-aes.inc
+ create mode 100644 Spectre Browser_flags/content/public/common/content_features_h/Warning-message-for-unsupported-hardware-aes.inc
 
 diff --git a/base/base_switches.h b/base/base_switches.h
 --- a/base/base_switches.h
@@ -126,10 +126,10 @@ diff --git a/content/browser/renderer_host/render_process_host_impl.cc b/content
    };
    renderer_cmd->CopySwitchesFrom(browser_cmd, kSwitchNames);
  
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Warning-message-for-unsupported-hardware-aes.inc b/cromite_flags/chrome/browser/about_flags_cc/Warning-message-for-unsupported-hardware-aes.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Warning-message-for-unsupported-hardware-aes.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Warning-message-for-unsupported-hardware-aes.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Warning-message-for-unsupported-hardware-aes.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Warning-message-for-unsupported-hardware-aes.inc
 @@ -0,0 +1,10 @@
 +
 +#ifdef FLAG_SECTION
@@ -141,19 +141,19 @@ new file mode 100644
 +     FEATURE_VALUE_TYPE(features::kNoAESHardwareMessage)},
 +
 +#endif
-diff --git a/cromite_flags/content/public/common/content_features_cc/Warning-message-for-unsupported-hardware-aes.inc b/cromite_flags/content/public/common/content_features_cc/Warning-message-for-unsupported-hardware-aes.inc
+diff --git a/Spectre Browser_flags/content/public/common/content_features_cc/Warning-message-for-unsupported-hardware-aes.inc b/Spectre Browser_flags/content/public/common/content_features_cc/Warning-message-for-unsupported-hardware-aes.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/public/common/content_features_cc/Warning-message-for-unsupported-hardware-aes.inc
++++ b/Spectre Browser_flags/content/public/common/content_features_cc/Warning-message-for-unsupported-hardware-aes.inc
 @@ -0,0 +1,4 @@
 +// Show a warning message to user if aes hardware is not found
-+CROMITE_FEATURE(kNoAESHardwareMessage,
++Spectre Browser_FEATURE(kNoAESHardwareMessage,
 +                "NoAESHardwareMessage",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
-diff --git a/cromite_flags/content/public/common/content_features_h/Warning-message-for-unsupported-hardware-aes.inc b/cromite_flags/content/public/common/content_features_h/Warning-message-for-unsupported-hardware-aes.inc
+diff --git a/Spectre Browser_flags/content/public/common/content_features_h/Warning-message-for-unsupported-hardware-aes.inc b/Spectre Browser_flags/content/public/common/content_features_h/Warning-message-for-unsupported-hardware-aes.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/public/common/content_features_h/Warning-message-for-unsupported-hardware-aes.inc
++++ b/Spectre Browser_flags/content/public/common/content_features_h/Warning-message-for-unsupported-hardware-aes.inc
 @@ -0,0 +1 @@
 +CONTENT_EXPORT BASE_DECLARE_FEATURE(kNoAESHardwareMessage);
 --

@@ -159,9 +159,9 @@ diff --git a/chrome/browser/metrics/chrome_metrics_services_manager_client.cc b/
  // Name of the variations param that defines the sampling rate.
  const char kRateParamName[] = "sampling_rate_per_mille";
  
-+SET_CROMITE_FEATURE_DISABLED(kMetricsReportingFeature);
++SET_Spectre Browser_FEATURE_DISABLED(kMetricsReportingFeature);
 +#if BUILDFLAG(IS_ANDROID)
-+SET_CROMITE_FEATURE_DISABLED(kPostFREFixMetricsReportingFeature);
++SET_Spectre Browser_FEATURE_DISABLED(kPostFREFixMetricsReportingFeature);
 +#endif  // BUILDFLAG(IS_ANDROID)
  }  // namespace internal
  }  // namespace metrics
@@ -253,6 +253,6 @@ diff --git a/services/metrics/public/cpp/ukm_recorder.cc b/services/metrics/publ
    observers_.RemoveObserver(observer);
  }
  
-+SET_CROMITE_FEATURE_DISABLED(kUkmFeature);
++SET_Spectre Browser_FEATURE_DISABLED(kUkmFeature);
  }  // namespace ukm
 --

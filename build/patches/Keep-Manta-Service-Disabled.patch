@@ -25,27 +25,27 @@ diff --git a/components/manta/features.cc b/components/manta/features.cc
  
  // Enables Anchovy Prod Server
  BASE_FEATURE(kAnchovyUseProdServer, base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kAnchovyUseProdServer);
++SET_Spectre Browser_FEATURE_DISABLED(kAnchovyUseProdServer);
  
  // Enables Orca Prod Server
  BASE_FEATURE(kOrcaUseProdServer, base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kOrcaUseProdServer);
++SET_Spectre Browser_FEATURE_DISABLED(kOrcaUseProdServer);
  
  // Enables Scanner Prod Server
  BASE_FEATURE(kScannerUseProdServer, base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kScannerUseProdServer);
++SET_Spectre Browser_FEATURE_DISABLED(kScannerUseProdServer);
  
  // Enables SeaPen Prod Server
  BASE_FEATURE(kSeaPenUseProdServer, base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kSeaPenUseProdServer);
++SET_Spectre Browser_FEATURE_DISABLED(kSeaPenUseProdServer);
  
  // Enables Mahi Prod Server
  BASE_FEATURE(kMahiUseProdServer, base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kMahiUseProdServer);
++SET_Spectre Browser_FEATURE_DISABLED(kMahiUseProdServer);
  
  // Enables Walrus Prod Server
  BASE_FEATURE(kWalrusUseProdServer, base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kWalrusUseProdServer);
++SET_Spectre Browser_FEATURE_DISABLED(kWalrusUseProdServer);
  
  bool IsAnchovyUseProdServerEnabled() {
    return base::FeatureList::IsEnabled(kAnchovyUseProdServer);

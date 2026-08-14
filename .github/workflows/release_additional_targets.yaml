@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       sha:
-        description: 'uazo/cromite SHA'
+        description: 'uazo/Spectre Browser SHA'
         required: true
         default: ''
       type:
@@ -15,7 +15,7 @@ on:
         default: 'ci'
         
 env:
-  CROMITE_SHA: ${{ github.event.inputs.sha }}
+  Spectre Browser_SHA: ${{ github.event.inputs.sha }}
   REMOVEDOCKERSUPPORT: true
   USELOCALIMAGE: true
 
@@ -34,14 +34,14 @@ jobs:
         run: |
           wget https://github.com/ericchiang/pup/releases/download/v0.4.0/pup_v0.4.0_linux_amd64.zip
           unzip pup_v0.4.0_linux_amd64.zip && rm pup_v0.4.0_linux_amd64.zip
-          BRANCH=$(curl https://github.com/uazo/cromite/branch_commits/$CROMITE_SHA | ./pup -p li.branch:last-child a text{} | xargs)
+          BRANCH=$(curl https://github.com/uazo/Spectre Browser/branch_commits/$Spectre Browser_SHA | ./pup -p li.branch:last-child a text{} | xargs)
           echo "BRANCH=$BRANCH" >> $GITHUB_ENV
 
-      - name: Checkout 'uazo/cromite'
+      - name: Checkout 'uazo/Spectre Browser'
         uses: actions/checkout@v2
         with:
-            repository: 'uazo/cromite'
-            path: 'cromite'
+            repository: 'uazo/Spectre Browser'
+            path: 'Spectre Browser'
             fetch-depth: 1
 
       - name: Create release
@@ -49,7 +49,7 @@ jobs:
         run: |          
           VERSION=v$(cat ${{ env.OUTPUTFILE_X64 }}/RELEASE)
 
-          cd cromite/tools
+          cd Spectre Browser/tools
 
           GH=gh_2.21.1_linux_amd64/bin/gh
           wget https://github.com/cli/cli/releases/download/v2.21.1/gh_2.21.1_linux_amd64.tar.gz
@@ -66,8 +66,8 @@ jobs:
           sudo chown runner x64_SystemWebViewShell.apk
 
           echo Uploading x64_SystemWebView
-          $GH release upload $VERSION-$CROMITE_SHA x64_SystemWebView.apk
-          $GH release upload $VERSION-$CROMITE_SHA x64_SystemWebViewShell.apk
+          $GH release upload $VERSION-$Spectre Browser_SHA x64_SystemWebView.apk
+          $GH release upload $VERSION-$Spectre Browser_SHA x64_SystemWebViewShell.apk
           echo "::endgroup::"
 
           # vanilla chromium arm
@@ -76,7 +76,7 @@ jobs:
           sudo chown runner arm_VanillaChromium.apk
 
           echo Uploading arm_VanillaChromium
-          $GH release upload $VERSION-$CROMITE_SHA arm_VanillaChromium.apk
+          $GH release upload $VERSION-$Spectre Browser_SHA arm_VanillaChromium.apk
           echo "::endgroup::"
 
           # vanilla chromium arm64
@@ -85,7 +85,7 @@ jobs:
           sudo chown runner arm64_VanillaChromium.apk
 
           echo Uploading arm64_VanillaChromium
-          $GH release upload $VERSION-$CROMITE_SHA arm64_VanillaChromium.apk
+          $GH release upload $VERSION-$Spectre Browser_SHA arm64_VanillaChromium.apk
           echo "::endgroup::"
 
           # vanilla chromium x64
@@ -94,5 +94,5 @@ jobs:
           sudo chown runner x64_VanillaChromium.apk
 
           echo Uploading x64_VanillaChromium
-          $GH release upload $VERSION-$CROMITE_SHA x64_VanillaChromium.apk
+          $GH release upload $VERSION-$Spectre Browser_SHA x64_VanillaChromium.apk
           echo "::endgroup::"

@@ -84,7 +84,7 @@ echo -e ${RED} -------- build modified ninja ${NC}
 cd $WORKSPACE/
 git clone https://github.com/ninja-build/ninja.git -b v1.8.2
 cd ninja
-git apply $WORKSPACE/cromite/tools/ninja-one-target-for-compdb.patch
+git apply $WORKSPACE/Spectre Browser/tools/ninja-one-target-for-compdb.patch
 CXX=clang++ ./configure.py --bootstrap
 
 echo -e ${RED} -------- download clang indexer ${NC}

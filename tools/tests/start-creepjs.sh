@@ -10,7 +10,7 @@ do
     elif [ ! -z "$current" ]; then
 
         echo $current
-        node test_webdriver.js bs "$current" cromite
+        node test_webdriver.js bs "$current" Spectre Browser
     fi
 
 done

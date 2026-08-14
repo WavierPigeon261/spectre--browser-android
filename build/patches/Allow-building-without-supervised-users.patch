@@ -240,7 +240,7 @@ diff --git a/components/supervised_user/core/common/features.cc b/components/sup
  // Enables local parent approvals for the blocked website on the Family Link
  // user's device.
  BASE_FEATURE(kLocalWebApprovals, base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kLocalWebApprovals);
++SET_Spectre Browser_FEATURE_DISABLED(kLocalWebApprovals);
  
  // TODO(crbug.com/391799078): Support local web approval for subframes on
  // Desktop.

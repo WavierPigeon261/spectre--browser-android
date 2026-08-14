@@ -1,6 +1,6 @@
 From: uazo <uazo@users.noreply.github.com>
 Date: Wed, 19 Jul 2023 12:37:39 +0000
-Subject: Cromite Branding
+Subject: Spectre Browser Branding
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
@@ -71,10 +71,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../webui/version/resources/about_version.ts  |   4 +-
  .../resources/about_version_mobile.css        |  10 ++
  content/child/runtime_features.cc             |  44 ++++-----
- .../Cromite-Branding.inc                      |   1 +
+ .../Spectre Browser-Branding.inc                      |   1 +
  tools/grit/grit/grd_reader.py                 |  35 +++++++
  69 files changed, 272 insertions(+), 179 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Cromite-Branding.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Spectre Browser-Branding.inc
 
 diff --git a/base/win/message_window.cc b/base/win/message_window.cc
 --- a/base/win/message_window.cc
@@ -84,7 +84,7 @@ diff --git a/base/win/message_window.cc b/base/win/message_window.cc
  #undef FindWindow
  
 -const wchar_t kMessageWindowClassName[] = L"Chrome_MessageWindow";
-+const wchar_t kMessageWindowClassName[] = L"Cromite_MessageWindow";
++const wchar_t kMessageWindowClassName[] = L"Spectre Browser_MessageWindow";
  
  namespace {
  
@@ -95,11 +95,11 @@ diff --git a/build/BUILD.gn b/build/BUILD.gn
    flags += [ "ENABLE_BUILTIN_SEARCH_PROVIDER_ASSETS=$enable_builtin_search_provider_assets" ]
  }
  
-+buildflag_header("cromite_buildflags") {
-+  header = "cromite_flags.h"
++buildflag_header("Spectre Browser_buildflags") {
++  header = "Spectre Browser_flags.h"
 +
 +  flags = [
-+    "CROMITE_PREF_HASH_SEED_BIN=\"$cromite_pref_hash_seed_bin\"",
++    "Spectre Browser_PREF_HASH_SEED_BIN=\"$Spectre Browser_pref_hash_seed_bin\"",
 +  ]
 +}
 +
@@ -114,7 +114,7 @@ diff --git a/build/config/BUILDCONFIG.gn b/build/config/BUILDCONFIG.gn
  }
  
 +declare_args() {
-+  cromite_pref_hash_seed_bin = ""
++  Spectre Browser_pref_hash_seed_bin = ""
 +}
 +
  # ==============================================================================
@@ -128,7 +128,7 @@ diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/Andro
          android:icon="@drawable/ic_launcher"
          android:roundIcon="@drawable/ic_launcher_round"
 -        android:label="{% block application_label %}@string/app_name{% endblock %}"
-+        android:label="Cromite"
++        android:label="Spectre Browser"
          android:memtagMode="async"
          android:largeHeap="false"
          android:manageSpaceActivity="@string/manage_space_activity"
@@ -9155,10 +9155,10 @@ diff --git a/chrome/android/java/res_chromium_base/values/channel_constants.xml 
 -    <string name="bookmark_widget_title" translatable="false">Chromium bookmarks</string>
 -    <string name="search_widget_title" translatable="false">Chromium search</string>
 -    <string name="quick_action_search_widget_title" translatable="false">Chromium quick action search</string>
-+    <string name="app_name" translatable="false">Cromite</string>
-+    <string name="bookmark_widget_title" translatable="false">Cromite bookmarks</string>
-+    <string name="search_widget_title" translatable="false">Cromite search</string>
-+    <string name="quick_action_search_widget_title" translatable="false">Cromite quick action search</string>
++    <string name="app_name" translatable="false">Spectre Browser</string>
++    <string name="bookmark_widget_title" translatable="false">Spectre Browser bookmarks</string>
++    <string name="search_widget_title" translatable="false">Spectre Browser search</string>
++    <string name="quick_action_search_widget_title" translatable="false">Spectre Browser quick action search</string>
  </resources>
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
@@ -9196,8 +9196,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
 -    private static final String UPDATE_VERSION_URL = "https://github.com/bromite/bromite/releases/latest/download/";
 -    private final String UPSTREAM_VERSION_URL = "https://www.bromite.org/upstream.txt";
 -    public static final String VULNERABLE_VERSION_DOC_URL = "https://www.bromite.org/vulnerable-version";
-+    private final String REDIRECT_URL_PREFIX = "https://github.com/uazo/cromite/releases/download/";
-+    private static final String UPDATE_VERSION_URL = "https://github.com/uazo/cromite/releases/latest/download/";
++    private final String REDIRECT_URL_PREFIX = "https://github.com/uazo/Spectre Browser/releases/download/";
++    private static final String UPDATE_VERSION_URL = "https://github.com/uazo/Spectre Browser/releases/latest/download/";
 +    private final String UPSTREAM_VERSION_URL = "";
 +    public static final String VULNERABLE_VERSION_DOC_URL = "";
  
@@ -9208,7 +9208,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/Br
                          if (redirectURL.indexOf(REDIRECT_URL_PREFIX) == 0) {
                              redirectURL = redirectURL.substring(REDIRECT_URL_PREFIX.length());
 +                            // adapt url
-+                            // example https://github.com/uazo/cromite/releases/download/v114.0.5735.199-af55aa0ddfc47fbaffafd60c385d4c43c7c5ad0c
++                            // example https://github.com/uazo/Spectre Browser/releases/download/v114.0.5735.199-af55aa0ddfc47fbaffafd60c385d4c43c7c5ad0c
 +                            String[] url_parts = redirectURL.split(Pattern.quote("-"));
 +                            if (url_parts.length > 0) {
 +                                redirectURL = url_parts[0].substring(1);
@@ -9289,10 +9289,10 @@ diff --git a/chrome/app/theme/chromium/BRANDING b/chrome/app/theme/chromium/BRAN
 -PRODUCT_SHORTNAME=Chromium
 -PRODUCT_INSTALLER_FULLNAME=Chromium Installer
 -PRODUCT_INSTALLER_SHORTNAME=Chromium Installer
-+PRODUCT_FULLNAME=Cromite
-+PRODUCT_SHORTNAME=Cromite
-+PRODUCT_INSTALLER_FULLNAME=Cromite Installer
-+PRODUCT_INSTALLER_SHORTNAME=Cromite Installer
++PRODUCT_FULLNAME=Spectre Browser
++PRODUCT_SHORTNAME=Spectre Browser
++PRODUCT_INSTALLER_FULLNAME=Spectre Browser Installer
++PRODUCT_INSTALLER_SHORTNAME=Spectre Browser Installer
  COPYRIGHT=Copyright @LASTCHANGE_YEAR@ The Chromium Authors. All rights reserved.
  MAC_BUNDLE_ID=org.chromium.Chromium
  MAC_CREATOR_CODE=Cr24
@@ -13228,7 +13228,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "//build/config/chromebox_for_meetings:buildflags",
      "//build/config/compiler:compiler_buildflags",
      "//build/config/linux/dbus:buildflags",
-+    "//build:cromite_buildflags",
++    "//build:Spectre Browser_buildflags",
      "//cc",
      "//chrome:extra_resources",
      "//chrome:resources",
@@ -13240,7 +13240,7 @@ diff --git a/chrome/browser/extensions/external_registry_loader_win.cc b/chrome/
  
  // The Registry subkey that contains information about external extensions.
 -const wchar_t kRegistryExtensions[] = L"Software\\Google\\Chrome\\Extensions";
-+const wchar_t kRegistryExtensions[] = L"Software\\Uazo\\Cromite\\Extensions";
++const wchar_t kRegistryExtensions[] = L"Software\\Uazo\\Spectre Browser\\Extensions";
  
  // Registry value of the key that defines the installation parameter.
  const wchar_t kRegistryExtensionInstallParam[] = L"install_parameter";
@@ -13386,7 +13386,7 @@ diff --git a/chrome/browser/prefs/BUILD.gn b/chrome/browser/prefs/BUILD.gn
    deps = [
      ":prefs",
      ":util",
-+    "//build:cromite_buildflags",
++    "//build:Spectre Browser_buildflags",
      "//chrome/browser:browser_process",
      "//chrome/browser:flags",
      "//chrome/browser/autocomplete:aim_eligibility_service",
@@ -13397,7 +13397,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
  #include "base/trace_event/trace_event.h"
  #include "build/branding_buildflags.h"
  #include "build/build_config.h"
-+#include "build/cromite_flags.h"
++#include "build/Spectre Browser_flags.h"
  #include "chrome/browser/browser_process.h"
  #include "chrome/browser/enterprise/signin/enterprise_signin_prefs.h"
  #include "chrome/browser/policy/chrome_browser_policy_connector.h"
@@ -13409,7 +13409,7 @@ diff --git a/chrome/browser/prefs/chrome_pref_service_factory.cc b/chrome/browse
 -  seed = std::string(ui::ResourceBundle::GetSharedInstance().GetRawDataResource(
 -      IDR_PREF_HASH_SEED_BIN));
 -#endif
-+  seed = BUILDFLAG_INTERNAL_CROMITE_PREF_HASH_SEED_BIN();
++  seed = BUILDFLAG_INTERNAL_Spectre Browser_PREF_HASH_SEED_BIN();
    return std::make_unique<ProfilePrefStoreManager>(profile_path, seed);
  }
  
@@ -13421,7 +13421,7 @@ diff --git a/chrome/browser/process_singleton_win.cc b/chrome/browser/process_si
    TRACE_EVENT0("startup", "ProcessSingleton::Create");
  
 -  static const wchar_t kMutexName[] = L"Local\\ChromeProcessSingletonStartup!";
-+  static const wchar_t kMutexName[] = L"Local\\CromiteProcessSingletonStartup!";
++  static const wchar_t kMutexName[] = L"Local\\Spectre BrowserProcessSingletonStartup!";
  
    remote_window_ = FindRunningChromeWindow(user_data_dir_);
    if (!remote_window_ && !EscapeVirtualization(user_data_dir_)) {
@@ -13516,7 +13516,7 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        </message>
        <message name="IDS_LEGAL_INFORMATION_SUMMARY" desc="Summary for legal information" meaning="Android">
 -        Copyright <ph name="year">%1$d<ex>2014</ex></ph> Google LLC. All rights reserved.
-+        <ph name="year">%1$d<ex>2014</ex></ph> Cromite.org
++        <ph name="year">%1$d<ex>2014</ex></ph> Spectre Browser.org
        </message>
        <message name="IDS_APPLICATION_VERSION_TITLE" desc="Title for application version">
          Application version
@@ -13548,7 +13548,7 @@ diff --git a/chrome/common/url_constants.h b/chrome/common/url_constants.h
  
  inline constexpr char kChromeHelpViaWebUIURL[] =
 -    "https://support.google.com/chrome?p=help&ctx=settings";
-+    "https://github.com/uazo/cromite/issues";
++    "https://github.com/uazo/Spectre Browser/issues";
  #if BUILDFLAG(IS_CHROMEOS)
  inline constexpr char kChromeOsHelpViaWebUIURL[] =
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING)
@@ -13557,7 +13557,7 @@ diff --git a/chrome/common/url_constants.h b/chrome/common/url_constants.h
  
  // The URL for the Chromium project used in the About dialog.
 -inline constexpr char16_t kChromiumProjectURL[] = u"https://www.chromium.org/";
-+inline constexpr char16_t kChromiumProjectURL[] = u"https://www.cromite.org/";
++inline constexpr char16_t kChromiumProjectURL[] = u"https://www.Spectre Browser.org/";
  #if BUILDFLAG(IS_CHROMEOS)
  static_assert(std::u16string_view(kChromiumProjectURL) ==
                ash::chrome_external_urls::kChromiumProjectURL);
@@ -13569,7 +13569,7 @@ diff --git a/chrome/install_static/chromium_install_modes.h b/chrome/install_sta
  // The brand-specific product name to be included as a component of the install
  // and user data directory paths.
 -inline constexpr wchar_t kProductPathName[] = L"Chromium";
-+inline constexpr wchar_t kProductPathName[] = L"Cromite";
++inline constexpr wchar_t kProductPathName[] = L"Spectre Browser";
  
  // The brand-specific safe browsing client name.
  inline constexpr char kSafeBrowsingName[] = "chromium";
@@ -18601,7 +18601,7 @@ diff --git a/components/policy/core/common/policy_paths.cc b/components/policy/c
  const char kPolicyPath[] = "/etc/opt/chrome_for_testing/policies";
  #else
 -const char kPolicyPath[] = "/etc/chromium/policies";
-+const char kPolicyPath[] = "/etc/cromite/policies";
++const char kPolicyPath[] = "/etc/Spectre Browser/policies";
  #endif  // BUILDFLAG(GOOGLE_CHROME_BRANDING)
  #endif  // BUILDFLAG(IS_POSIX) && !BUILDFLAG(IS_MAC)
  
@@ -18613,7 +18613,7 @@ diff --git a/components/policy/tools/generate_policy_source.py b/components/poli
  CHROME_POLICY_KEY = 'SOFTWARE\\\\Policies\\\\Google\\\\Chrome'
  CHROME_FOR_TESTING_POLICY_KEY = CHROME_POLICY_KEY + ' for Testing'
 -CHROMIUM_POLICY_KEY = 'SOFTWARE\\\\Policies\\\\Chromium'
-+CHROMIUM_POLICY_KEY = 'SOFTWARE\\\\Policies\\\\Cromite'
++CHROMIUM_POLICY_KEY = 'SOFTWARE\\\\Policies\\\\Spectre Browser'
  PLATFORM_STRINGS = {
      'chrome_frame': ['win'],
      'chrome_os': ['chrome_os'],
@@ -19368,12 +19368,12 @@ diff --git a/content/child/runtime_features.cc b/content/child/runtime_features.
          << "UserMediaElement cannot be enabled in this configuration. Use --"
          << switches::kEnableFeatures << "="
          << blink::features::kUserMediaElement.name << " instead.";
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Cromite-Branding.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Cromite-Branding.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Spectre Browser-Branding.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Spectre Browser-Branding.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Cromite-Branding.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Spectre Browser-Branding.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kShowTabListAnimations);
++SET_Spectre Browser_FEATURE_DISABLED(kShowTabListAnimations);
 diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
 --- a/tools/grit/grit/grd_reader.py
 +++ b/tools/grit/grit/grd_reader.py
@@ -19401,13 +19401,13 @@ diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
 +    content = content.replace("chromebook", "zzzyyyyxxxx9")
 +    content = content.replace("chromeos", "zzzyyyyxxxxA")
 +
-+    content = content.replace("google chrome", "cromite")
-+    content = content.replace("Chrome", "Cromite")
-+    content = content.replace("Chromium", "Cromite")
-+    content = content.replace("Bromite", "Cromite")
-+    content = content.replace("chrome", "cromite")
-+    content = content.replace("chromium", "cromite")
-+    content = content.replace("bromite", "cromite")
++    content = content.replace("google chrome", "Spectre Browser")
++    content = content.replace("Chrome", "Spectre Browser")
++    content = content.replace("Chromium", "Spectre Browser")
++    content = content.replace("Bromite", "Spectre Browser")
++    content = content.replace("chrome", "Spectre Browser")
++    content = content.replace("chromium", "Spectre Browser")
++    content = content.replace("bromite", "Spectre Browser")
 +
 +    content = content.replace("zzzyyyyxxxx1", "Chromium")
 +    content = content.replace("zzzyyyyxxxx2", "Chrome")

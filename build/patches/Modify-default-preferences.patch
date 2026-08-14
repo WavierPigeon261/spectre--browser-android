@@ -27,8 +27,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  20 files changed, 70 insertions(+), 19 deletions(-)
  create mode 100644 components/bookmarks/browser/features.cc
  create mode 100644 components/bookmarks/browser/features.h
- create mode 100755 cromite_flags/chrome/browser/about_flags_cc/Modify-default-preferences.inc
- create mode 100755 cromite_flags/third_party/blink/common/features_cc/Modify-default-preferences.inc
+ create mode 100755 Spectre Browser_flags/chrome/browser/about_flags_cc/Modify-default-preferences.inc
+ create mode 100755 Spectre Browser_flags/third_party/blink/common/features_cc/Modify-default-preferences.inc
 
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
@@ -196,7 +196,7 @@ new file mode 100644
 +
 +// Changes the apps shortcut on the bookmarks bar to default to off.
 +// https://crbug.com/1236793
-+CROMITE_FEATURE(kAppsShortcutDefaultOff,
++Spectre Browser_FEATURE(kAppsShortcutDefaultOff,
 +                "AppsShortcutDefaultOff",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
 +
@@ -314,7 +314,7 @@ diff --git a/components/security_interstitials/core/features.cc b/components/sec
  #else
  BASE_FEATURE(kHttpsFirstDialogUi, base::FEATURE_ENABLED_BY_DEFAULT);
  #endif
-+SET_CROMITE_FEATURE_DISABLED(kHttpsFirstDialogUi);
++SET_Spectre Browser_FEATURE_DISABLED(kHttpsFirstDialogUi);
  
  BASE_FEATURE(kInsecureFormNavigationThrottleForPrerender,
               base::FEATURE_ENABLED_BY_DEFAULT);
@@ -330,10 +330,10 @@ diff --git a/components/signin/internal/identity_manager/primary_account_manager
    registry->RegisterBooleanPref(prefs::kSignedInWithCredentialProvider, false);
    registry->RegisterBooleanPref(prefs::kExplicitBrowserSignin, false);
    registry->RegisterBooleanPref(
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Modify-default-preferences.inc b/cromite_flags/chrome/browser/about_flags_cc/Modify-default-preferences.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Modify-default-preferences.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Modify-default-preferences.inc
 new file mode 100755
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Modify-default-preferences.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Modify-default-preferences.inc
 @@ -0,0 +1,8 @@
 +#ifdef FLAG_SECTION
 +
@@ -343,10 +343,10 @@ new file mode 100755
 +     FEATURE_VALUE_TYPE(bookmarks::features::kAppsShortcutDefaultOff)},
 +
 +#endif
-diff --git a/cromite_flags/third_party/blink/common/features_cc/Modify-default-preferences.inc b/cromite_flags/third_party/blink/common/features_cc/Modify-default-preferences.inc
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_cc/Modify-default-preferences.inc b/Spectre Browser_flags/third_party/blink/common/features_cc/Modify-default-preferences.inc
 new file mode 100755
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_cc/Modify-default-preferences.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_cc/Modify-default-preferences.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kIsolateSandboxedIframes);
++SET_Spectre Browser_FEATURE_ENABLED(kIsolateSandboxedIframes);
 --

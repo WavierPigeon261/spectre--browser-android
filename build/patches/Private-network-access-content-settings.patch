@@ -20,7 +20,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  create mode 100644 components/browser_ui/strings/bromite_content_settings/insecure_private_network.grdp
  create mode 100644 components/content_settings/core/browser/bromite_content_settings/insecure_private_network.inc
  create mode 100644 components/content_settings/core/common/bromite_content_settings/INSECURE_PRIVATE_NETWORK.inc
- create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Private-network-access-content-settings.inc
+ create mode 100644 Spectre Browser_flags/services/network/public/cpp/features_cc/Private-network-access-content-settings.inc
 
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
@@ -265,13 +265,13 @@ diff --git a/content/browser/renderer_host/local_network_access_util.cc b/conten
    }
  }
  
-diff --git a/cromite_flags/services/network/public/cpp/features_cc/Private-network-access-content-settings.inc b/cromite_flags/services/network/public/cpp/features_cc/Private-network-access-content-settings.inc
+diff --git a/Spectre Browser_flags/services/network/public/cpp/features_cc/Private-network-access-content-settings.inc b/Spectre Browser_flags/services/network/public/cpp/features_cc/Private-network-access-content-settings.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/services/network/public/cpp/features_cc/Private-network-access-content-settings.inc
++++ b/Spectre Browser_flags/services/network/public/cpp/features_cc/Private-network-access-content-settings.inc
 @@ -0,0 +1,2 @@
-+SET_CROMITE_FEATURE_ENABLED(kLocalNetworkAccessChecks);
-+SET_CROMITE_FEATURE_ENABLED(kLocalNetworkAccessChecksWebRTC);
++SET_Spectre Browser_FEATURE_ENABLED(kLocalNetworkAccessChecks);
++SET_Spectre Browser_FEATURE_ENABLED(kLocalNetworkAccessChecksWebRTC);
 diff --git a/services/network/public/cpp/features.cc b/services/network/public/cpp/features.cc
 --- a/services/network/public/cpp/features.cc
 +++ b/services/network/public/cpp/features.cc

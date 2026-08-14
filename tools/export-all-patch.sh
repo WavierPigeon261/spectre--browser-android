@@ -1,11 +1,11 @@
 #!/bin/bash
 
-VERSION=$(cat ~/cromite/build/RELEASE)
+VERSION=$(cat ~/Spectre Browser/build/RELEASE)
 CURRENT_RELEASE=$(git -C ~/chromium/src/ rev-parse --verify refs/tags/$VERSION)
 
 ALLPATCHS_E=$(git -C ~/chromium/src/ rev-list HEAD...$CURRENT_RELEASE)
 
-mkdir ~/cromite/build/patches-new
+mkdir ~/Spectre Browser/build/patches-new
 
 NO_NAME=1
 
@@ -25,19 +25,19 @@ for patch in $ALLPATCHS_E; do
 		fi
 	fi
 
-	bash ~/cromite/tools/export-single-patch.sh $patch $PATCH_FILE
+	bash ~/Spectre Browser/tools/export-single-patch.sh $patch $PATCH_FILE
 
 done
 
-PATCH_LIST=~/cromite/build/cromite_patches_list.txt
-mkdir ~/cromite/build/patches-new/changed
-mkdir ~/cromite/build/patches-new/contrib
+PATCH_LIST=~/Spectre Browser/build/Spectre Browser_patches_list.txt
+mkdir ~/Spectre Browser/build/patches-new/changed
+mkdir ~/Spectre Browser/build/patches-new/contrib
 for current_file in $(cat $PATCH_LIST); do
 	if [[ "$current_file" == *".patch" ]]; then
 		if [[ $current_file =~ ^changed/.* ]]; then
-			mv ~/cromite/build/patches-new/$(basename $current_file) ~/cromite/build/patches-new/changed
+			mv ~/Spectre Browser/build/patches-new/$(basename $current_file) ~/Spectre Browser/build/patches-new/changed
 		elif [[ $current_file =~ ^contrib/.* ]]; then
-			mv ~/cromite/build/patches-new/$(basename $current_file) ~/cromite/build/patches-new/contrib || true
+			mv ~/Spectre Browser/build/patches-new/$(basename $current_file) ~/Spectre Browser/build/patches-new/contrib || true
 		fi
 	fi
 done

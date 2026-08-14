@@ -18,14 +18,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/modules/webaudio/realtime_analyser.cc | 13 ++++++++++---
  .../platform/runtime_enabled_features.json5        |  5 ++---
  11 files changed, 59 insertions(+), 7 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_h/AudioBuffer-AnalyserNode-fp-mitigations.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_h/AudioBuffer-AnalyserNode-fp-mitigations.inc
 
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc b/cromite_flags/chrome/browser/about_flags_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
 @@ -0,0 +1,8 @@
 +#ifdef FLAG_SECTION
 +
@@ -35,18 +35,18 @@ new file mode 100644
 +     FEATURE_VALUE_TYPE(blink::features::kAudioContextShuffleEnabled)},
 +
 +#endif
-diff --git a/cromite_flags/third_party/blink/common/features_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc b/cromite_flags/third_party/blink/common/features_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc b/Spectre Browser_flags/third_party/blink/common/features_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_cc/AudioBuffer-AnalyserNode-fp-mitigations.inc
 @@ -0,0 +1,3 @@
-+CROMITE_FEATURE(kAudioContextShuffleEnabled,
++Spectre Browser_FEATURE(kAudioContextShuffleEnabled,
 +                "AudioContextShuffleEnabled",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
-diff --git a/cromite_flags/third_party/blink/common/features_h/AudioBuffer-AnalyserNode-fp-mitigations.inc b/cromite_flags/third_party/blink/common/features_h/AudioBuffer-AnalyserNode-fp-mitigations.inc
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_h/AudioBuffer-AnalyserNode-fp-mitigations.inc b/Spectre Browser_flags/third_party/blink/common/features_h/AudioBuffer-AnalyserNode-fp-mitigations.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_h/AudioBuffer-AnalyserNode-fp-mitigations.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_h/AudioBuffer-AnalyserNode-fp-mitigations.inc
 @@ -0,0 +1 @@
 +BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kAudioContextShuffleEnabled);
 diff --git a/third_party/blink/renderer/modules/webaudio/audio_buffer.cc b/third_party/blink/renderer/modules/webaudio/audio_buffer.cc

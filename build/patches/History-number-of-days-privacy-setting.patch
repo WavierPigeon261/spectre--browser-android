@@ -36,7 +36,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../history_embeddings/core/sql_database.cc   |  2 +-
  .../omnibox/browser/shortcuts_backend.cc      |  4 +-
  25 files changed, 264 insertions(+), 16 deletions(-)
- create mode 100644 components/cromite_components_strings_grd/History-number-of-days-privacy-setting.grdp
+ create mode 100644 components/Spectre Browser_components_strings_grd/History-number-of-days-privacy-setting.grdp
 
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
@@ -82,7 +82,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 +    private static final String PREF_HISTORY_EXPIRE_DAYS_THRESHOLD = "history_expire_days_threshold";
 +
      @Override
-     public void onCreatePreferencesCromite(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+     public void onCreatePreferencesSpectre Browser(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
          mPageTitle.set(getString(R.string.prefs_privacy_security));
 @@ -313,6 +319,40 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
          Preference syncAndServicesLink = findPreference(PREF_SYNC_AND_SERVICES_LINK);
@@ -399,10 +399,10 @@ diff --git a/components/browser_ui/settings/android/widget/java/src/org/chromium
          mSpinner = (Spinner) holder.findViewById(R.id.spinner);
          assert mSpinner != null;
          // Set the inner spinner to non-focusable/clickable, this allows the screen reader to
-diff --git a/components/cromite_components_strings_grd/History-number-of-days-privacy-setting.grdp b/components/cromite_components_strings_grd/History-number-of-days-privacy-setting.grdp
+diff --git a/components/Spectre Browser_components_strings_grd/History-number-of-days-privacy-setting.grdp b/components/Spectre Browser_components_strings_grd/History-number-of-days-privacy-setting.grdp
 new file mode 100644
 --- /dev/null
-+++ b/components/cromite_components_strings_grd/History-number-of-days-privacy-setting.grdp
++++ b/components/Spectre Browser_components_strings_grd/History-number-of-days-privacy-setting.grdp
 @@ -0,0 +1,18 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>

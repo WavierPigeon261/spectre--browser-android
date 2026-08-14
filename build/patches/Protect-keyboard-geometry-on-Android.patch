@@ -67,15 +67,15 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ui/android/overscroll_refresh_handler.h       |    5 +
  44 files changed, 2468 insertions(+), 30 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/compositor/ProtectedViewportScrollView.java
- create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sAndroidProtectedKeyboardGeometry.java
- create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/CromiteProtectedKeyboardGeometryContentSetting.java
+ create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sAndroidProtectedKeyboardGeometry.java
+ create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/Spectre BrowserProtectedKeyboardGeometryContentSetting.java
  create mode 100644 components/browser_ui/strings/bromite_content_settings/protected_keyboard_geometry.grdp
  create mode 100644 components/content_settings/core/browser/bromite_content_settings/protected_keyboard_geometry.inc
  create mode 100644 components/content_settings/core/common/bromite_content_settings/protected_keyboard_geometry.inc
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Android-Protected-Keyboard-Geometry.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/protected_keyboard_geometry.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_cc/Android-Protected-Keyboard-Geometry.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_h/Android-Protected-Keyboard-Geometry.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Android-Protected-Keyboard-Geometry.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/protected_keyboard_geometry.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_cc/Android-Protected-Keyboard-Geometry.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_h/Android-Protected-Keyboard-Geometry.inc
 
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
@@ -250,7 +250,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/Comp
  import org.chromium.chrome.browser.compositor.layouts.LayoutManagerImpl;
  import org.chromium.chrome.browser.compositor.layouts.LayoutRenderHost;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
-+import org.chromium.chrome.browser.flags.cromite.sAndroidProtectedKeyboardGeometry;
++import org.chromium.chrome.browser.flags.Spectre Browser.sAndroidProtectedKeyboardGeometry;
  import org.chromium.chrome.browser.fullscreen.BrowserControlsManager;
  import org.chromium.chrome.browser.fullscreen.FullscreenManager;
  import org.chromium.chrome.browser.layouts.EventFilter.EventType;
@@ -707,20 +707,20 @@ new file mode 100644
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/compositor/ProtectedViewportScrollView.java
 @@ -0,0 +1,1446 @@
 +/*
-+    This file is part of Cromite.
++    This file is part of Spectre Browser.
 +
-+    Cromite is free software: you can redistribute it and/or modify
++    Spectre Browser is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
 +    the Free Software Foundation, either version 3 of the License, or
 +    (at your option) any later version.
 +
-+    Cromite is distributed in the hope that it will be useful,
++    Spectre Browser is distributed in the hope that it will be useful,
 +    but WITHOUT ANY WARRANTY; without even the implied warranty of
 +    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +    GNU General Public License for more details.
 +
 +    You should have received a copy of the GNU General Public License
-+    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++    along with Spectre Browser. If not, see <https://www.gnu.org/licenses/>.
 +*/
 +
 +package org.chromium.chrome.browser.compositor;
@@ -2212,29 +2212,29 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final MutableFlagWithSafeDefault sBrowserControlsPersistsOnCvh =
              newMutableFlagWithSafeDefault(BROWSER_CONTROLS_PERSISTS_ON_CVH, true);
      // Default to false. The logic behind the flag is not relevant when native is not initialized.
-diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sAndroidProtectedKeyboardGeometry.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sAndroidProtectedKeyboardGeometry.java
+diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sAndroidProtectedKeyboardGeometry.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sAndroidProtectedKeyboardGeometry.java
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sAndroidProtectedKeyboardGeometry.java
++++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sAndroidProtectedKeyboardGeometry.java
 @@ -0,0 +1,35 @@
 +/*
-+    This file is part of Cromite.
++    This file is part of Spectre Browser.
 +
-+    Cromite is free software: you can redistribute it and/or modify
++    Spectre Browser is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
 +    the Free Software Foundation, either version 3 of the License, or
 +    (at your option) any later version.
 +
-+    Cromite is distributed in the hope that it will be useful,
++    Spectre Browser is distributed in the hope that it will be useful,
 +    but WITHOUT ANY WARRANTY; without even the implied warranty of
 +    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +    GNU General Public License for more details.
 +
 +    You should have received a copy of the GNU General Public License
-+    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++    along with Spectre Browser. If not, see <https://www.gnu.org/licenses/>.
 +*/
 +
-+package org.chromium.chrome.browser.flags.cromite;
++package org.chromium.chrome.browser.flags.Spectre Browser;
 +
 +import org.chromium.chrome.browser.flags.ChromeFeatureMap;
 +import org.chromium.components.cached_flags.CachedFlag;
@@ -2252,10 +2252,10 @@ new file mode 100644
 +        return sInstance;
 +    }
 +}
-diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/CromiteProtectedKeyboardGeometryContentSetting.java b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/CromiteProtectedKeyboardGeometryContentSetting.java
+diff --git a/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/Spectre BrowserProtectedKeyboardGeometryContentSetting.java b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/Spectre BrowserProtectedKeyboardGeometryContentSetting.java
 new file mode 100644
 --- /dev/null
-+++ b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/CromiteProtectedKeyboardGeometryContentSetting.java
++++ b/components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/Spectre BrowserProtectedKeyboardGeometryContentSetting.java
 @@ -0,0 +1,94 @@
 +/*
 +    This file is part of Bromite.
@@ -2291,8 +2291,8 @@ new file mode 100644
 +
 +import java.util.ArrayList;
 +
-+public class CromiteProtectedKeyboardGeometryContentSetting extends BromiteCustomContentSetting {
-+    public CromiteProtectedKeyboardGeometryContentSetting() {
++public class Spectre BrowserProtectedKeyboardGeometryContentSetting extends BromiteCustomContentSetting {
++    public Spectre BrowserProtectedKeyboardGeometryContentSetting() {
 +        super(/*contentSettingsType*/ ContentSettingsType.PROTECTED_KEYBOARD_GEOMETRY,
 +              /*defaultEnabledValue*/ ContentSetting.ALLOW,
 +              /*defaultDisabledValue*/ ContentSetting.BLOCK,
@@ -2744,10 +2744,10 @@ diff --git a/content/public/test/android/javatests/src/org/chromium/content_publ
      @Override
      public void selectAroundCaret(
              @SelectionGranularity int granularity,
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Android-Protected-Keyboard-Geometry.inc b/cromite_flags/chrome/browser/about_flags_cc/Android-Protected-Keyboard-Geometry.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Android-Protected-Keyboard-Geometry.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Android-Protected-Keyboard-Geometry.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Android-Protected-Keyboard-Geometry.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Android-Protected-Keyboard-Geometry.inc
 @@ -0,0 +1,10 @@
 +#ifdef FLAG_SECTION
 +
@@ -2759,28 +2759,28 @@ new file mode 100644
 +     FEATURE_VALUE_TYPE(blink::features::kAndroidProtectedKeyboardGeometry)},
 +
 +#endif
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/protected_keyboard_geometry.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/protected_keyboard_geometry.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/protected_keyboard_geometry.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/protected_keyboard_geometry.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/protected_keyboard_geometry.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/protected_keyboard_geometry.inc
 @@ -0,0 +1,5 @@
 +#if BUILDFLAG(IS_ANDROID)
 +
-+SET_CROMITE_FEATURE_ENABLED(kBrowserControlsEarlyResize);
++SET_Spectre Browser_FEATURE_ENABLED(kBrowserControlsEarlyResize);
 +
 +#endif
-diff --git a/cromite_flags/third_party/blink/common/features_cc/Android-Protected-Keyboard-Geometry.inc b/cromite_flags/third_party/blink/common/features_cc/Android-Protected-Keyboard-Geometry.inc
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_cc/Android-Protected-Keyboard-Geometry.inc b/Spectre Browser_flags/third_party/blink/common/features_cc/Android-Protected-Keyboard-Geometry.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_cc/Android-Protected-Keyboard-Geometry.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_cc/Android-Protected-Keyboard-Geometry.inc
 @@ -0,0 +1,3 @@
-+CROMITE_FEATURE(kAndroidProtectedKeyboardGeometry,
++Spectre Browser_FEATURE(kAndroidProtectedKeyboardGeometry,
 +                "AndroidProtectedKeyboardGeometry",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
-diff --git a/cromite_flags/third_party/blink/common/features_h/Android-Protected-Keyboard-Geometry.inc b/cromite_flags/third_party/blink/common/features_h/Android-Protected-Keyboard-Geometry.inc
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_h/Android-Protected-Keyboard-Geometry.inc b/Spectre Browser_flags/third_party/blink/common/features_h/Android-Protected-Keyboard-Geometry.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_h/Android-Protected-Keyboard-Geometry.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_h/Android-Protected-Keyboard-Geometry.inc
 @@ -0,0 +1,2 @@
 +// Conceals Android on-screen keyboard geometry from web content.
 +BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kAndroidProtectedKeyboardGeometry);

@@ -14,9 +14,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Restore-offline-indicator-v2-flag.inc     |  3 ++
  .../Restore-offline-indicator-v2-flag.inc     |  1 +
  7 files changed, 63 insertions(+), 3 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Restore-offline-indicator-v2-flag.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-offline-indicator-v2-flag.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Restore-offline-indicator-v2-flag.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Restore-offline-indicator-v2-flag.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-offline-indicator-v2-flag.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Restore-offline-indicator-v2-flag.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/indicator/OfflineDetector.java b/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/indicator/OfflineDetector.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/offlinepages/indicator/OfflineDetector.java
@@ -136,10 +136,10 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String OMAHA_MIN_SDK_VERSION_ANDROID = "OmahaMinSdkVersionAndroid";
      public static final String OMNIBOX_AUTOFOCUS_ON_INCOGNITO_NTP =
              "OmniboxAutofocusOnIncognitoNtp";
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Restore-offline-indicator-v2-flag.inc b/cromite_flags/chrome/browser/about_flags_cc/Restore-offline-indicator-v2-flag.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Restore-offline-indicator-v2-flag.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Restore-offline-indicator-v2-flag.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Restore-offline-indicator-v2-flag.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Restore-offline-indicator-v2-flag.inc
 @@ -0,0 +1,12 @@
 +#if BUILDFLAG(IS_ANDROID)
 +
@@ -153,18 +153,18 @@ new file mode 100644
 +#endif
 +
 +#endif
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-offline-indicator-v2-flag.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-offline-indicator-v2-flag.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-offline-indicator-v2-flag.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-offline-indicator-v2-flag.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-offline-indicator-v2-flag.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-offline-indicator-v2-flag.inc
 @@ -0,0 +1,3 @@
-+CROMITE_FEATURE(kOfflineIndicatorV2,
++Spectre Browser_FEATURE(kOfflineIndicatorV2,
 +                "OfflineIndicatorV2",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Restore-offline-indicator-v2-flag.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Restore-offline-indicator-v2-flag.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Restore-offline-indicator-v2-flag.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Restore-offline-indicator-v2-flag.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Restore-offline-indicator-v2-flag.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Restore-offline-indicator-v2-flag.inc
 @@ -0,0 +1 @@
 +BASE_DECLARE_FEATURE(kOfflineIndicatorV2);
 --

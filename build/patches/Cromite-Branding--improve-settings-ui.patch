@@ -1,6 +1,6 @@
 From: uazo <uazo@users.noreply.github.com>
 Date: Sat, 21 Sep 2024 15:32:02 +0000
-Subject: Cromite Branding: improve settings ui
+Subject: Spectre Browser Branding: improve settings ui
 
 Modification to the settings ui with the aim of making it clearer.
 
@@ -8,12 +8,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/android/chrome_java_resources.gni      |   2 +-
  .../android/java/res/xml/main_preferences.xml |   4 +-
- .../res/xml/privacy_preferences_cromite.xml   | 196 ++++++++++++++++++
+ .../res/xml/privacy_preferences_Spectre Browser.xml   | 196 ++++++++++++++++++
  .../privacy/settings/PrivacySettings.java     |   6 +-
- .../Cromite-settings-ui.grdp                  |  15 ++
+ .../Spectre Browser-settings-ui.grdp                  |  15 ++
  5 files changed, 218 insertions(+), 5 deletions(-)
- create mode 100644 chrome/android/java/res/xml/privacy_preferences_cromite.xml
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Cromite-settings-ui.grdp
+ create mode 100644 chrome/android/java/res/xml/privacy_preferences_Spectre Browser.xml
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Spectre Browser-settings-ui.grdp
 
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
@@ -23,7 +23,7 @@ diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_ja
    "java/res/xml/personalize_google_services_preferences.xml",
    "java/res/xml/incognito_preferences.xml",
 -  "java/res/xml/privacy_preferences.xml",
-+  "java/res/xml/privacy_preferences.xml", "java/res/xml/privacy_preferences_cromite.xml",
++  "java/res/xml/privacy_preferences.xml", "java/res/xml/privacy_preferences_Spectre Browser.xml",
    "java/res/xml/referer_policy_preferences.xml",
    "java/res/layout/radio_button_group_referer_policy_preference.xml",
    "java/res/xml/search_widget_info.xml",
@@ -48,10 +48,10 @@ diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/j
          android:order="1004"
          android:layout="@layout/account_management_account_row"
          android:title="@string/prefs_google_services"
-diff --git a/chrome/android/java/res/xml/privacy_preferences_cromite.xml b/chrome/android/java/res/xml/privacy_preferences_cromite.xml
+diff --git a/chrome/android/java/res/xml/privacy_preferences_Spectre Browser.xml b/chrome/android/java/res/xml/privacy_preferences_Spectre Browser.xml
 new file mode 100644
 --- /dev/null
-+++ b/chrome/android/java/res/xml/privacy_preferences_cromite.xml
++++ b/chrome/android/java/res/xml/privacy_preferences_Spectre Browser.xml
 @@ -0,0 +1,196 @@
 +<?xml version="1.0" encoding="utf-8"?><!--
 +Copyright 2022 The Chromium Authors
@@ -191,9 +191,9 @@ new file mode 100644
 +        android:title="@string/proxy_title"
 +        app:url="@string/proxy_url" />
 +    <org.chromium.chrome.browser.about_settings.HyperlinkPreference
-+        android:key="cromite_flags"
-+        android:title="@string/cromite_flags_title"
-+        app:url="@string/cromite_flags_url" />
++        android:key="Spectre Browser_flags"
++        android:title="@string/Spectre Browser_flags_title"
++        app:url="@string/Spectre Browser_flags_url" />
 +    <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
 +        android:key="search_suggestions"
 +        android:title="@string/improve_search_suggestions_title"
@@ -253,11 +253,11 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 --- a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/PrivacySettings.java
 @@ -204,7 +204,7 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
-     public void onCreatePreferencesCromite(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+     public void onCreatePreferencesSpectre Browser(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
          mPageTitle.set(getString(R.string.prefs_privacy_security));
  
 -        SettingsUtils.addPreferencesFromResource(this, R.xml.privacy_preferences);
-+        SettingsUtils.addPreferencesFromResource(this, R.xml.privacy_preferences_cromite);
++        SettingsUtils.addPreferencesFromResource(this, R.xml.privacy_preferences_Spectre Browser);
  
          Preference sandboxPreference = findPreference(PREF_PRIVACY_SANDBOX);
          // Overwrite the click listener to pass a correct referrer to the fragment.
@@ -272,10 +272,10 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
  
          mSearchSuggestions = (ChromeSwitchPreference) findPreference(PREF_SEARCH_SUGGESTIONS);
          mSearchSuggestions.setOnPreferenceChangeListener(this);
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Cromite-settings-ui.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Cromite-settings-ui.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Spectre Browser-settings-ui.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Spectre Browser-settings-ui.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Cromite-settings-ui.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Spectre Browser-settings-ui.grdp
 @@ -0,0 +1,15 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>

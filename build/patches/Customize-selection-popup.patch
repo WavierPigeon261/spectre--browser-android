@@ -24,7 +24,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../browser/SelectionMenuItem.java            | 73 ++++++++++++-------
  .../SelectionActionMenuDelegate.java          | 32 +++++---
  16 files changed, 194 insertions(+), 67 deletions(-)
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Customize-selection-popup.grdp
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Customize-selection-popup.grdp
 
 diff --git a/android_webview/java/src/org/chromium/android_webview/selection/SamsungSelectionActionMenuDelegate.java b/android_webview/java/src/org/chromium/android_webview/selection/SamsungSelectionActionMenuDelegate.java
 --- a/android_webview/java/src/org/chromium/android_webview/selection/SamsungSelectionActionMenuDelegate.java
@@ -207,10 +207,10 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordi
                                      tab,
                                      tab.isIncognito());
                  },
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Customize-selection-popup.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Customize-selection-popup.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Customize-selection-popup.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Customize-selection-popup.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Customize-selection-popup.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Customize-selection-popup.grdp
 @@ -0,0 +1,34 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>
@@ -479,10 +479,10 @@ diff --git a/content/public/android/java/src/org/chromium/content_public/browser
 +        static int CHROMIUM_SECONDARY_ASSIST_ITEMS = 3;
 +        static int CHROMIUM_TEXT_PROCESSING_ITEMS = 4;
 +
-+        static int CROMITE_DEFAULT_ITEMS = 1;
-+        static int CROMITE_ASSIST_ITEMS = 2;
-+        static int CROMITE_SECONDARY_ASSIST_ITEMS = 3;
-+        static int CROMITE_TEXT_PROCESSING_ITEMS = 4;
++        static int Spectre Browser_DEFAULT_ITEMS = 1;
++        static int Spectre Browser_ASSIST_ITEMS = 2;
++        static int Spectre Browser_SECONDARY_ASSIST_ITEMS = 3;
++        static int Spectre Browser_TEXT_PROCESSING_ITEMS = 4;
 +
 +        private static int GetValue(int a, int b) {
 +            return !ContextUtils.getAppSharedPreferences().getBoolean(
@@ -491,19 +491,19 @@ diff --git a/content/public/android/java/src/org/chromium/content_public/browser
 +        }
 +
 +        public static int ASSIST_ITEMS() {
-+            return GetValue(CHROMIUM_ASSIST_ITEMS, CROMITE_ASSIST_ITEMS);
++            return GetValue(CHROMIUM_ASSIST_ITEMS, Spectre Browser_ASSIST_ITEMS);
 +        }
 +
 +        public static int DEFAULT_ITEMS() {
-+            return GetValue(CHROMIUM_DEFAULT_ITEMS, CROMITE_DEFAULT_ITEMS);
++            return GetValue(CHROMIUM_DEFAULT_ITEMS, Spectre Browser_DEFAULT_ITEMS);
 +        }
 +
 +        public static int SECONDARY_ASSIST_ITEMS() {
-+            return GetValue(CHROMIUM_SECONDARY_ASSIST_ITEMS, CROMITE_SECONDARY_ASSIST_ITEMS);
++            return GetValue(CHROMIUM_SECONDARY_ASSIST_ITEMS, Spectre Browser_SECONDARY_ASSIST_ITEMS);
 +        }
 +
 +        public static int TEXT_PROCESSING_ITEMS() {
-+            return GetValue(CHROMIUM_TEXT_PROCESSING_ITEMS, CROMITE_TEXT_PROCESSING_ITEMS);
++            return GetValue(CHROMIUM_TEXT_PROCESSING_ITEMS, Spectre Browser_TEXT_PROCESSING_ITEMS);
 +        }
      }
  

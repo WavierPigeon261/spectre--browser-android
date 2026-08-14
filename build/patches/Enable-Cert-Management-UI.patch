@@ -10,7 +10,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/net/profile_network_context_service.cc      | 7 ++++++-
  .../chrome_features_cc/Enable-Cert-Management-UI.inc       | 1 +
  2 files changed, 7 insertions(+), 1 deletion(-)
- create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Enable-Cert-Management-UI.inc
+ create mode 100644 Spectre Browser_flags/chrome/common/chrome_features_cc/Enable-Cert-Management-UI.inc
 
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
@@ -29,10 +29,10 @@ diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/brow
  #endif
  #if BUILDFLAG(IS_CHROMEOS)
    net::ServerCertificateDatabaseService::RegisterProfilePrefs(registry);
-diff --git a/cromite_flags/chrome/common/chrome_features_cc/Enable-Cert-Management-UI.inc b/cromite_flags/chrome/common/chrome_features_cc/Enable-Cert-Management-UI.inc
+diff --git a/Spectre Browser_flags/chrome/common/chrome_features_cc/Enable-Cert-Management-UI.inc b/Spectre Browser_flags/chrome/common/chrome_features_cc/Enable-Cert-Management-UI.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/common/chrome_features_cc/Enable-Cert-Management-UI.inc
++++ b/Spectre Browser_flags/chrome/common/chrome_features_cc/Enable-Cert-Management-UI.inc
 @@ -0,0 +1 @@
 +// Empty file
 --

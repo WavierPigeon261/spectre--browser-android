@@ -3,7 +3,7 @@ Date: Thu, 30 May 2024 11:42:21 +0000
 Subject: Media fingerprinting mitigations
 
 Removes the ability to understand the capabilities of the video card in windows.
-See https://github.com/uazo/cromite/issues/862
+See https://github.com/uazo/Spectre Browser/issues/862
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---

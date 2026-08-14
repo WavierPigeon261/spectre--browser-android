@@ -6,7 +6,7 @@ Allows the activation in android and windows of aac and
 h264 decoding via the s.o. libraries, replacing ffmpeg which does
 not have the necessary licences.
 
-Context: https://github.com/uazo/cromite/pull/856
+Context: https://github.com/uazo/Spectre Browser/pull/856
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../Enable-platform-aac-audio-and-h264-video.inc    |  7 +++++++
@@ -21,18 +21,18 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  media/gpu/windows/supported_profile_helpers.cc      | 13 ++++++++++++-
  media/media_options.gni                             |  8 ++++++++
  11 files changed, 70 insertions(+), 1 deletion(-)
- create mode 100644 cromite_flags/media/base/media_switches_cc/Enable-platform-aac-audio-and-h264-video.inc
+ create mode 100644 Spectre Browser_flags/media/base/media_switches_cc/Enable-platform-aac-audio-and-h264-video.inc
 
-diff --git a/cromite_flags/media/base/media_switches_cc/Enable-platform-aac-audio-and-h264-video.inc b/cromite_flags/media/base/media_switches_cc/Enable-platform-aac-audio-and-h264-video.inc
+diff --git a/Spectre Browser_flags/media/base/media_switches_cc/Enable-platform-aac-audio-and-h264-video.inc b/Spectre Browser_flags/media/base/media_switches_cc/Enable-platform-aac-audio-and-h264-video.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/media/base/media_switches_cc/Enable-platform-aac-audio-and-h264-video.inc
++++ b/Spectre Browser_flags/media/base/media_switches_cc/Enable-platform-aac-audio-and-h264-video.inc
 @@ -0,0 +1,7 @@
 +#if BUILDFLAG(IS_LINUX)
 +
-+SET_CROMITE_FEATURE_ENABLED(kAcceleratedVideoDecodeLinuxGL);
-+SET_CROMITE_FEATURE_ENABLED(kAcceleratedVideoEncodeLinux);
-+SET_CROMITE_FEATURE_ENABLED(kVaapiIgnoreDriverChecks);
++SET_Spectre Browser_FEATURE_ENABLED(kAcceleratedVideoDecodeLinuxGL);
++SET_Spectre Browser_FEATURE_ENABLED(kAcceleratedVideoEncodeLinux);
++SET_Spectre Browser_FEATURE_ENABLED(kVaapiIgnoreDriverChecks);
 +
 +#endif
 diff --git a/media/BUILD.gn b/media/BUILD.gn
@@ -54,7 +54,7 @@ diff --git a/media/base/android/java/src/org/chromium/media/AudioManagerAndroid.
                              break;
                      }
                  }
-+                // only PCM_LINEAR allowed via hdmi in cromite
++                // only PCM_LINEAR allowed via hdmi in Spectre Browser
 +                mask &= AudioEncodingFormat.PCM_LINEAR;
  
                  // Require all devices to support a format

@@ -50,7 +50,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  extensions/common/extension_features.h        | 10 +++
  .../definitions/developer_private.d.ts        |  2 +
  36 files changed, 250 insertions(+), 97 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
 
 diff --git a/chrome/app/extensions_strings.grdp b/chrome/app/extensions_strings.grdp
 --- a/chrome/app/extensions_strings.grdp
@@ -712,10 +712,10 @@ diff --git a/components/update_client/update_query_params.cc b/components/update
  }
  
  // static
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc b/cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Webstore-protection.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
 @@ -0,0 +1,19 @@
 +#ifdef FLAG_SECTION
 +
@@ -1157,11 +1157,11 @@ diff --git a/extensions/common/extension_features.cc b/extensions/common/extensi
  
  BASE_FEATURE(kOptimizeWebRequestProxy, base::FEATURE_DISABLED_BY_DEFAULT);
  
-+CROMITE_FEATURE(kEnableExtensionAutoupdate,
++Spectre Browser_FEATURE(kEnableExtensionAutoupdate,
 +                "EnableExtensionAutoupdate",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
 +
-+CROMITE_FEATURE(kEnableExtensionManagementToChromeStore,
++Spectre Browser_FEATURE(kEnableExtensionManagementToChromeStore,
 +                "EnableExtensionToChromeStore",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
  }  // namespace extensions_features

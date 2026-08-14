@@ -21,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  11 files changed, 109 insertions(+), 2 deletions(-)
  create mode 100644 components/site_engagement/core/features.cc
  create mode 100644 components/site_engagement/core/features.h
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-site-engagement-flag.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Add-site-engagement-flag.inc
 
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
@@ -213,7 +213,7 @@ new file mode 100644
 +namespace site_engagement {
 +namespace features {
 +
-+CROMITE_FEATURE(kSiteEngagement,
++Spectre Browser_FEATURE(kSiteEngagement,
 +                "SiteEngagement",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
 +
@@ -258,10 +258,10 @@ new file mode 100644
 +}  // namespace site_engagement
 +
 +#endif  // SITE_ENGAGEMENT_CORE_FEATURES_H_
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Add-site-engagement-flag.inc b/cromite_flags/chrome/browser/about_flags_cc/Add-site-engagement-flag.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-site-engagement-flag.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-site-engagement-flag.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Add-site-engagement-flag.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-site-engagement-flag.inc
 @@ -0,0 +1,10 @@
 +#ifdef FLAG_SECTION
 +

@@ -12,7 +12,7 @@ RUN wget https://github.com/clangd/clangd/releases/download/snapshot_20250518/cl
     unzip clangd_indexing_tools-linux-snapshot_20250518.zip && \
     rm clangd_indexing_tools-linux-snapshot_20250518.zip
 
-ADD cromite.idx .
+ADD Spectre Browser.idx .
 ADD entry_point.sh .
 
 RUN chmod +x ./entry_point.sh

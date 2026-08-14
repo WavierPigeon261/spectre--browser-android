@@ -480,7 +480,7 @@ diff --git a/components/live_caption/features.cc b/components/live_caption/featu
  // on-device model is ready to be rolled out.
  BASE_FEATURE(kLiveCaptionOnDeviceTranslation,
               base::FEATURE_DISABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kLiveCaptionOnDeviceTranslation);
++SET_Spectre Browser_FEATURE_DISABLED(kLiveCaptionOnDeviceTranslation);
  
  }  // namespace live_caption
 diff --git a/components/on_device_translation/buildflags/features.gni b/components/on_device_translation/buildflags/features.gni

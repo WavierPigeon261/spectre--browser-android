@@ -61,7 +61,7 @@ diff --git a/services/device/public/cpp/device_features.cc b/services/device/pub
  #else
  BASE_FEATURE(kLocationProviderManager, base::FEATURE_DISABLED_BY_DEFAULT);
  #endif  // BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN)
-+SET_CROMITE_FEATURE_DISABLED(kLocationProviderManager);
++SET_Spectre Browser_FEATURE_DISABLED(kLocationProviderManager);
  
  #if BUILDFLAG(IS_ANDROID)
  // Enables registering & unregistering of the Battery Status Manager broadcast

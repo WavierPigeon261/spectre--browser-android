@@ -5,7 +5,7 @@ Subject: Immediately destroy shared workers when closing the page
 Chromium is planning to keep shared workers active even after the page is closed,
 up to a timeout, to compensate for the permanent deactivation of the unload event.
 This feature is used to send pings from the page.
-Cromite already does not allow any information to be sent via the network to the unload event.
+Spectre Browser already does not allow any information to be sent via the network to the unload event.
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---

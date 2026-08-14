@@ -23,8 +23,8 @@ diff --git a/components/translate/core/browser/translate_ranker_impl.cc b/compon
    }
  }
  
-+SET_CROMITE_FEATURE_DISABLED(kTranslateRankerQuery);
-+SET_CROMITE_FEATURE_DISABLED(kTranslateRankerEnforcement);
++SET_Spectre Browser_FEATURE_DISABLED(kTranslateRankerQuery);
++SET_Spectre Browser_FEATURE_DISABLED(kTranslateRankerEnforcement);
  }  // namespace translate
  
  std::ostream& operator<<(std::ostream& stream,

@@ -11,12 +11,12 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 'uazo/cromite' ${{ env.BRANCH }}
+      - name: Checkout 'uazo/Spectre Browser' ${{ env.BRANCH }}
         uses: actions/checkout@v2
         with:
-            repository: 'uazo/cromite'
+            repository: 'uazo/Spectre Browser'
             ref: ${{ github.event.inputs.rtag }}
-            path: 'cromite'
+            path: 'Spectre Browser'
             fetch-depth: 1
 
       - name: Get data
@@ -25,7 +25,7 @@ jobs:
           DEBIAN_FRONTEND=noninteractive sudo apt install -y sed
 
           export HOME=$GITHUB_WORKSPACE
-          cd ~/cromite/tools
+          cd ~/Spectre Browser/tools
           test -d cves || mkdir -p cves
           cd cves
 
@@ -43,7 +43,7 @@ jobs:
       - name: Check differences
         run: |
           export HOME=$GITHUB_WORKSPACE
-          cd ~/cromite
+          cd ~/Spectre Browser
           CHANGES=0 && git diff --quiet || CHANGES=1
           echo "CHANGES=$CHANGES" >> $GITHUB_ENV
 
@@ -56,10 +56,10 @@ jobs:
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c #v6.1.0
         if: env.CHANGES == '1'
         with:
-          token: ${{ secrets.CROMITE_PULLS }}
-          path: cromite
+          token: ${{ secrets.Spectre Browser_PULLS }}
+          path: Spectre Browser
           base: ${{ env.BRANCH }}
-          #push-to-fork: uazo/cromite
+          #push-to-fork: uazo/Spectre Browser
           add-paths: |
             tools/cves/*.txt
           commit-message: 'AUTOMATED - CVE results'

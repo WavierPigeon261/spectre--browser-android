@@ -29,7 +29,7 @@ diff --git a/components/omnibox/common/omnibox_features.cc b/components/omnibox/
  
  // Enables keyword-based site search functionality on Android devices.
  BASE_FEATURE(kOmniboxSiteSearch, DISABLED);
-+SET_CROMITE_FEATURE_ENABLED(kOmniboxSiteSearch);
++SET_Spectre Browser_FEATURE_ENABLED(kOmniboxSiteSearch);
  
  // Enables additional site search providers for the Site search Starter Pack.
  BASE_FEATURE(kStarterPackExpansion, enable_if(!IS_ANDROID && !IS_IOS));

@@ -1,13 +1,13 @@
 name: Feature request
-description: Create a Cromite feature request
+description: Create a Spectre Browser feature request
 body:
   - type: markdown
     attributes:
       value: |
         Welcome! Thanks for taking time to submit a feature request.
 
-        If this is not a feature request about the Cromite browser, or you are looking for a place
-        to ask a question to the community then please use the [GitHub Discussions](https://github.com/uazo/cromite/discussions) instead.
+        If this is not a feature request about the Spectre Browser browser, or you are looking for a place
+        to ask a question to the community then please use the [GitHub Discussions](https://github.com/uazo/Spectre Browser/discussions) instead.
 
         Make sure you have acknowledged and completed this template before submitting your issue.
 
@@ -22,13 +22,13 @@ body:
     attributes:
       label: Preliminary checklist
       options:
-        - label: "I have read the [README](https://github.com/uazo/cromite/blob/master/README.md)"
+        - label: "I have read the [README](https://github.com/uazo/Spectre Browser/blob/master/README.md)"
           required: true
-        - label: "I have searched [existing issues](https://github.com/uazo/cromite/issues) for my feature request. This is a new issue (NOT a duplicate) and is not related to another issue."
+        - label: "I have searched [existing issues](https://github.com/uazo/Spectre Browser/issues) for my feature request. This is a new issue (NOT a duplicate) and is not related to another issue."
           required: true
-        - label: "I have searched [wont fix issues](https://github.com/uazo/cromite/issues?q=label%3Awontfix) and this request is not among them"
+        - label: "I have searched [wont fix issues](https://github.com/uazo/Spectre Browser/issues?q=label%3Awontfix) and this request is not among them"
           required: true
-        - label: "This is a feature request for the Cromite browser; not the website nor F-Droid nor anything else."
+        - label: "This is a feature request for the Spectre Browser browser; not the website nor F-Droid nor anything else."
           required: true
 
   - type: dropdown

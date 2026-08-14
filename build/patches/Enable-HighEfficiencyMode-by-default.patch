@@ -16,7 +16,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  components/performance_manager/user_tuning/prefs.cc       | 6 +++---
  .../Enable-freeze-high-cpu-background-usage.inc           | 8 ++++++++
  5 files changed, 21 insertions(+), 4 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc
 
 diff --git a/components/performance_manager/features.cc b/components/performance_manager/features.cc
 --- a/components/performance_manager/features.cc
@@ -25,7 +25,7 @@ diff --git a/components/performance_manager/features.cc b/components/performance
  BASE_FEATURE(kUrgentPageDiscarding, base::FEATURE_ENABLED_BY_DEFAULT);
  
  BASE_FEATURE(kCPUMeasurementInFreezingPolicy, base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_ENABLED(kCPUMeasurementInFreezingPolicy);
++SET_Spectre Browser_FEATURE_ENABLED(kCPUMeasurementInFreezingPolicy);
  
  BASE_FEATURE(kMemoryMeasurementInFreezingPolicy,
               base::FEATURE_ENABLED_BY_DEFAULT);
@@ -33,13 +33,13 @@ diff --git a/components/performance_manager/features.cc b/components/performance
                     "min_available_percent",
                     10);
  
-+CROMITE_FEATURE(kFreezingWithoutBatterySaver,
++Spectre Browser_FEATURE(kFreezingWithoutBatterySaver,
 +                "FreezingWithoutBatterySaver",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
 +
  BASE_FEATURE(kResourceAttributionIncludeOrigins,
               base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_ENABLED(kResourceAttributionIncludeOrigins);
++SET_Spectre Browser_FEATURE_ENABLED(kResourceAttributionIncludeOrigins);
  
  BASE_FEATURE(kSeamlessRenderFrameSwap, base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -93,10 +93,10 @@ diff --git a/components/performance_manager/user_tuning/prefs.cc b/components/pe
    registry->RegisterTimePref(kLastBatteryUseTimestamp, base::Time());
    registry->RegisterBooleanPref(kDiscardRingTreatmentEnabled, true);
    registry->RegisterBooleanPref(kPerformanceInterventionNotificationEnabled,
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc b/cromite_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Enable-freeze-high-cpu-background-usage.inc
 @@ -0,0 +1,8 @@
 +#ifdef FLAG_SECTION
 +

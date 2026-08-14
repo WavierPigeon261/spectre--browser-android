@@ -42,7 +42,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../scripts/auditor/auditor.py                |   1 +
  .../scripts/auditor/util.py                   |   1 +
  32 files changed, 1658 insertions(+), 22 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
  create mode 100644 services/firewall/public/BUILD.gn
  create mode 100644 services/firewall/public/firewall_features.cc
  create mode 100644 services/firewall/public/firewall_features.h
@@ -89,7 +89,7 @@ diff --git a/chrome/browser/download/android/download_controller.cc b/chrome/bro
 +const net::NetworkTrafficAnnotationTag traffic_annotation =
 +    net::DefineNetworkTrafficAnnotation("download_via_toolbar_menu", R"(
 +        semantics {
-+          sender: "Cromite"
++          sender: "Spectre Browser"
 +          description:
 +            "Download via toolbar menu"
 +          trigger: "Manual from user."
@@ -285,10 +285,10 @@ diff --git a/components/webapps/browser/android/webapk/webapk_single_icon_hasher
    simple_url_loader_->DownloadToStringOfUnboundedSizeUntilCrashAndDie(
        url_loader_factory,
        base::BindOnce(&WebApkSingleIconHasher::OnSimpleLoaderComplete,
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc b/cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Internal-firewall.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Internal-firewall.inc
 @@ -0,0 +1,8 @@
 +#ifdef FLAG_SECTION
 +
@@ -481,7 +481,7 @@ new file mode 100644
 +namespace firewall {
 +namespace features {
 +
-+CROMITE_FEATURE(kEnableFirewall,
++Spectre Browser_FEATURE(kEnableFirewall,
 +                "EnableFirewall",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
 +

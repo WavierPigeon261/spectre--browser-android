@@ -1,6 +1,6 @@
 # Android protected keyboard geometry
 
-This document describes the architecture of Cromite's **Android Protected
+This document describes the architecture of Spectre Browser's **Android Protected
 Keyboard Geometry** patch. The patch prevents the on-screen keyboard from
 changing page-observable geometry while keeping the editable element that
 requested the IME usable.
@@ -63,7 +63,7 @@ browser.
 ## Policy and content setting
 
 The Blink feature `AndroidProtectedKeyboardGeometry` is enabled by default and
-acts as the global kill switch. Cromite's
+acts as the global kill switch. Spectre Browser's
 `sAndroidProtectedKeyboardGeometry` Java class reads the same feature without
 adding a new entry to `ChromeFeatureList.java`.
 
@@ -180,7 +180,7 @@ the geometry exposed to Blink separate from the physically visible geometry.
 during the transition. `CompositorViewHolder.updateWebContentsSize()` also
 uses the protected inset when calculating the `WebContents` size.
 
-The patch requires `BrowserControlsEarlyResize`. Cromite enables it in both
+The patch requires `BrowserControlsEarlyResize`. Spectre Browser enables it in both
 the C++ default and the Java safe default, and asserts the invariant when the
 controls are about to be shown.
 
@@ -295,7 +295,7 @@ the final implementation.
 
 The patch hides geometry, not every possible bit related to IME presence.
 Focus, input, and keyboard events are required for page functionality.
-Keyboard-layout normalization belongs to other Cromite protections.
+Keyboard-layout normalization belongs to other Spectre Browser protections.
 
 ### Fixed and sticky elements
 
@@ -321,7 +321,7 @@ A reload is required after changing the content setting.
 
 ## Verification
 
-Chromium's automated test targets are not yet available in the Cromite build;
+Chromium's automated test targets are not yet available in the Spectre Browser build;
 the patch has primarily been validated with the Android emulator and
 BrowserStack campaigns. Automated coverage for the main lifecycles must be
 added before final stabilization.

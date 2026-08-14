@@ -59,11 +59,11 @@ git commit -m ":NOEXPORT: third_party/boringssl repo" >/dev/null
 git prune
 
 echo -e ${RED} ------- patches ${NC}
-cat ../../cromite/build/cromite_patches_list.txt
+cat ../../Spectre Browser/build/Spectre Browser_patches_list.txt
 echo
 
 echo -e ${RED} ------- apply patches ${NC}
-for file in $(cat ../../cromite/build/cromite_patches_list.txt) ; do
+for file in $(cat ../../Spectre Browser/build/Spectre Browser_patches_list.txt) ; do
 
    if [[ "$file" == *".patch" ]]; then
 	#if [[ "$file" == *"Automated-domain-substitution"* ]]; then
@@ -74,11 +74,11 @@ for file in $(cat ../../cromite/build/cromite_patches_list.txt) ; do
 	echo -e ${RED} " -> Apply $file" ${NC}
 
 	REPL="0,/^---/s//FILE:"$(basename $file)"\n---/"
-	cat ../../cromite/build/patches/$file | sed $REPL | git am
+	cat ../../Spectre Browser/build/patches/$file | sed $REPL | git am
 
 	if [ $? -ne 0 ]
 	then
-            echo -e "Error on ../../cromite/build/patches/${file}"
+            echo -e "Error on ../../Spectre Browser/build/patches/${file}"
             exit 1
 	fi
 

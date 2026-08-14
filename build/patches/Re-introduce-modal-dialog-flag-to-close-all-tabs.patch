@@ -15,9 +15,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...ntroduce-modal-dialog-flag-to-close-all-tabs.inc |  7 +++++++
  ...ntroduce-modal-dialog-flag-to-close-all-tabs.inc |  5 +++++
  6 files changed, 33 insertions(+)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
 
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/CloseAllTabsDialog.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/CloseAllTabsDialog.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/CloseAllTabsDialog.java
@@ -64,10 +64,10 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final String COMMAND_LINE_ON_NON_ROOTED = "CommandLineOnNonRooted";
      public static final String COMMERCE_MERCHANT_VIEWER = "CommerceMerchantViewer";
      public static final String COMPOSITOR_VIEW_HOLDER_OBSCURING = "CompositorViewHolderObscuring";
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc b/cromite_flags/chrome/browser/about_flags_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
 @@ -0,0 +1,13 @@
 +#if BUILDFLAG(IS_ANDROID)
 +
@@ -82,22 +82,22 @@ new file mode 100644
 +#endif
 +
 +#endif
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
 @@ -0,0 +1,7 @@
 +#if BUILDFLAG(IS_ANDROID)
 +
-+CROMITE_FEATURE(kCloseAllTabsModalDialog,
++Spectre Browser_FEATURE(kCloseAllTabsModalDialog,
 +                "CloseAllTabsModalDialog",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
 +
 +#endif
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Re-introduce-modal-dialog-flag-to-close-all-tabs.inc
 @@ -0,0 +1,5 @@
 +#if BUILDFLAG(IS_ANDROID)
 +

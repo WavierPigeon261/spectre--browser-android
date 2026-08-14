@@ -10,9 +10,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../third_party/blink/common/features_cc/Disable-FedCm.inc      | 1 +
  .../blink/renderer/platform/runtime_enabled_features.json5      | 2 +-
  5 files changed, 5 insertions(+), 2 deletions(-)
- create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-FedCm.inc
- create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-FedCm.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-FedCm.inc
+ create mode 100644 Spectre Browser_flags/content/public/common/content_features_cc/Disable-FedCm.inc
+ create mode 100644 Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-FedCm.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_cc/Disable-FedCm.inc
 
 diff --git a/components/content_settings/core/browser/content_settings_registry.cc b/components/content_settings/core/browser/content_settings_registry.cc
 --- a/components/content_settings/core/browser/content_settings_registry.cc
@@ -26,22 +26,22 @@ diff --git a/components/content_settings/core/browser/content_settings_registry.
             WebsiteSettingsInfo::UNSYNCABLE,
             /*allowlisted_primary_schemes=*/{},
             /*valid_settings=*/{CONTENT_SETTING_ALLOW, CONTENT_SETTING_BLOCK},
-diff --git a/cromite_flags/content/public/common/content_features_cc/Disable-FedCm.inc b/cromite_flags/content/public/common/content_features_cc/Disable-FedCm.inc
+diff --git a/Spectre Browser_flags/content/public/common/content_features_cc/Disable-FedCm.inc b/Spectre Browser_flags/content/public/common/content_features_cc/Disable-FedCm.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/public/common/content_features_cc/Disable-FedCm.inc
++++ b/Spectre Browser_flags/content/public/common/content_features_cc/Disable-FedCm.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kFedCm);
-diff --git a/cromite_flags/services/network/public/cpp/features_cc/Disable-FedCm.inc b/cromite_flags/services/network/public/cpp/features_cc/Disable-FedCm.inc
++SET_Spectre Browser_FEATURE_DISABLED(kFedCm);
+diff --git a/Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-FedCm.inc b/Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-FedCm.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/services/network/public/cpp/features_cc/Disable-FedCm.inc
++++ b/Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-FedCm.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kSendSameSiteLaxForFedCM);
-diff --git a/cromite_flags/third_party/blink/common/features_cc/Disable-FedCm.inc b/cromite_flags/third_party/blink/common/features_cc/Disable-FedCm.inc
++SET_Spectre Browser_FEATURE_ENABLED(kSendSameSiteLaxForFedCM);
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_cc/Disable-FedCm.inc b/Spectre Browser_flags/third_party/blink/common/features_cc/Disable-FedCm.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_cc/Disable-FedCm.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_cc/Disable-FedCm.inc
 @@ -0,0 +1 @@
 +// empty
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5

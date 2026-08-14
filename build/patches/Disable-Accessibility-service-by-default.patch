@@ -8,12 +8,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../android/java/res/xml/accessibility_preferences.xml   | 5 +++++
  .../accessibility/WebContentsAccessibilityImpl.java      | 5 +++++
  3 files changed, 19 insertions(+)
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Disable-Accessibility-service-by-default.grdp
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Disable-Accessibility-service-by-default.grdp
 
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Disable-Accessibility-service-by-default.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Disable-Accessibility-service-by-default.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Disable-Accessibility-service-by-default.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Disable-Accessibility-service-by-default.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Disable-Accessibility-service-by-default.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Disable-Accessibility-service-by-default.grdp
 @@ -0,0 +1,9 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>

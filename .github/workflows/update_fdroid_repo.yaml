@@ -44,15 +44,15 @@ jobs:
             mkdir -p  ~/.config/rclone
             echo "${{ secrets.RCLONE_CONF }}" > ~/.config/rclone/rclone.conf
 
-            $rclone sync ftp:www.cromite.org/fdroid fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080
+            $rclone sync ftp:www.Spectre Browser.org/fdroid fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080
 
             test -d /usr/share/man/man1 || mkdir -p /usr/share/man/man1
             DEBIAN_FRONTEND=noninteractive apt install -y fdroidserver
 
             cd fdroid/repo/
-            wget https://github.com/uazo/cromite/releases/latest/download/arm_ChromePublic.apk
-            wget https://github.com/uazo/cromite/releases/latest/download/arm64_ChromePublic.apk
-            wget https://github.com/uazo/cromite/releases/latest/download/x64_ChromePublic.apk
+            wget https://github.com/uazo/Spectre Browser/releases/latest/download/arm_ChromePublic.apk
+            wget https://github.com/uazo/Spectre Browser/releases/latest/download/arm64_ChromePublic.apk
+            wget https://github.com/uazo/Spectre Browser/releases/latest/download/x64_ChromePublic.apk
 
             test arm_ChromePublic.apk.1 && rm arm_ChromePublic.apk && mv arm_ChromePublic.apk.1 arm_ChromePublic.apk
             test arm64_ChromePublic.apk.1 && rm arm64_ChromePublic.apk && mv arm64_ChromePublic.apk.1 arm64_ChromePublic.apk
@@ -69,5 +69,5 @@ jobs:
             test -f fdroid/config.yml && exit 1
             test -f fdroid/keystore.p12 && exit 1
 
-            $rclone sync fdroid ftp:www.cromite.org/fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080
-            $rclone sync fdroid ftp:www.cromite.org/fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080
+            $rclone sync fdroid ftp:www.Spectre Browser.org/fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080
+            $rclone sync fdroid ftp:www.Spectre Browser.org/fdroid --log-level INFO --ftp-socks-proxy 127.0.0.1:1080

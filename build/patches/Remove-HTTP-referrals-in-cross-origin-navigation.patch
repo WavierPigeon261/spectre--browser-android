@@ -39,7 +39,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  create mode 100644 chrome/android/java/res/xml/referer_policy_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/RadioButtonGroupRefererSettings.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/RefererSettingsFragment.java
- create mode 100644 components/cromite_components_strings_grd/Remove-HTTP-referrals-in-cross-origin-navigation.grdp
+ create mode 100644 components/Spectre Browser_components_strings_grd/Remove-HTTP-referrals-in-cross-origin-navigation.grdp
 
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
@@ -588,10 +588,10 @@ diff --git a/chrome/common/pref_names.h b/chrome/common/pref_names.h
  // Boolean that specifies whether to import the form data for autofill from the
  // default browser on first run.
  inline constexpr char kImportAutofillFormData[] = "import_autofill_form_data";
-diff --git a/components/cromite_components_strings_grd/Remove-HTTP-referrals-in-cross-origin-navigation.grdp b/components/cromite_components_strings_grd/Remove-HTTP-referrals-in-cross-origin-navigation.grdp
+diff --git a/components/Spectre Browser_components_strings_grd/Remove-HTTP-referrals-in-cross-origin-navigation.grdp b/components/Spectre Browser_components_strings_grd/Remove-HTTP-referrals-in-cross-origin-navigation.grdp
 new file mode 100644
 --- /dev/null
-+++ b/components/cromite_components_strings_grd/Remove-HTTP-referrals-in-cross-origin-navigation.grdp
++++ b/components/Spectre Browser_components_strings_grd/Remove-HTTP-referrals-in-cross-origin-navigation.grdp
 @@ -0,0 +1,18 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>

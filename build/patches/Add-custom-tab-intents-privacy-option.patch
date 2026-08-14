@@ -26,16 +26,16 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../core/common/language_experiments.cc       |  1 +
  .../add-custom-tab-intents-privacy-option.inc |  1 +
  13 files changed, 159 insertions(+), 13 deletions(-)
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-custom-tab-intents-privacy-option.grdp
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-custom-tab-intents-privacy-option.inc
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Add-custom-tab-intents-privacy-option.grdp
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-custom-tab-intents-privacy-option.inc
 
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
 @@ -40,6 +40,21 @@ found in the LICENSE file.
-         android:key="cromite_flags"
-         android:title="@string/cromite_flags_title"
-         app:url="@string/cromite_flags_url" />
+         android:key="Spectre Browser_flags"
+         android:title="@string/Spectre Browser_flags_title"
+         app:url="@string/Spectre Browser_flags_url" />
 +    <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
 +        android:key="allow_custom_tab_intents"
 +        android:title="@string/allow_custom_tab_intents_title"
@@ -271,7 +271,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/setting
 +    private ChromeSwitchPreference openExternalLinksPref;
 +
      @Override
-     public void onCreatePreferencesCromite(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+     public void onCreatePreferencesSpectre Browser(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
          mPageTitle.set(getString(R.string.prefs_privacy_security));
 @@ -420,6 +433,9 @@ public class PrivacySettings extends ChromeBaseSettingsFragment
                  new SpanApplier.SpanInfo("<link2>", "</link2>", servicesLink));
@@ -340,7 +340,7 @@ diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browse
  // storage partition. This may reduce performance. This should not be enabled by
  // default.
 -BASE_FEATURE(kMayLaunchUrlUsesSeparateStoragePartition, base::FEATURE_DISABLED_BY_DEFAULT);
-+CROMITE_FEATURE(kMayLaunchUrlUsesSeparateStoragePartition,
++Spectre Browser_FEATURE(kMayLaunchUrlUsesSeparateStoragePartition,
 +                "MayLaunchUrlUsesSeparateStoragePartition",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
  BASE_FEATURE(kMediaIndicatorsAndroid, base::FEATURE_DISABLED_BY_DEFAULT);
@@ -382,10 +382,10 @@ diff --git a/chrome/browser/tab/java/src/org/chromium/chrome/browser/tab/TabAsso
          String packageName = ContextUtils.getApplicationContext().getPackageName();
          return tab.getLaunchType() == TabLaunchType.FROM_EXTERNAL_APP
                  && !TextUtils.equals(app.getAppId(), packageName);
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-custom-tab-intents-privacy-option.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-custom-tab-intents-privacy-option.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Add-custom-tab-intents-privacy-option.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Add-custom-tab-intents-privacy-option.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-custom-tab-intents-privacy-option.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Add-custom-tab-intents-privacy-option.grdp
 @@ -0,0 +1,25 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>
@@ -394,7 +394,7 @@ new file mode 100644
 +        Allow custom tab intents.
 +    </message>
 +    <message name="IDS_ALLOW_CUSTOM_TAB_INTENTS_SUMMARY" desc="Summary text for 'Allow custom tab intents' settings-privacy option.">
-+        Allow applications to open custom tab intents, similar to webview. To work, Cromite must be set as the default browser.
++        Allow applications to open custom tab intents, similar to webview. To work, Spectre Browser must be set as the default browser.
 +    </message>
 +
 +    <message name="IDS_USES_SEPARATE_STORAGEPARTITION_FOR_CCT_TITLE" desc="Text for 'Use ephemeral mode for CCT' settings-privacy option.">
@@ -434,12 +434,12 @@ diff --git a/components/language/core/common/language_experiments.cc b/component
  
  BASE_FEATURE(kDisableGeoLanguageModel, base::FEATURE_ENABLED_BY_DEFAULT);
  
-+SET_CROMITE_FEATURE_DISABLED(kCctAutoTranslate);
++SET_Spectre Browser_FEATURE_DISABLED(kCctAutoTranslate);
  }  // namespace language
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-custom-tab-intents-privacy-option.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-custom-tab-intents-privacy-option.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-custom-tab-intents-privacy-option.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-custom-tab-intents-privacy-option.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-custom-tab-intents-privacy-option.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-custom-tab-intents-privacy-option.inc
 @@ -0,0 +1 @@
 +// explicitly empty
 --

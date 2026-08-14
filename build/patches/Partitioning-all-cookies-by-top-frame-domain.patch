@@ -41,11 +41,11 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ui/webui/webui_allowlist.cc                   |  1 +
  url/url_features.cc                           |  1 +
  31 files changed, 88 insertions(+), 62 deletions(-)
- create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
- create mode 100644 cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
- create mode 100644 cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
- create mode 100644 cromite_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
- create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+ create mode 100644 Spectre Browser_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+ create mode 100644 Spectre Browser_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+ create mode 100644 Spectre Browser_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+ create mode 100644 Spectre Browser_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+ create mode 100644 Spectre Browser_flags/services/network/public/cpp/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
@@ -239,49 +239,49 @@ diff --git a/components/content_settings/core/common/cookie_settings_base.cc b/c
                                       /*third_party_cookie_allow_mechanism=*/
                                       ThirdPartyCookieAllowMechanism::kNone,
                                       /*is_third_party_request=*/false};
-diff --git a/cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+diff --git a/Spectre Browser_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/Spectre Browser_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
++++ b/Spectre Browser_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 @@ -0,0 +1,2 @@
-+SET_CROMITE_FEATURE_DISABLED(kTrackingProtection3pcd);
-+SET_CROMITE_FEATURE_DISABLED(kUserBypassUI);
-diff --git a/cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
++SET_Spectre Browser_FEATURE_DISABLED(kTrackingProtection3pcd);
++SET_Spectre Browser_FEATURE_DISABLED(kUserBypassUI);
+diff --git a/Spectre Browser_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/Spectre Browser_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
++++ b/Spectre Browser_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kShowRelatedWebsiteSetsPermissionGrants);
-diff --git a/cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
++SET_Spectre Browser_FEATURE_ENABLED(kShowRelatedWebsiteSetsPermissionGrants);
+diff --git a/Spectre Browser_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/Spectre Browser_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
++++ b/Spectre Browser_flags/content/public/common/content_features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 @@ -0,0 +1 @@
 +// empty file
-diff --git a/cromite_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
+diff --git a/Spectre Browser_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/Spectre Browser_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
++++ b/Spectre Browser_flags/net/base/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 @@ -0,0 +1,15 @@
-+SET_CROMITE_FEATURE_ENABLED(kCookieDomainRejectNonASCII);
++SET_Spectre Browser_FEATURE_ENABLED(kCookieDomainRejectNonASCII);
 +
-+SET_CROMITE_FEATURE_DISABLED(kForceThirdPartyCookieBlocking);
-+SET_CROMITE_FEATURE_DISABLED(kThirdPartyPartitionedStorageAllowedByDefault);
++SET_Spectre Browser_FEATURE_DISABLED(kForceThirdPartyCookieBlocking);
++SET_Spectre Browser_FEATURE_DISABLED(kThirdPartyPartitionedStorageAllowedByDefault);
 +
-+SET_CROMITE_FEATURE_ENABLED(kCookieSameSiteConsidersRedirectChain);
-+SET_CROMITE_FEATURE_ENABLED(kSameSiteDefaultChecksMethodRigorously);
-+SET_CROMITE_FEATURE_ENABLED(kTimeLimitedInsecureCookies);
++SET_Spectre Browser_FEATURE_ENABLED(kCookieSameSiteConsidersRedirectChain);
++SET_Spectre Browser_FEATURE_ENABLED(kSameSiteDefaultChecksMethodRigorously);
++SET_Spectre Browser_FEATURE_ENABLED(kTimeLimitedInsecureCookies);
 +
-+SET_CROMITE_FEATURE_DISABLED(kTpcdMetadataGrants);
-+SET_CROMITE_FEATURE_DISABLED(kTpcdMetadataStageControl);
++SET_Spectre Browser_FEATURE_DISABLED(kTpcdMetadataGrants);
++SET_Spectre Browser_FEATURE_DISABLED(kTpcdMetadataStageControl);
 +
 +// Implement `Activate-Storage-Access: retry` header semantics
 +// https://source.chromium.org/chromium/chromium/src/+/ca4775cd3edadea0c3e756e772c3afc766e46fd1
-+// SET_CROMITE_FEATURE_DISABLED(kStorageAccessHeaderRetry);
-diff --git a/cromite_flags/services/network/public/cpp/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/services/network/public/cpp/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
++// SET_Spectre Browser_FEATURE_DISABLED(kStorageAccessHeaderRetry);
+diff --git a/Spectre Browser_flags/services/network/public/cpp/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/Spectre Browser_flags/services/network/public/cpp/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/services/network/public/cpp/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
++++ b/Spectre Browser_flags/services/network/public/cpp/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 @@ -0,0 +1 @@
 +// intentionally empty
 diff --git a/net/cookies/canonical_cookie.cc b/net/cookies/canonical_cookie.cc
@@ -547,7 +547,7 @@ diff --git a/url/url_features.cc b/url/url_features.cc
  
  BASE_FEATURE(kDisallowSpaceCharacterInURLHostParsing,
               base::FEATURE_DISABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_ENABLED(kDisallowSpaceCharacterInURLHostParsing);
++SET_Spectre Browser_FEATURE_ENABLED(kDisallowSpaceCharacterInURLHostParsing);
  
  bool IsDisallowingSpaceCharacterInURLHostParsing() {
    // If the FeatureList isn't available yet, fall back to the feature's default

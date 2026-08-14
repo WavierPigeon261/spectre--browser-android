@@ -1,8 +1,8 @@
 From: uazo <uazo@users.noreply.github.com>
 Date: Fri, 22 Aug 2025 15:41:58 +0000
-Subject: Add cromite test support
+Subject: Add Spectre Browser test support
 
-Allows the activation of specific APIs used for cromite testing.
+Allows the activation of specific APIs used for Spectre Browser testing.
 API are only available on the chrome://version page.
 It allows the use of tools such as Browserstack for test automation.
 Do not activate the corresponding options (available in the developer
@@ -16,18 +16,18 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  chrome/browser/BUILD.gn                       |   5 +
  chrome/browser/android/devtools_server.cc     |  10 +
  ...ontent_browser_client_receiver_bindings.cc |  10 +
- .../cromite/cromite_private_api_host.cc       |  74 +++++++
- .../cromite/cromite_private_api_host.h        |  54 +++++
- .../browser/flags/cromite/sActAsWebView.java  |  33 +++
- .../cromite/sEnableCromiteTestSupport.java    |  33 +++
+ .../Spectre Browser/Spectre Browser_private_api_host.cc       |  74 +++++++
+ .../Spectre Browser/Spectre Browser_private_api_host.h        |  54 +++++
+ .../browser/flags/Spectre Browser/sActAsWebView.java  |  33 +++
+ .../Spectre Browser/sEnableSpectre BrowserTestSupport.java    |  33 +++
  .../NotificationPermissionController.java     |   1 +
  chrome/browser/ui/startup/bad_flags_prompt.cc |   1 +
  chrome/common/BUILD.gn                        |   1 +
- .../cromite_private_api_extension.mojom       |   7 +
+ .../Spectre Browser_private_api_extension.mojom       |   7 +
  chrome/renderer/BUILD.gn                      |   2 +
  .../chrome_content_renderer_client.cc         |   2 +
- .../cromite/cromite_private_api_extension.cc  | 203 ++++++++++++++++++
- .../cromite/cromite_private_api_extension.h   |  65 ++++++
+ .../Spectre Browser/Spectre Browser_private_api_extension.cc  | 203 ++++++++++++++++++
+ .../Spectre Browser/Spectre Browser_private_api_extension.h   |  65 ++++++
  .../component_updater_service.h               |   1 +
  .../browser/devtools/devtools_http_handler.cc |   7 +-
  content/browser/log_console_message.cc        |  15 +-
@@ -37,16 +37,16 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../Enable-test-support.inc                   |   7 +
  .../Enable-test-support.inc                   |   2 +
  26 files changed, 581 insertions(+), 7 deletions(-)
- create mode 100644 chrome/browser/cromite/cromite_private_api_host.cc
- create mode 100644 chrome/browser/cromite/cromite_private_api_host.h
- create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sActAsWebView.java
- create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sEnableCromiteTestSupport.java
- create mode 100644 chrome/common/cromite_private_api_extension.mojom
- create mode 100644 chrome/renderer/cromite/cromite_private_api_extension.cc
- create mode 100644 chrome/renderer/cromite/cromite_private_api_extension.h
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Enable-test-support.inc
- create mode 100644 cromite_flags/content/public/common/content_features_cc/Enable-test-support.inc
- create mode 100644 cromite_flags/content/public/common/content_features_h/Enable-test-support.inc
+ create mode 100644 chrome/browser/Spectre Browser/Spectre Browser_private_api_host.cc
+ create mode 100644 chrome/browser/Spectre Browser/Spectre Browser_private_api_host.h
+ create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sActAsWebView.java
+ create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sEnableSpectre BrowserTestSupport.java
+ create mode 100644 chrome/common/Spectre Browser_private_api_extension.mojom
+ create mode 100644 chrome/renderer/Spectre Browser/Spectre Browser_private_api_extension.cc
+ create mode 100644 chrome/renderer/Spectre Browser/Spectre Browser_private_api_extension.h
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Enable-test-support.inc
+ create mode 100644 Spectre Browser_flags/content/public/common/content_features_cc/Enable-test-support.inc
+ create mode 100644 Spectre Browser_flags/content/public/common/content_features_h/Enable-test-support.inc
 
 diff --git a/chrome/android/java/res/xml/developer_preferences.xml b/chrome/android/java/res/xml/developer_preferences.xml
 --- a/chrome/android/java/res/xml/developer_preferences.xml
@@ -56,15 +56,15 @@ diff --git a/chrome/android/java/res/xml/developer_preferences.xml b/chrome/andr
          android:key="tracing"
          android:title="Tracing" />
 +    <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
-+        android:key="enable_cromite_test_support"
-+        android:title="Enable support for cromite test"
-+        android:summary="Setting allows the activation of specific APIs used for cromite testing. Do not activate if you do not know what you are doing."
-+        app:featureName="enable-cromite-test-support"
++        android:key="enable_Spectre Browser_test_support"
++        android:title="Enable support for Spectre Browser test"
++        android:summary="Setting allows the activation of specific APIs used for Spectre Browser testing. Do not activate if you do not know what you are doing."
++        app:featureName="enable-Spectre Browser-test-support"
 +        app:needRestart="true" />
 +    <org.chromium.components.browser_ui.settings.ChromeSwitchPreference
 +        android:key="act_as_webview"
-+        android:title="Enable webview support for cromite test"
-+        android:summary="Setting allows the activation of specific APIs used for cromite testing. Do not activate if you do not know what you are doing."
++        android:title="Enable webview support for Spectre Browser test"
++        android:summary="Setting allows the activation of specific APIs used for Spectre Browser testing. Do not activate if you do not know what you are doing."
 +        app:featureName="act-as-webview"
 +        app:needRestart="true" />
      <Preference
@@ -77,7 +77,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/init/ProcessIni
  import org.chromium.ui.base.WindowAndroid;
  import org.chromium.ui.edge_to_edge.EdgeToEdgeStateProvider;
  import org.chromium.url.GURL;
-+import org.chromium.chrome.browser.flags.cromite.sActAsWebView;
++import org.chromium.chrome.browser.flags.Spectre Browser.sActAsWebView;
  
  import java.io.File;
  import java.nio.charset.StandardCharsets;
@@ -112,8 +112,8 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
  # require many files from it. This makes linking more efficient.
  static_library("browser") {
    sources = [
-+    "cromite/cromite_private_api_host.cc",
-+    "cromite/cromite_private_api_host.h",
++    "Spectre Browser/Spectre Browser_private_api_host.cc",
++    "Spectre Browser/Spectre Browser_private_api_host.h",
 +  ]
 +
 +  sources += [
@@ -143,7 +143,7 @@ diff --git a/chrome/browser/android/devtools_server.cc b/chrome/browser/android/
  
  bool AuthorizeSocketAccessWithDebugPermission(
      const net::UnixDomainServerSocket::Credentials& credentials) {
-+  if (base::FeatureList::IsEnabled(features::kEnableCromiteTestSupport))
++  if (base::FeatureList::IsEnabled(features::kEnableSpectre BrowserTestSupport))
 +    return true;
    JNIEnv* env = base::android::AttachCurrentThread();
    return Java_DevToolsServer_checkDebugPermission(env, credentials.process_id,
@@ -175,7 +175,7 @@ diff --git a/chrome/browser/chrome_content_browser_client_receiver_bindings.cc b
  #include "build/build_config.h"
  #include "chrome/browser/browser_process.h"
  #include "chrome/browser/chrome_browser_interface_binders.h"
-+#include "chrome/browser/cromite/cromite_private_api_host.h"
++#include "chrome/browser/Spectre Browser/Spectre Browser_private_api_host.h"
  #include "chrome/browser/chrome_browser_interface_binders_webui.h"
  #include "chrome/browser/chrome_content_browser_client.h"
  #include "chrome/browser/chrome_content_browser_client_parts.h"
@@ -184,23 +184,23 @@ diff --git a/chrome/browser/chrome_content_browser_client_receiver_bindings.cc b
        },
        &render_frame_host));
 +  associated_registry.AddInterface<
-+      chrome::mojom::CromitePrivateApiExtension>(base::BindRepeating(
++      chrome::mojom::Spectre BrowserPrivateApiExtension>(base::BindRepeating(
 +      [](content::RenderFrameHost* render_frame_host,
 +         mojo::PendingAssociatedReceiver<
-+             chrome::mojom::CromitePrivateApiExtension> receiver) {
-+        CromitePrivateApiHost::BindHost(std::move(receiver),
++             chrome::mojom::Spectre BrowserPrivateApiExtension> receiver) {
++        Spectre BrowserPrivateApiHost::BindHost(std::move(receiver),
 +                                        render_frame_host);
 +      },
 +      &render_frame_host));
    associated_registry.AddInterface<
        chrome::mojom::GoogleAccountsPrivateApiExtension>(base::BindRepeating(
        [](content::RenderFrameHost* render_frame_host,
-diff --git a/chrome/browser/cromite/cromite_private_api_host.cc b/chrome/browser/cromite/cromite_private_api_host.cc
+diff --git a/chrome/browser/Spectre Browser/Spectre Browser_private_api_host.cc b/chrome/browser/Spectre Browser/Spectre Browser_private_api_host.cc
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/cromite/cromite_private_api_host.cc
++++ b/chrome/browser/Spectre Browser/Spectre Browser_private_api_host.cc
 @@ -0,0 +1,74 @@
-+#include "chrome/browser/cromite/cromite_private_api_host.h"
++#include "chrome/browser/Spectre Browser/Spectre Browser_private_api_host.h"
 +
 +#include "base/json/json_writer.h"
 +
@@ -212,25 +212,25 @@ new file mode 100644
 +#include "content/public/browser/render_frame_host.h"
 +#include "content/public/browser/site_instance.h"
 +
-+CromitePrivateApiHost::CromitePrivateApiHost(
++Spectre BrowserPrivateApiHost::Spectre BrowserPrivateApiHost(
 +    content::RenderFrameHost* rfh)
-+    : DocumentUserData<CromitePrivateApiHost>(rfh),
++    : DocumentUserData<Spectre BrowserPrivateApiHost>(rfh),
 +      receiver_(this) {}
 +
-+CromitePrivateApiHost::~CromitePrivateApiHost() = default;
++Spectre BrowserPrivateApiHost::~Spectre BrowserPrivateApiHost() = default;
 +
-+DOCUMENT_USER_DATA_KEY_IMPL(CromitePrivateApiHost);
++DOCUMENT_USER_DATA_KEY_IMPL(Spectre BrowserPrivateApiHost);
 +
-+void CromitePrivateApiHost::BindReceiver(
++void Spectre BrowserPrivateApiHost::BindReceiver(
 +    mojo::PendingAssociatedReceiver<
-+        chrome::mojom::CromitePrivateApiExtension> receiver) {
++        chrome::mojom::Spectre BrowserPrivateApiExtension> receiver) {
 +  receiver_.Bind(std::move(receiver));
 +}
 +
-+void CromitePrivateApiHost::GetComponentData(
++void Spectre BrowserPrivateApiHost::GetComponentData(
 +    const std::string& id,
 +    GetComponentDataCallback callback) {
-+  LOG(INFO) << "---CromitePrivateApiHost::GetComponentData "
++  LOG(INFO) << "---Spectre BrowserPrivateApiHost::GetComponentData "
 +            << "id=" << id;
 +  const raw_ptr<component_updater::ComponentUpdateService>
 +    component_updater = g_browser_process->component_updater();
@@ -251,8 +251,8 @@ new file mode 100644
 +  }
 +}
 +
-+void CromitePrivateApiHost::StartComponentUpdate(const std::string& id) {
-+  LOG(INFO) << "---CromitePrivateApiHost::StartComponentUpdate "
++void Spectre BrowserPrivateApiHost::StartComponentUpdate(const std::string& id) {
++  LOG(INFO) << "---Spectre BrowserPrivateApiHost::StartComponentUpdate "
 +            << "id=" << id;
 +  const raw_ptr<component_updater::ComponentUpdateService>
 +    component_updater = g_browser_process->component_updater();
@@ -261,31 +261,31 @@ new file mode 100644
 +      component_updater::Callback());
 +}
 +
-+void CromitePrivateApiHost::SetEnableLogConsole(bool enabled) {
++void Spectre BrowserPrivateApiHost::SetEnableLogConsole(bool enabled) {
 +  enable_log_console_ = enabled;
 +}
 +
 +// static
-+void CromitePrivateApiHost::BindHost(
++void Spectre BrowserPrivateApiHost::BindHost(
 +    mojo::PendingAssociatedReceiver<
-+        chrome::mojom::CromitePrivateApiExtension> receiver,
++        chrome::mojom::Spectre BrowserPrivateApiExtension> receiver,
 +    content::RenderFrameHost* render_frame_host) {
-+  CromitePrivateApiHost* api_host =
-+      CromitePrivateApiHost::GetOrCreateForCurrentDocument(render_frame_host);
++  Spectre BrowserPrivateApiHost* api_host =
++      Spectre BrowserPrivateApiHost::GetOrCreateForCurrentDocument(render_frame_host);
 +  api_host->BindReceiver(std::move(receiver));
 +}
-diff --git a/chrome/browser/cromite/cromite_private_api_host.h b/chrome/browser/cromite/cromite_private_api_host.h
+diff --git a/chrome/browser/Spectre Browser/Spectre Browser_private_api_host.h b/chrome/browser/Spectre Browser/Spectre Browser_private_api_host.h
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/cromite/cromite_private_api_host.h
++++ b/chrome/browser/Spectre Browser/Spectre Browser_private_api_host.h
 @@ -0,0 +1,54 @@
-+#ifndef CHROME_BROWSER_CROMITE_PRIVATE_API_HOST_H_
-+#define CHROME_BROWSER_CROMITE_PRIVATE_API_HOST_H_
++#ifndef CHROME_BROWSER_Spectre Browser_PRIVATE_API_HOST_H_
++#define CHROME_BROWSER_Spectre Browser_PRIVATE_API_HOST_H_
 +
 +#include <string>
 +
 +#include "base/functional/callback.h"
-+#include "chrome/common/cromite_private_api_extension.mojom.h"
++#include "chrome/common/Spectre Browser_private_api_extension.mojom.h"
 +#include "content/public/browser/document_user_data.h"
 +#include "mojo/public/cpp/bindings/associated_receiver.h"
 +
@@ -294,68 +294,68 @@ new file mode 100644
 +class RenderFrameHost;
 +}  // namespace content
 +
-+class CromitePrivateApiHost
-+    : public chrome::mojom::CromitePrivateApiExtension,
-+      public content::DocumentUserData<CromitePrivateApiHost> {
++class Spectre BrowserPrivateApiHost
++    : public chrome::mojom::Spectre BrowserPrivateApiExtension,
++      public content::DocumentUserData<Spectre BrowserPrivateApiHost> {
 + public:
-+  ~CromitePrivateApiHost() override;
-+  CromitePrivateApiHost(const CromitePrivateApiHost&) = delete;
-+  CromitePrivateApiHost& operator=(const CromitePrivateApiHost&) =
++  ~Spectre BrowserPrivateApiHost() override;
++  Spectre BrowserPrivateApiHost(const Spectre BrowserPrivateApiHost&) = delete;
++  Spectre BrowserPrivateApiHost& operator=(const Spectre BrowserPrivateApiHost&) =
 +      delete;
 +
 +  static void BindHost(
 +      mojo::PendingAssociatedReceiver<
-+          chrome::mojom::CromitePrivateApiExtension> receiver,
++          chrome::mojom::Spectre BrowserPrivateApiExtension> receiver,
 +      content::RenderFrameHost* render_frame_host);
 +
 +  void BindReceiver(mojo::PendingAssociatedReceiver<
-+                    chrome::mojom::CromitePrivateApiExtension> receiver);
++                    chrome::mojom::Spectre BrowserPrivateApiExtension> receiver);
 +
 +  bool IsLogConsoleEnabled() const { return enable_log_console_; }
 +
-+  // chrome::mojom::CromitePrivateApiExtension:
++  // chrome::mojom::Spectre BrowserPrivateApiExtension:
 +  void GetComponentData(const std::string& id,
 +                        GetComponentDataCallback callback) override;
 +  void StartComponentUpdate(const std::string& id) override;
 +  void SetEnableLogConsole(bool can_show) override;
 +
 + private:
-+  explicit CromitePrivateApiHost(
++  explicit Spectre BrowserPrivateApiHost(
 +      content::RenderFrameHost* rfh);
 +
 +  friend DocumentUserData;
 +  DOCUMENT_USER_DATA_KEY_DECL();
 +
-+  mojo::AssociatedReceiver<chrome::mojom::CromitePrivateApiExtension>
++  mojo::AssociatedReceiver<chrome::mojom::Spectre BrowserPrivateApiExtension>
 +      receiver_;
 +
 +  bool enable_log_console_ = false;
 +};
 +
-+#endif  // CHROME_BROWSER_CROMITE_PRIVATE_API_HOST_H_
-diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sActAsWebView.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sActAsWebView.java
++#endif  // CHROME_BROWSER_Spectre Browser_PRIVATE_API_HOST_H_
+diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sActAsWebView.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sActAsWebView.java
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sActAsWebView.java
++++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sActAsWebView.java
 @@ -0,0 +1,33 @@
 +/*
-+    This file is part of Cromite.
++    This file is part of Spectre Browser.
 +
-+    Cromite is free software: you can redistribute it and/or modify
++    Spectre Browser is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
 +    the Free Software Foundation, either version 3 of the License, or
 +    (at your option) any later version.
 +
-+    Cromite is distributed in the hope that it will be useful,
++    Spectre Browser is distributed in the hope that it will be useful,
 +    but WITHOUT ANY WARRANTY; without even the implied warranty of
 +    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +    GNU General Public License for more details.
 +
 +    You should have received a copy of the GNU General Public License
-+    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++    along with Spectre Browser. If not, see <https://www.gnu.org/licenses/>.
 +*/
 +
-+package org.chromium.chrome.browser.flags.cromite;
++package org.chromium.chrome.browser.flags.Spectre Browser;
 +
 +import org.chromium.components.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureMap;
@@ -371,39 +371,39 @@ new file mode 100644
 +        return sInstance;
 +    }
 +}
-diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sEnableCromiteTestSupport.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sEnableCromiteTestSupport.java
+diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sEnableSpectre BrowserTestSupport.java b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sEnableSpectre BrowserTestSupport.java
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sEnableCromiteTestSupport.java
++++ b/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/Spectre Browser/sEnableSpectre BrowserTestSupport.java
 @@ -0,0 +1,33 @@
 +/*
-+    This file is part of Cromite.
++    This file is part of Spectre Browser.
 +
-+    Cromite is free software: you can redistribute it and/or modify
++    Spectre Browser is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
 +    the Free Software Foundation, either version 3 of the License, or
 +    (at your option) any later version.
 +
-+    Cromite is distributed in the hope that it will be useful,
++    Spectre Browser is distributed in the hope that it will be useful,
 +    but WITHOUT ANY WARRANTY; without even the implied warranty of
 +    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +    GNU General Public License for more details.
 +
 +    You should have received a copy of the GNU General Public License
-+    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++    along with Spectre Browser. If not, see <https://www.gnu.org/licenses/>.
 +*/
 +
-+package org.chromium.chrome.browser.flags.cromite;
++package org.chromium.chrome.browser.flags.Spectre Browser;
 +
 +import org.chromium.components.cached_flags.CachedFlag;
 +import org.chromium.chrome.browser.flags.ChromeFeatureMap;
 +
-+public class sEnableCromiteTestSupport {
++public class sEnableSpectre BrowserTestSupport {
 +    private static final CachedFlag sInstance =
 +        new CachedFlag(ChromeFeatureMap.getInstance(),
-+            "EnableCromiteTestSupport", false);
++            "EnableSpectre BrowserTestSupport", false);
 +
-+    private sEnableCromiteTestSupport() {}
++    private sEnableSpectre BrowserTestSupport() {}
 +
 +    public static CachedFlag getInstance() {
 +        return sInstance;
@@ -427,7 +427,7 @@ diff --git a/chrome/browser/ui/startup/bad_flags_prompt.cc b/chrome/browser/ui/s
  
  #if BUILDFLAG(IS_ANDROID)
          &chrome::android::kCommandLineOnNonRooted,
-+        &features::kEnableCromiteTestSupport,
++        &features::kEnableSpectre BrowserTestSupport,
  #endif
  
          // This flag disables security for the Page Embedded Permission Control,
@@ -438,18 +438,18 @@ diff --git a/chrome/common/BUILD.gn b/chrome/common/BUILD.gn
      "actor.mojom",
      "chrome_render_frame.mojom",
      "google_accounts_private_api_extension.mojom",
-+    "cromite_private_api_extension.mojom",
++    "Spectre Browser_private_api_extension.mojom",
      "media/webrtc_logging.mojom",
      "net/net_error_page_support.mojom",
      "net_benchmarking.mojom",
-diff --git a/chrome/common/cromite_private_api_extension.mojom b/chrome/common/cromite_private_api_extension.mojom
+diff --git a/chrome/common/Spectre Browser_private_api_extension.mojom b/chrome/common/Spectre Browser_private_api_extension.mojom
 new file mode 100644
 --- /dev/null
-+++ b/chrome/common/cromite_private_api_extension.mojom
++++ b/chrome/common/Spectre Browser_private_api_extension.mojom
 @@ -0,0 +1,7 @@
 +module chrome.mojom;
 +
-+interface CromitePrivateApiExtension {
++interface Spectre BrowserPrivateApiExtension {
 +  GetComponentData(string id) => (string response);
 +  StartComponentUpdate(string id);
 +  SetEnableLogConsole(bool enabled);
@@ -461,8 +461,8 @@ diff --git a/chrome/renderer/BUILD.gn b/chrome/renderer/BUILD.gn
      "chrome_render_thread_observer.cc",
      "chrome_render_thread_observer.h",
      "custom_menu_commands.h",
-+    "cromite/cromite_private_api_extension.cc",
-+    "cromite/cromite_private_api_extension.h",
++    "Spectre Browser/Spectre Browser_private_api_extension.cc",
++    "Spectre Browser/Spectre Browser_private_api_extension.h",
      "google_accounts_private_api_extension.cc",
      "google_accounts_private_api_extension.h",
      "google_accounts_private_api_util.cc",
@@ -473,7 +473,7 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  #include "chrome/renderer/chrome_render_frame_observer.h"
  #include "chrome/renderer/chrome_render_thread_observer.h"
  #include "chrome/renderer/controlled_frame/controlled_frame_extensions_renderer_api_provider.h"
-+#include "chrome/renderer/cromite/cromite_private_api_extension.h"
++#include "chrome/renderer/Spectre Browser/Spectre Browser_private_api_extension.h"
  #include "chrome/renderer/google_accounts_private_api_extension.h"
  #include "chrome/renderer/loadtimes_extension_bindings.h"
  #include "chrome/renderer/media/flash_embed_rewrite.h"
@@ -481,16 +481,16 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  
    TrustedVaultEncryptionKeysExtension::Create(render_frame);
    GoogleAccountsPrivateApiExtension::Create(render_frame);
-+  CromitePrivateApiExtension::Create(render_frame);
++  Spectre BrowserPrivateApiExtension::Create(render_frame);
  
    if (render_frame->IsMainFrame())
      new webapps::WebPageMetadataAgent(render_frame);
-diff --git a/chrome/renderer/cromite/cromite_private_api_extension.cc b/chrome/renderer/cromite/cromite_private_api_extension.cc
+diff --git a/chrome/renderer/Spectre Browser/Spectre Browser_private_api_extension.cc b/chrome/renderer/Spectre Browser/Spectre Browser_private_api_extension.cc
 new file mode 100644
 --- /dev/null
-+++ b/chrome/renderer/cromite/cromite_private_api_extension.cc
++++ b/chrome/renderer/Spectre Browser/Spectre Browser_private_api_extension.cc
 @@ -0,0 +1,203 @@
-+#include "chrome/renderer/cromite/cromite_private_api_extension.h"
++#include "chrome/renderer/Spectre Browser/Spectre Browser_private_api_extension.h"
 +
 +#include "chrome/common/chrome_features.h"
 +#include "content/public/common/content_features.h"
@@ -508,10 +508,10 @@ new file mode 100644
 +
 +namespace {
 +
-+bool ShouldExposeCromitePrivateApi(
++bool ShouldExposeSpectre BrowserPrivateApi(
 +    content::RenderFrame* render_frame) {
 +  DCHECK(render_frame);
-+  if (!base::FeatureList::IsEnabled(features::kEnableCromiteTestSupport))
++  if (!base::FeatureList::IsEnabled(features::kEnableSpectre BrowserTestSupport))
 +    return false;
 +
 +  GURL origin_url = GURL("chrome://version");
@@ -523,7 +523,7 @@ new file mode 100644
 +
 +}
 +
-+CromitePrivateApiExtension::PendingRequest::PendingRequest(
++Spectre BrowserPrivateApiExtension::PendingRequest::PendingRequest(
 +    v8::Isolate* isolate,
 +    v8::Local<v8::Context> context,
 +    v8::Local<v8::Promise::Resolver> resolver)
@@ -531,37 +531,37 @@ new file mode 100644
 +      context(isolate, context),
 +      promise_resolver(isolate, resolver) {}
 +
-+CromitePrivateApiExtension::PendingRequest::~PendingRequest() = default;
++Spectre BrowserPrivateApiExtension::PendingRequest::~PendingRequest() = default;
 +
 +// static
-+void CromitePrivateApiExtension::Create(content::RenderFrame* frame) {
-+  new CromitePrivateApiExtension(frame);
++void Spectre BrowserPrivateApiExtension::Create(content::RenderFrame* frame) {
++  new Spectre BrowserPrivateApiExtension(frame);
 +}
 +
-+CromitePrivateApiExtension::CromitePrivateApiExtension(
++Spectre BrowserPrivateApiExtension::Spectre BrowserPrivateApiExtension(
 +    content::RenderFrame* frame)
 +    : content::RenderFrameObserver(frame) {}
 +
-+CromitePrivateApiExtension::~CromitePrivateApiExtension() =
++Spectre BrowserPrivateApiExtension::~Spectre BrowserPrivateApiExtension() =
 +    default;
 +
-+void CromitePrivateApiExtension::OnDestruct() {
++void Spectre BrowserPrivateApiExtension::OnDestruct() {
 +  delete this;
 +}
 +
-+void CromitePrivateApiExtension::DidCreateScriptContext(
++void Spectre BrowserPrivateApiExtension::DidCreateScriptContext(
 +    v8::Local<v8::Context> v8_context,
 +    int32_t world_id) {
 +  if (!render_frame() || world_id != content::ISOLATED_WORLD_ID_GLOBAL) {
 +    return;
 +  }
 +
-+  if (ShouldExposeCromitePrivateApi(render_frame())) {
++  if (ShouldExposeSpectre BrowserPrivateApi(render_frame())) {
 +    InjectScript();
 +  }
 +}
 +
-+void CromitePrivateApiExtension::InjectScript() {
++void Spectre BrowserPrivateApiExtension::InjectScript() {
 +  DCHECK(render_frame());
 +
 +  blink::WebLocalFrame* web_frame = render_frame()->GetWebFrame();
@@ -576,44 +576,44 @@ new file mode 100644
 +
 +  v8::Local<v8::Object> window =
 +      content::GetOrCreateObject(isolate, context, "window");
-+  v8::Local<v8::Object> oCromiteObject =
-+      content::GetOrCreateObject(isolate, context, window, "cromite");
++  v8::Local<v8::Object> oSpectre BrowserObject =
++      content::GetOrCreateObject(isolate, context, window, "Spectre Browser");
 +
-+  oCromiteObject
++  oSpectre BrowserObject
 +      ->Set(
 +          context, gin::StringToSymbol(isolate, "getComponentData"),
 +          gin::CreateFunctionTemplate(
 +              isolate, base::BindRepeating(
-+                           &CromitePrivateApiExtension::GetComponentData,
++                           &Spectre BrowserPrivateApiExtension::GetComponentData,
 +                           weak_ptr_factory_.GetWeakPtr()))
 +              ->GetFunction(context)
 +              .ToLocalChecked())
 +      .Check();
 +
-+  oCromiteObject
++  oSpectre BrowserObject
 +      ->Set(
 +          context, gin::StringToSymbol(isolate, "startComponentUpdate"),
 +          gin::CreateFunctionTemplate(
 +              isolate, base::BindRepeating(
-+                           &CromitePrivateApiExtension::StartComponentUpdate,
++                           &Spectre BrowserPrivateApiExtension::StartComponentUpdate,
 +                           weak_ptr_factory_.GetWeakPtr()))
 +              ->GetFunction(context)
 +              .ToLocalChecked())
 +      .Check();
 +
-+  oCromiteObject
++  oSpectre BrowserObject
 +      ->Set(
 +          context, gin::StringToSymbol(isolate, "setEnableLogConsole"),
 +          gin::CreateFunctionTemplate(
 +              isolate, base::BindRepeating(
-+                           &CromitePrivateApiExtension::SetEnableLogConsole,
++                           &Spectre BrowserPrivateApiExtension::SetEnableLogConsole,
 +                           weak_ptr_factory_.GetWeakPtr()))
 +              ->GetFunction(context)
 +              .ToLocalChecked())
 +      .Check();
 +}
 +
-+void CromitePrivateApiExtension::GetComponentData(gin::Arguments* args) {
++void Spectre BrowserPrivateApiExtension::GetComponentData(gin::Arguments* args) {
 +  std::string component_id;
 +  if (!args->GetNext(&component_id)) {
 +    args->ThrowError();
@@ -637,13 +637,13 @@ new file mode 100644
 +      std::make_unique<PendingRequest>(isolate, context, resolver));
 +
 +  remote_->GetComponentData(component_id,
-+      base::BindOnce(&CromitePrivateApiExtension::OnGetComponentData,
++      base::BindOnce(&Spectre BrowserPrivateApiExtension::OnGetComponentData,
 +                     weak_ptr_factory_.GetWeakPtr(), request_id));
 +
 +  args->Return(promise);
 +}
 +
-+void CromitePrivateApiExtension::OnGetComponentData(const base::UnguessableToken callback_id,
++void Spectre BrowserPrivateApiExtension::OnGetComponentData(const base::UnguessableToken callback_id,
 +                                                    const std::string& result) {
 +  auto iter = pending_requests_.find(callback_id);
 +  if (iter == pending_requests_.end())
@@ -658,15 +658,15 @@ new file mode 100644
 +  v8::Local<v8::Promise::Resolver> resolver =
 +    request->promise_resolver.Get(request->isolate);
 +
-+  LOG(INFO) << "---CromitePrivateApiExtension::OnGetComponentData4";
++  LOG(INFO) << "---Spectre BrowserPrivateApiExtension::OnGetComponentData4";
 +  resolver->Resolve(context,
 +                    gin::StringToV8(request->isolate, result))
 +      .ToChecked();
 +
-+  LOG(INFO) << "---CromitePrivateApiExtension::OnGetComponentData5";
++  LOG(INFO) << "---Spectre BrowserPrivateApiExtension::OnGetComponentData5";
 +}
 +
-+void CromitePrivateApiExtension::StartComponentUpdate(gin::Arguments* args) {
++void Spectre BrowserPrivateApiExtension::StartComponentUpdate(gin::Arguments* args) {
 +  std::string component_id;
 +  if (!args->GetNext(&component_id)) {
 +    args->ThrowError();
@@ -680,7 +680,7 @@ new file mode 100644
 +  remote_->StartComponentUpdate(component_id);
 +}
 +
-+void CromitePrivateApiExtension::SetEnableLogConsole(gin::Arguments* args) {
++void Spectre BrowserPrivateApiExtension::SetEnableLogConsole(gin::Arguments* args) {
 +  bool enabled;
 +  if (!args->GetNext(&enabled)) {
 +    args->ThrowError();
@@ -693,16 +693,16 @@ new file mode 100644
 +
 +  remote_->SetEnableLogConsole(enabled);
 +}
-diff --git a/chrome/renderer/cromite/cromite_private_api_extension.h b/chrome/renderer/cromite/cromite_private_api_extension.h
+diff --git a/chrome/renderer/Spectre Browser/Spectre Browser_private_api_extension.h b/chrome/renderer/Spectre Browser/Spectre Browser_private_api_extension.h
 new file mode 100644
 --- /dev/null
-+++ b/chrome/renderer/cromite/cromite_private_api_extension.h
++++ b/chrome/renderer/Spectre Browser/Spectre Browser_private_api_extension.h
 @@ -0,0 +1,65 @@
-+#ifndef CHROME_RENDERER_CROMITE_PRIVATE_API_EXTENSION_H_
-+#define CHROME_RENDERER_CROMITE_PRIVATE_API_EXTENSION_H_
++#ifndef CHROME_RENDERER_Spectre Browser_PRIVATE_API_EXTENSION_H_
++#define CHROME_RENDERER_Spectre Browser_PRIVATE_API_EXTENSION_H_
 +
 +#include "base/memory/weak_ptr.h"
-+#include "chrome/common/cromite_private_api_extension.mojom.h"
++#include "chrome/common/Spectre Browser_private_api_extension.mojom.h"
 +#include "content/public/renderer/render_frame_observer.h"
 +#include "mojo/public/cpp/bindings/associated_remote.h"
 +#include "v8/include/v8.h"
@@ -711,17 +711,17 @@ new file mode 100644
 +class Arguments;
 +}  // namespace gin
 +
-+class CromitePrivateApiExtension : public content::RenderFrameObserver {
++class Spectre BrowserPrivateApiExtension : public content::RenderFrameObserver {
 + public:
 +  // Creates a new instance, with ownership transferred to |*frame|.
 +  static void Create(content::RenderFrame* frame);
 +
-+  CromitePrivateApiExtension(const CromitePrivateApiExtension&) =
++  Spectre BrowserPrivateApiExtension(const Spectre BrowserPrivateApiExtension&) =
 +      delete;
-+  CromitePrivateApiExtension& operator=(
-+      const CromitePrivateApiExtension&) = delete;
++  Spectre BrowserPrivateApiExtension& operator=(
++      const Spectre BrowserPrivateApiExtension&) = delete;
 +
-+  ~CromitePrivateApiExtension() override;
++  ~Spectre BrowserPrivateApiExtension() override;
 +
 +  // content::RenderFrameObserver:
 +  void OnDestruct() override;
@@ -743,7 +743,7 @@ new file mode 100644
 +    v8::Global<v8::Promise::Resolver> promise_resolver;
 +  };
 +
-+  explicit CromitePrivateApiExtension(content::RenderFrame* frame);
++  explicit Spectre BrowserPrivateApiExtension(content::RenderFrame* frame);
 +
 +  void InjectScript();
 +
@@ -756,13 +756,13 @@ new file mode 100644
 +  std::map<const base::UnguessableToken,
 +           std::unique_ptr<PendingRequest>> pending_requests_;
 +
-+  mojo::AssociatedRemote<chrome::mojom::CromitePrivateApiExtension>
++  mojo::AssociatedRemote<chrome::mojom::Spectre BrowserPrivateApiExtension>
 +      remote_;
-+  base::WeakPtrFactory<CromitePrivateApiExtension> weak_ptr_factory_{
++  base::WeakPtrFactory<Spectre BrowserPrivateApiExtension> weak_ptr_factory_{
 +      this};
 +};
 +
-+#endif  // CHROME_RENDERER_CROMITE_PRIVATE_API_EXTENSION_H_
++#endif  // CHROME_RENDERER_Spectre Browser_PRIVATE_API_EXTENSION_H_
 diff --git a/components/component_updater/component_updater_service.h b/components/component_updater/component_updater_service.h
 --- a/components/component_updater/component_updater_service.h
 +++ b/components/component_updater/component_updater_service.h
@@ -798,7 +798,7 @@ diff --git a/content/browser/devtools/devtools_http_handler.cc b/content/browser
    if (command == "version") {
      base::DictValue version;
 +    auto browser = GetContentClient()->browser()->GetProduct();
-+    if (base::FeatureList::IsEnabled(features::kEnableCromiteTestSupport))
++    if (base::FeatureList::IsEnabled(features::kEnableSpectre BrowserTestSupport))
 +      browser = "Chrome/0.0.0.0";
      version.Set("Protocol-Version", DevToolsAgentHost::GetProtocolVersion());
      version.Set("WebKit-Version", GetWebKitVersion());
@@ -817,7 +817,7 @@ diff --git a/content/browser/log_console_message.cc b/content/browser/log_consol
 -                       const std::u16string& source_id) {
 +                       const std::u16string& source_id,
 +                       bool is_log_console_enabled) {
-+  if (base::FeatureList::IsEnabled(features::kEnableCromiteTestSupport)) {
++  if (base::FeatureList::IsEnabled(features::kEnableSpectre BrowserTestSupport)) {
 +    LOG(INFO) << "CONSOLE:"
 +        << "\"" << message << "\", source: " << source_id << " (" << line_number
 +        << ")";
@@ -855,7 +855,7 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/b
  #include "url/origin.h"
  #include "url/url_constants.h"
  
-+//#include "chrome/browser/cromite/cromite_private_api_host.h"
++//#include "chrome/browser/Spectre Browser/Spectre Browser_private_api_host.h"
 +
  #if BUILDFLAG(IS_ANDROID)
  #include "base/android/scoped_service_binding_batch.h"
@@ -865,7 +865,7 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/b
                                          updated_source_id,
                                          untrusted_stack_trace)) {
 -    return;
-+    if (!base::FeatureList::IsEnabled(features::kEnableCromiteTestSupport))
++    if (!base::FeatureList::IsEnabled(features::kEnableSpectre BrowserTestSupport))
 +      return;
    }
  
@@ -875,10 +875,10 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/b
        GetSiteInstance()->GetBrowserContext()->IsOffTheRecord();
  
 +  bool is_log_console_enabled = false;
-+  // CromitePrivateApiHost* cromite_data =
-+  //     CromitePrivateApiHost::GetForCurrentDocument(this);
-+  // if (cromite_data) {
-+  //   is_log_console_enabled = cromite_data->IsLogConsoleEnabled();
++  // Spectre BrowserPrivateApiHost* Spectre Browser_data =
++  //     Spectre BrowserPrivateApiHost::GetForCurrentDocument(this);
++  // if (Spectre Browser_data) {
++  //   is_log_console_enabled = Spectre Browser_data->IsLogConsoleEnabled();
 +  // }
    LogConsoleMessage(log_level, message, line_no, is_builtin_component,
 -                    is_off_the_record, updated_source_id);
@@ -886,47 +886,47 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/b
  }
  
  void RenderFrameHostImpl::FrameSizeChanged(const gfx::Size& frame_size) {
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Enable-test-support.inc b/cromite_flags/chrome/browser/about_flags_cc/Enable-test-support.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Enable-test-support.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Enable-test-support.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Enable-test-support.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Enable-test-support.inc
 @@ -0,0 +1,19 @@
 +#ifdef FLAG_SECTION
 +
-+    {"enable-cromite-test-support",
-+     "Enable support for cromite test",
-+     "Setting allows the activation of specific APIs used for cromite testing. "
++    {"enable-Spectre Browser-test-support",
++     "Enable support for Spectre Browser test",
++     "Setting allows the activation of specific APIs used for Spectre Browser testing. "
 +     "Do not activate if you do not know what you are doing.", kOsAll,
-+     FEATURE_VALUE_TYPE(features::kEnableCromiteTestSupport)},
++     FEATURE_VALUE_TYPE(features::kEnableSpectre BrowserTestSupport)},
 +
 +#if BUILDFLAG(IS_ANDROID)
 +
 +    {"act-as-webview",
-+     "Enable webview support for cromite test",
-+     "Setting allows the activation of specific APIs used for cromite testing. "
++     "Enable webview support for Spectre Browser test",
++     "Setting allows the activation of specific APIs used for Spectre Browser testing. "
 +     "Do not activate if you do not know what you are doing.", kOsAndroid,
 +     FEATURE_VALUE_TYPE(features::kActAsWebView)},
 +
 +#endif
 +
 +#endif
-diff --git a/cromite_flags/content/public/common/content_features_cc/Enable-test-support.inc b/cromite_flags/content/public/common/content_features_cc/Enable-test-support.inc
+diff --git a/Spectre Browser_flags/content/public/common/content_features_cc/Enable-test-support.inc b/Spectre Browser_flags/content/public/common/content_features_cc/Enable-test-support.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/public/common/content_features_cc/Enable-test-support.inc
++++ b/Spectre Browser_flags/content/public/common/content_features_cc/Enable-test-support.inc
 @@ -0,0 +1,7 @@
-+CROMITE_FEATURE(kEnableCromiteTestSupport,
-+                "EnableCromiteTestSupport",
++Spectre Browser_FEATURE(kEnableSpectre BrowserTestSupport,
++                "EnableSpectre BrowserTestSupport",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
 +
-+CROMITE_FEATURE(kActAsWebView,
++Spectre Browser_FEATURE(kActAsWebView,
 +                "ActAsWebView",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
-diff --git a/cromite_flags/content/public/common/content_features_h/Enable-test-support.inc b/cromite_flags/content/public/common/content_features_h/Enable-test-support.inc
+diff --git a/Spectre Browser_flags/content/public/common/content_features_h/Enable-test-support.inc b/Spectre Browser_flags/content/public/common/content_features_h/Enable-test-support.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/public/common/content_features_h/Enable-test-support.inc
++++ b/Spectre Browser_flags/content/public/common/content_features_h/Enable-test-support.inc
 @@ -0,0 +1,2 @@
-+CONTENT_EXPORT BASE_DECLARE_FEATURE(kEnableCromiteTestSupport);
++CONTENT_EXPORT BASE_DECLARE_FEATURE(kEnableSpectre BrowserTestSupport);
 +CONTENT_EXPORT BASE_DECLARE_FEATURE(kActAsWebView);
 --

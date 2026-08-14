@@ -9,7 +9,7 @@ FLD=/storage/images/$INDEX_VERSION/android/true/x64
 test -d $FLD || FLD=/casefold/storage/images/$INDEX_VERSION/android/true/x64
 test -d $FLD || echo "wrong directory" && exit 1
 
-cp $FLD/cromite.idx .
+cp $FLD/Spectre Browser.idx .
 cp $FLD/RELEASE .
 
 DOCKER_BUILDKIT=1 docker build -t uazo/bromite-remote-index:$INDEX_VERSION \

@@ -224,7 +224,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  create mode 100755 components/user_scripts/renderer/web_ui_injection_host.cc
  create mode 100755 components/user_scripts/renderer/web_ui_injection_host.h
  create mode 100755 components/user_scripts/strings/userscripts_strings.grdp
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Experimental-user-scripts-support.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Experimental-user-scripts-support.inc
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
@@ -2461,7 +2461,7 @@ new file mode 100644
 +// ==UserScript==
 +// @name         Allow playing videos in background
 +// @version      1.0.0
-+// @description  Allow playing youtube and vimeo videos in background in cromite. Original Javascript code by timdream and csagan5
++// @description  Allow playing youtube and vimeo videos in background in Spectre Browser. Original Javascript code by timdream and csagan5
 +// @author       uazo
 +// @match        https://*.youtube.com/*
 +// @match        https://*.youtube-nocookie.com/*
@@ -11470,10 +11470,10 @@ new file mode 100755
 +  </message>
 +
 +</grit-part>
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Experimental-user-scripts-support.inc b/cromite_flags/chrome/browser/about_flags_cc/Experimental-user-scripts-support.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Experimental-user-scripts-support.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Experimental-user-scripts-support.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Experimental-user-scripts-support.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Experimental-user-scripts-support.inc
 @@ -0,0 +1,13 @@
 +#if BUILDFLAG(IS_ANDROID)
 +

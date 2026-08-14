@@ -1,12 +1,12 @@
 #!/bin/bash
 
-VERSION=$(cat ~/cromite/build/RELEASE)
+VERSION=$(cat ~/Spectre Browser/build/RELEASE)
 CURRENT_RELEASE=$(git -C ~/chromium/src/ rev-parse --verify refs/tags/$VERSION)
 
 ALLPATCHS_E=$(git -C ~/chromium/src/ rev-list HEAD...$CURRENT_RELEASE)
 
-mkdir ~/cromite/build/patches-new
-rm ~/cromite/build/patches-new/patch-list
+mkdir ~/Spectre Browser/build/patches-new
+rm ~/Spectre Browser/build/patches-new/patch-list
 
 NO_NAME=1
 
@@ -25,9 +25,9 @@ for patch in $ALLPATCHS_E; do
 		PATCH_FILE=00$(git -C ~/chromium/src/ show -s $patch | head -n 5 | tail -n 1 | xargs | tr " " - | tr [:punct:] -).patch
 	fi
 
-	echo $PATCH_FILE >>~/cromite/build/patches-new/patch-list
+	echo $PATCH_FILE >>~/Spectre Browser/build/patches-new/patch-list
 
 done
 
-tac ~/cromite/build/patches-new/patch-list >~/cromite/build/patches-new/zz-patch-list.txt
-rm ~/cromite/build/patches-new/patch-list
+tac ~/Spectre Browser/build/patches-new/patch-list >~/Spectre Browser/build/patches-new/zz-patch-list.txt
+rm ~/Spectre Browser/build/patches-new/patch-list

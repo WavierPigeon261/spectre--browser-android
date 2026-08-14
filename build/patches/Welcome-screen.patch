@@ -27,7 +27,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  create mode 100644 chrome/android/java/res/layout/fre_tosanduma.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/firstrun/TosAndUmaFragmentView.java
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Welcome-screen.grdp
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Welcome-screen.grdp
 
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
@@ -1268,10 +1268,10 @@ diff --git a/chrome/browser/locale/java/src/org/chromium/chrome/browser/locale/L
      }
  
      /** @see LocaleManager#onUserSearchEngineChoice */
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Welcome-screen.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Welcome-screen.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Welcome-screen.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Welcome-screen.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Welcome-screen.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Welcome-screen.grdp
 @@ -0,0 +1,27 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>
@@ -1283,18 +1283,18 @@ new file mode 100644
 +    </message>
 +
 +    <message name="IDS_BROMITE_FRE_FOOTER_PRIVACY_POLICY" desc="Message explaining the privacy policy of the file hosting service provider for adblock updates and Bromite app automatic updates">
-+        <ph name="BEGIN_PRIVACY_LINK1">&lt;PRIVACY_LINK1&gt;</ph>Automatic ad block filters updates<ph name="END_PRIVACY_LINK1">&lt;/PRIVACY_LINK1&gt;</ph> are subject to the <ph name="BEGIN_PRIVACY_LINK2">&lt;PRIVACY_LINK2&gt;</ph>Cromite Privacy statement<ph name="END_PRIVACY_LINK2">&lt;/PRIVACY_LINK2&gt;</ph>.
++        <ph name="BEGIN_PRIVACY_LINK1">&lt;PRIVACY_LINK1&gt;</ph>Automatic ad block filters updates<ph name="END_PRIVACY_LINK1">&lt;/PRIVACY_LINK1&gt;</ph> are subject to the <ph name="BEGIN_PRIVACY_LINK2">&lt;PRIVACY_LINK2&gt;</ph>Spectre Browser Privacy statement<ph name="END_PRIVACY_LINK2">&lt;/PRIVACY_LINK2&gt;</ph>.
 +The following checkbox controls instead <ph name="BEGIN_PRIVACY_LINK3">&lt;PRIVACY_LINK3&gt;</ph>automatic app updates<ph name="END_PRIVACY_LINK3">&lt;/PRIVACY_LINK3&gt;</ph> which are subject to the <ph name="BEGIN_PRIVACY_LINK4">&lt;PRIVACY_LINK4&gt;</ph>GitHub Privacy statement<ph name="END_PRIVACY_LINK4">&lt;/PRIVACY_LINK4&gt;</ph>.
 +    </message>
 +
 +    <message name="IDS_PRIVACY_LINK1" desc="URL for Bromite wiki page about ad blocking" translateable="false">
-+        https://github.com/uazo/cromite/blob/master/docs/ADBLOCKING.md
++        https://github.com/uazo/Spectre Browser/blob/master/docs/ADBLOCKING.md
 +    </message>
 +    <message name="IDS_PRIVACY_LINK2" desc="URL for privacy policy for the ad block updater" translateable="false">
-+        https://github.com/uazo/cromite/blob/master/docs/PRIVACY_POLICY.md
++        https://github.com/uazo/Spectre Browser/blob/master/docs/PRIVACY_POLICY.md
 +    </message>
 +    <message name="IDS_PRIVACY_LINK3" desc="URL for Bromite wiki page about automatic updates" translateable="false">
-+        https://github.com/uazo/cromite/blob/master/docs/AUTOMATIC_UPDATES.md
++        https://github.com/uazo/Spectre Browser/blob/master/docs/AUTOMATIC_UPDATES.md
 +    </message>
 +    <message name="IDS_PRIVACY_LINK4" desc="URL for privacy policy for the Bromite auto updater" translateable="false">
 +        https://docs.github.com/en/github/site-policy/github-privacy-statement#github-pages

@@ -1,7 +1,7 @@
 Do-not-link-with-libatomic.patch
 Force-use-vpython3-for-all-scripts.patch
 bromite-build-utils.patch
-Add-cromite-flags-support.patch
+Add-Spectre Browser-flags-support.patch
 Permit-PGO-for-debug-builds.patch
 Fix-chromium-vanilla.patch
 Final-patch-for-chromium-vanilla.patch
@@ -222,7 +222,7 @@ Log-dangling-attributes-in-some-html-elements.patch
 Keep-Side-Panel-Companion-disabled.patch
 Lock-Profile-Cookie-Database.patch
 Compress-libchrome-to-free-up-some-space.patch
-Cromite-Branding.patch
+Spectre Browser-Branding.patch
 Disable-Feeback-Collector.patch
 Disable-remote-altsvc-for-h3-connections.patch
 do-not-block-build-incompatible-profiles.patch
@@ -275,7 +275,7 @@ Add-a-GN-flag-to-disable-trybot-verification.patch
 Override-the-MV2-deprecation.patch
 Remove-sideloading-of-version-dll.patch
 Use-browser-navigation-handler.patch
-Cromite-Branding--improve-settings-ui.patch
+Spectre Browser-Branding--improve-settings-ui.patch
 Disable-Posture-API.patch
 PublicKeyCredential-fingerprinting-mitigations.patch
 Disable-Web-Bluetooth-by-default-in-desktop-platforms.patch
@@ -291,7 +291,7 @@ Disable-Viewport-Segments.patch
 Keep-disabled-cache-sharing-for-pervasive-scripts.patch
 High-Resolution-Timing-Mitigation.patch
 Enable-snackbar-swipe.patch
-Add-cromite-test-support.patch
+Add-Spectre Browser-test-support.patch
 Android-Pixel-Perfect-Mode.patch
 Set-caret-blink-interval-to-default.patch
 Set-the-screen-frame-rate-to-60-Hz.patch
@@ -329,7 +329,7 @@ eyeo-133.0.6943.49-chrome_integration.patch
 eyeo-133.0.6943.49-android_api.patch
 eyeo-133.0.6943.49-android_settings.patch
 eyeo-133.0.6943.49-extension_api.patch
-Eyeo-Adblock-for-Cromite.patch
+Eyeo-Adblock-for-Spectre Browser.patch
 
 # extension patches
 Experimental-support-for-extensions-on-Android.patch

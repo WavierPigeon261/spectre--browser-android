@@ -33,14 +33,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  net/socket/ssl_client_socket_impl.cc          | 68 +++++++++++++++++++
  net/socket/ssl_client_socket_impl.h           |  2 +
  7 files changed, 128 insertions(+), 2 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Disable-TLS-resumption.inc
- create mode 100644 cromite_flags/net/base/features_cc/Disable-TLS-resumption.inc
- create mode 100644 cromite_flags/net/base/features_h/Disable-TLS-resumption.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Disable-TLS-resumption.inc
+ create mode 100644 Spectre Browser_flags/net/base/features_cc/Disable-TLS-resumption.inc
+ create mode 100644 Spectre Browser_flags/net/base/features_h/Disable-TLS-resumption.inc
 
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Disable-TLS-resumption.inc b/cromite_flags/chrome/browser/about_flags_cc/Disable-TLS-resumption.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Disable-TLS-resumption.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Disable-TLS-resumption.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Disable-TLS-resumption.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Disable-TLS-resumption.inc
 @@ -0,0 +1,12 @@
 +#ifdef FLAG_SECTION
 +
@@ -54,22 +54,22 @@ new file mode 100644
 +     FEATURE_VALUE_TYPE(net::features::kLogTLSResumption)},
 +
 +#endif
-diff --git a/cromite_flags/net/base/features_cc/Disable-TLS-resumption.inc b/cromite_flags/net/base/features_cc/Disable-TLS-resumption.inc
+diff --git a/Spectre Browser_flags/net/base/features_cc/Disable-TLS-resumption.inc b/Spectre Browser_flags/net/base/features_cc/Disable-TLS-resumption.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/net/base/features_cc/Disable-TLS-resumption.inc
++++ b/Spectre Browser_flags/net/base/features_cc/Disable-TLS-resumption.inc
 @@ -0,0 +1,7 @@
-+CROMITE_FEATURE(kDisableTLSResumption,
++Spectre Browser_FEATURE(kDisableTLSResumption,
 +                "DisableTLSResumption",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
 +
-+CROMITE_FEATURE(kLogTLSResumption,
++Spectre Browser_FEATURE(kLogTLSResumption,
 +                "LogTLSResumption",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
-diff --git a/cromite_flags/net/base/features_h/Disable-TLS-resumption.inc b/cromite_flags/net/base/features_h/Disable-TLS-resumption.inc
+diff --git a/Spectre Browser_flags/net/base/features_h/Disable-TLS-resumption.inc b/Spectre Browser_flags/net/base/features_h/Disable-TLS-resumption.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/net/base/features_h/Disable-TLS-resumption.inc
++++ b/Spectre Browser_flags/net/base/features_h/Disable-TLS-resumption.inc
 @@ -0,0 +1,5 @@
 +// Disables TLS resumption.
 +NET_EXPORT BASE_DECLARE_FEATURE(kDisableTLSResumption);

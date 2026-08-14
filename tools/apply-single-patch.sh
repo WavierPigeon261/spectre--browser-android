@@ -81,11 +81,11 @@ fi
 if [[ DOEXPORT -eq 1 ]]; then
        until false
        do
-           bash ~/cromite/tools/create-from-patch.sh $PATCH $2 || exit 1
+           bash ~/Spectre Browser/tools/create-from-patch.sh $PATCH $2 || exit 1
 
            rm /tmp/1 /tmp/2 || true
            lsdiff $PATCH >/tmp/1
-           lsdiff ../../cromite/build/patches-new/$(basename -- $PATCH) >/tmp/2
+           lsdiff ../../Spectre Browser/build/patches-new/$(basename -- $PATCH) >/tmp/2
            STATUS="$(cmp --silent /tmp/1 /tmp/2; echo $?)"
            if [[ $STATUS -ne 0 ]]; then
                   git reset HEAD^
@@ -97,7 +97,7 @@ if [[ DOEXPORT -eq 1 ]]; then
 
                   read -r -p "y to continue [y/N] " response
                   if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-                       bash ~/cromite/tools/create-from-patch.sh $PATCH $2 || exit 1
+                       bash ~/Spectre Browser/tools/create-from-patch.sh $PATCH $2 || exit 1
                        break
                   fi
            else

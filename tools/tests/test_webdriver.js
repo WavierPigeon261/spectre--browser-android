@@ -90,7 +90,7 @@ async function testApp(isLocal, config) {
 		}
 	}
 
-	let selectorKey = "org.cromite.cromite";
+	let selectorKey = "org.Spectre Browser.Spectre Browser";
 	let isChromium = false;
 	if (config.appName == "chromium") {
 		selectorKey = "org.chromium.chrome"; //.stable"; //"org.chromium.chrome";
@@ -157,7 +157,7 @@ async function testApp(isLocal, config) {
 
 		await fs.writeFile(MakePath(config, "info.json"), JSON.stringify(info));
 
-		// cromite
+		// Spectre Browser
 		const terms_accept_present = await driver.findElement("id", selectorKey + ":id/terms_accept");
 		console.log(!terms_accept_present.error);
 		if (!terms_accept_present.error) {
@@ -218,21 +218,21 @@ async function testApp(isLocal, config) {
 		await clickByUIautomator(
 			'new UiSelector().text("Developer options")');
 
-		// enable cromite test pref
+		// enable Spectre Browser test pref
 		await clickByUIautomator(
-			'new UiSelector().text("Enable support for cromite test")');
+			'new UiSelector().text("Enable support for Spectre Browser test")');
 
 		// enable webview mode (only if chromium or is local)
 		if (!isLocal && !isChromium) {
 			await clickByUIautomator(
-				'new UiSelector().text("Enable webview support for cromite test")');
+				'new UiSelector().text("Enable webview support for Spectre Browser test")');
 		}
 
 		// enable pixel perfect mode
 		await clickByUIautomator(
 			'new UiSelector().text("Pixel Perfect Mode")');
 
-		// restart cromite
+		// restart Spectre Browser
 		await clickByUIautomator(
 			'new UiSelector().resourceId("' + selectorKey + ':id/snackbar_button")');
 		await sleep(2000);
@@ -261,14 +261,14 @@ async function testApp(isLocal, config) {
 		contexts = await driver.getContexts();
 		console.log(contexts);
 
-		// start update of cromite fonts pack
+		// start update of Spectre Browser fonts pack
 		await driver.executeScript(
-			'await window.cromite.startComponentUpdate("gcmjkmgdlgnkkcocmoeiminaijmmjnii")', []);
+			'await window.Spectre Browser.startComponentUpdate("gcmjkmgdlgnkkcocmoeiminaijmmjnii")', []);
 
 		count = 0;
 		for (; ;) {
 			let version = await driver.executeScript(
-				'return JSON.parse(await window.cromite.getComponentData("gcmjkmgdlgnkkcocmoeiminaijmmjnii")).version;', []);
+				'return JSON.parse(await window.Spectre Browser.getComponentData("gcmjkmgdlgnkkcocmoeiminaijmmjnii")).version;', []);
 			console.log(version);
 			if (version != "0.0.0.0") break;
 

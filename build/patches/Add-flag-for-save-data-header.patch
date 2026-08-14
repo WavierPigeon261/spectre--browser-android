@@ -9,9 +9,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../cpp/features_cc/Add-flag-for-save-data-header.inc  |  4 ++++
  .../cpp/features_h/Add-flag-for-save-data-header.inc   |  1 +
  4 files changed, 23 insertions(+)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-flag-for-save-data-header.inc
- create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Add-flag-for-save-data-header.inc
- create mode 100644 cromite_flags/services/network/public/cpp/features_h/Add-flag-for-save-data-header.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Add-flag-for-save-data-header.inc
+ create mode 100644 Spectre Browser_flags/services/network/public/cpp/features_cc/Add-flag-for-save-data-header.inc
+ create mode 100644 Spectre Browser_flags/services/network/public/cpp/features_h/Add-flag-for-save-data-header.inc
 
 diff --git a/content/browser/loader/browser_initiated_resource_request.cc b/content/browser/loader/browser_initiated_resource_request.cc
 --- a/content/browser/loader/browser_initiated_resource_request.cc
@@ -40,10 +40,10 @@ diff --git a/content/browser/loader/browser_initiated_resource_request.cc b/cont
      if (should_update_existing_headers) {
        headers->RemoveHeader("Save-Data");
      }
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Add-flag-for-save-data-header.inc b/cromite_flags/chrome/browser/about_flags_cc/Add-flag-for-save-data-header.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-flag-for-save-data-header.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-flag-for-save-data-header.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Add-flag-for-save-data-header.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-flag-for-save-data-header.inc
 @@ -0,0 +1,10 @@
 +
 +#ifdef FLAG_SECTION
@@ -55,19 +55,19 @@ new file mode 100644
 +     FEATURE_VALUE_TYPE(network::features::kEnableSaveDataHeader)},
 +
 +#endif
-diff --git a/cromite_flags/services/network/public/cpp/features_cc/Add-flag-for-save-data-header.inc b/cromite_flags/services/network/public/cpp/features_cc/Add-flag-for-save-data-header.inc
+diff --git a/Spectre Browser_flags/services/network/public/cpp/features_cc/Add-flag-for-save-data-header.inc b/Spectre Browser_flags/services/network/public/cpp/features_cc/Add-flag-for-save-data-header.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/services/network/public/cpp/features_cc/Add-flag-for-save-data-header.inc
++++ b/Spectre Browser_flags/services/network/public/cpp/features_cc/Add-flag-for-save-data-header.inc
 @@ -0,0 +1,4 @@
 +// Enable save-data header separately (without enabled data reduction service).
-+CROMITE_FEATURE(kEnableSaveDataHeader,
++Spectre Browser_FEATURE(kEnableSaveDataHeader,
 +                "EnableSaveDataHeader",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
-diff --git a/cromite_flags/services/network/public/cpp/features_h/Add-flag-for-save-data-header.inc b/cromite_flags/services/network/public/cpp/features_h/Add-flag-for-save-data-header.inc
+diff --git a/Spectre Browser_flags/services/network/public/cpp/features_h/Add-flag-for-save-data-header.inc b/Spectre Browser_flags/services/network/public/cpp/features_h/Add-flag-for-save-data-header.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/services/network/public/cpp/features_h/Add-flag-for-save-data-header.inc
++++ b/Spectre Browser_flags/services/network/public/cpp/features_h/Add-flag-for-save-data-header.inc
 @@ -0,0 +1 @@
 +COMPONENT_EXPORT(NETWORK_CPP) BASE_DECLARE_FEATURE(kEnableSaveDataHeader);
 --

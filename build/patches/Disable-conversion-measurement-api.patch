@@ -47,8 +47,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../platform/runtime_enabled_features.json5   |  20 +-
  ui/events/android/motion_event_android.cc     |   8 +-
  35 files changed, 102 insertions(+), 436 deletions(-)
- create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
+ create mode 100644 Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 
 diff --git a/android_webview/browser/aw_content_browser_client.cc b/android_webview/browser/aw_content_browser_client.cc
 --- a/android_webview/browser/aw_content_browser_client.cc
@@ -198,7 +198,7 @@ diff --git a/components/attribution_reporting/features.cc b/components/attributi
  // Controls whether the Conversion Measurement API infrastructure is enabled.
  BASE_FEATURE(kConversionMeasurement, base::FEATURE_ENABLED_BY_DEFAULT);
  
-+SET_CROMITE_FEATURE_DISABLED(kConversionMeasurement);
++SET_Spectre Browser_FEATURE_DISABLED(kConversionMeasurement);
  }  // namespace attribution_reporting::features
 diff --git a/components/content_settings/core/browser/content_settings_registry.cc b/components/content_settings/core/browser/content_settings_registry.cc
 --- a/components/content_settings/core/browser/content_settings_registry.cc
@@ -219,7 +219,7 @@ diff --git a/components/embedder_support/origin_trials/features.cc b/components/
  // from the origin trial.
  BASE_FEATURE(kOriginTrialsSampleAPIThirdPartyAlternativeUsage,
               base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kOriginTrialsSampleAPIThirdPartyAlternativeUsage);
++SET_Spectre Browser_FEATURE_DISABLED(kOriginTrialsSampleAPIThirdPartyAlternativeUsage);
  }  // namespace embedder_support
 diff --git a/components/renderer_context_menu/render_view_context_menu_base.cc b/components/renderer_context_menu/render_view_context_menu_base.cc
 --- a/components/renderer_context_menu/render_view_context_menu_base.cc
@@ -976,26 +976,26 @@ diff --git a/content/public/browser/navigation_controller.cc b/content/public/br
        is_pdf(input.is_pdf),
        has_rel_opener(input.has_rel_opener),
        internal_scroll_to_text_fragment(input.internal_scroll_to_text_fragment) {
-diff --git a/cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc b/cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
+diff --git a/Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc b/Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
++++ b/Spectre Browser_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
 @@ -0,0 +1,2 @@
-+SET_CROMITE_FEATURE_DISABLED(kBrowsingTopics);
-+SET_CROMITE_FEATURE_DISABLED(kInterestGroupStorage);
-diff --git a/cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc b/cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
++SET_Spectre Browser_FEATURE_DISABLED(kBrowsingTopics);
++SET_Spectre Browser_FEATURE_DISABLED(kInterestGroupStorage);
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc b/Spectre Browser_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 @@ -0,0 +1,8 @@
-+SET_CROMITE_FEATURE_DISABLED(kAdAuctionSignals);
-+SET_CROMITE_FEATURE_DISABLED(kBrowsingTopicsDocumentAPI);
-+SET_CROMITE_FEATURE_DISABLED(kBrowsingTopicsParameters);
-+SET_CROMITE_FEATURE_DISABLED(kFledge);
-+SET_CROMITE_FEATURE_DISABLED(kFledgeBiddingAndAuctionServer);
-+SET_CROMITE_FEATURE_DISABLED(kPrivateAggregationApi);
-+SET_CROMITE_FEATURE_DISABLED(kAllowURNsInIframes);
-+SET_CROMITE_FEATURE_DISABLED(kFledgeSampleDebugReports);
++SET_Spectre Browser_FEATURE_DISABLED(kAdAuctionSignals);
++SET_Spectre Browser_FEATURE_DISABLED(kBrowsingTopicsDocumentAPI);
++SET_Spectre Browser_FEATURE_DISABLED(kBrowsingTopicsParameters);
++SET_Spectre Browser_FEATURE_DISABLED(kFledge);
++SET_Spectre Browser_FEATURE_DISABLED(kFledgeBiddingAndAuctionServer);
++SET_Spectre Browser_FEATURE_DISABLED(kPrivateAggregationApi);
++SET_Spectre Browser_FEATURE_DISABLED(kAllowURNsInIframes);
++SET_Spectre Browser_FEATURE_DISABLED(kFledgeSampleDebugReports);
 diff --git a/services/network/attribution/request_headers_internal.cc b/services/network/attribution/request_headers_internal.cc
 --- a/services/network/attribution/request_headers_internal.cc
 +++ b/services/network/attribution/request_headers_internal.cc

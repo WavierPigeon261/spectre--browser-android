@@ -15,8 +15,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  net/http/http_cache.cc                            | 15 ++++++++++-----
  net/http/http_cache.h                             |  2 +-
  5 files changed, 21 insertions(+), 8 deletions(-)
- create mode 100644 cromite_flags/net/base/features_cc/Enable-network-isolation-features.inc
- create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Enable-network-isolation-features.inc
+ create mode 100644 Spectre Browser_flags/net/base/features_cc/Enable-network-isolation-features.inc
+ create mode 100644 Spectre Browser_flags/services/network/public/cpp/features_cc/Enable-network-isolation-features.inc
 
 diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/browser/net/profile_network_context_service.cc
 --- a/chrome/browser/net/profile_network_context_service.cc
@@ -32,24 +32,24 @@ diff --git a/chrome/browser/net/profile_network_context_service.cc b/chrome/brow
  
    // Add the disk cache backend experiment group if active.
    if (backend_field_trial) {
-diff --git a/cromite_flags/net/base/features_cc/Enable-network-isolation-features.inc b/cromite_flags/net/base/features_cc/Enable-network-isolation-features.inc
+diff --git a/Spectre Browser_flags/net/base/features_cc/Enable-network-isolation-features.inc b/Spectre Browser_flags/net/base/features_cc/Enable-network-isolation-features.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/net/base/features_cc/Enable-network-isolation-features.inc
++++ b/Spectre Browser_flags/net/base/features_cc/Enable-network-isolation-features.inc
 @@ -0,0 +1,7 @@
-+SET_CROMITE_FEATURE_ENABLED(kSplitCodeCacheByNetworkIsolationKey);
-+SET_CROMITE_FEATURE_ENABLED(kPartitionConnectionsByNetworkIsolationKey);
++SET_Spectre Browser_FEATURE_ENABLED(kSplitCodeCacheByNetworkIsolationKey);
++SET_Spectre Browser_FEATURE_ENABLED(kPartitionConnectionsByNetworkIsolationKey);
 +
-+SET_CROMITE_FEATURE_ENABLED(kSplitCacheByIncludeCredentials);
++SET_Spectre Browser_FEATURE_ENABLED(kSplitCacheByIncludeCredentials);
 +
 +// enable http cache partition
-+SET_CROMITE_FEATURE_ENABLED(kSplitCacheByNetworkIsolationKey);
-diff --git a/cromite_flags/services/network/public/cpp/features_cc/Enable-network-isolation-features.inc b/cromite_flags/services/network/public/cpp/features_cc/Enable-network-isolation-features.inc
++SET_Spectre Browser_FEATURE_ENABLED(kSplitCacheByNetworkIsolationKey);
+diff --git a/Spectre Browser_flags/services/network/public/cpp/features_cc/Enable-network-isolation-features.inc b/Spectre Browser_flags/services/network/public/cpp/features_cc/Enable-network-isolation-features.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/services/network/public/cpp/features_cc/Enable-network-isolation-features.inc
++++ b/Spectre Browser_flags/services/network/public/cpp/features_cc/Enable-network-isolation-features.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kSplitAuthCacheByNetworkIsolationKey);
++SET_Spectre Browser_FEATURE_ENABLED(kSplitAuthCacheByNetworkIsolationKey);
 diff --git a/net/http/http_cache.cc b/net/http/http_cache.cc
 --- a/net/http/http_cache.cc
 +++ b/net/http/http_cache.cc

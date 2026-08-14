@@ -32,9 +32,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../core/page/context_menu_controller.cc      | 23 +++++++++---
  .../core/page/context_menu_controller.h       |  5 +--
  23 files changed, 170 insertions(+), 16 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc
 
 diff --git a/android_webview/java/src/org/chromium/android_webview/contextmenu/AwContextMenuItemDelegate.java b/android_webview/java/src/org/chromium/android_webview/contextmenu/AwContextMenuItemDelegate.java
 --- a/android_webview/java/src/org/chromium/android_webview/contextmenu/AwContextMenuItemDelegate.java
@@ -83,7 +83,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/accessibility/s
 +
 +        @Override
 +        public void setValue(boolean value) {
-+            CromiteNativeUtils.setFlagEnabled(ChromeFeatureList.SHOW_ALWAYS_CONTEXT_MENU_ON_LINKS,
++            Spectre BrowserNativeUtils.setFlagEnabled(ChromeFeatureList.SHOW_ALWAYS_CONTEXT_MENU_ON_LINKS,
 +                    "show-always-context-menu-on-links", value);
 +        }
 +    }
@@ -338,10 +338,10 @@ diff --git a/components/thin_webview/internal/java/src/org/chromium/components/t
      @Override
      public GURL getPageUrl() {
          return mWebContents.getVisibleUrl();
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc b/cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-setting-to-invert-tap-and-long-tap.inc
 @@ -0,0 +1,8 @@
 +#ifdef FLAG_SECTION
 +
@@ -351,18 +351,18 @@ new file mode 100644
 +     FEATURE_VALUE_TYPE(blink::features::kShowAlwaysContextMenuOnLinks)},
 +
 +#endif
-diff --git a/cromite_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc b/cromite_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc b/Spectre Browser_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_cc/Add-setting-to-invert-tap-and-long-tap.inc
 @@ -0,0 +1,3 @@
-+CROMITE_FEATURE(kShowAlwaysContextMenuOnLinks,
++Spectre Browser_FEATURE(kShowAlwaysContextMenuOnLinks,
 +                "ShowAlwaysContextMenuOnLinks",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
-diff --git a/cromite_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc b/cromite_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc b/Spectre Browser_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_h/Add-setting-to-invert-tap-and-long-tap.inc
 @@ -0,0 +1 @@
 +BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kShowAlwaysContextMenuOnLinks);
 diff --git a/third_party/blink/renderer/core/html/html_anchor_element.cc b/third_party/blink/renderer/core/html/html_anchor_element.cc

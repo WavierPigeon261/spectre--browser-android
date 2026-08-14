@@ -6,12 +6,12 @@ see  https://source.chromium.org/chromium/chromium/src/+/c5b50f4c2d42e7b808fd3e6
 ---
  .../chrome_feature_list_cc/Block-Intents-While-Locked.inc        | 1 +
  1 file changed, 1 insertion(+)
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Block-Intents-While-Locked.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Block-Intents-While-Locked.inc
 
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Block-Intents-While-Locked.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Block-Intents-While-Locked.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Block-Intents-While-Locked.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Block-Intents-While-Locked.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Block-Intents-While-Locked.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Block-Intents-While-Locked.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kBlockIntentsWhileLocked);
++SET_Spectre Browser_FEATURE_ENABLED(kBlockIntentsWhileLocked);
 --

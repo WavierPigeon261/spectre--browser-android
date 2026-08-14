@@ -1,4 +1,4 @@
-# see https://github.com/uazo/cromite/issues/474#issue-1964976443
+# see https://github.com/uazo/Spectre Browser/issues/474#issue-1964976443
 
 *.idl;chrome/common/extensions
 *.idl;extensions/common/api

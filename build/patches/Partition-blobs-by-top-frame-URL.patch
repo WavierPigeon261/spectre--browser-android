@@ -2,7 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Tue, 20 Sep 2022 07:20:01 +0000
 Subject: Partition blobs by top frame URL
 
-Introduce a global site-isolation mechanism in Cromite that strictly
+Introduce a global site-isolation mechanism in Spectre Browser that strictly
 partitions the registration, resolution, and token exchange of Blob
 URLs based on the top-level frame's site identity. This enforces
 robust W3C Storage Partitioning guarantees and neutralizes cross-
@@ -39,7 +39,7 @@ across Blink and the Browser Process:
 
 This global framework ensures that a Blob URL remains rigidly confined
 and sandboxed within the specific top-level site partition that
-originally spawned it, drastically enhancing Cromite's privacy profile
+originally spawned it, drastically enhancing Spectre Browser's privacy profile
 without impacting standard web platform compatibility.
 
 Original License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
@@ -55,7 +55,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../public/mojom/blob/blob_url_store.mojom    | 13 ++++-
  .../core/fileapi/public_url_manager.cc        | 57 +++++++++++++++++-
  9 files changed, 174 insertions(+), 15 deletions(-)
- create mode 100644 cromite_flags/third_party/blink/common/features_cc/Partition-blobs-by-top-frame-URL.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_cc/Partition-blobs-by-top-frame-URL.inc
 
 diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/browser/renderer_host/render_frame_host_impl.cc
 --- a/content/browser/renderer_host/render_frame_host_impl.cc
@@ -69,12 +69,12 @@ diff --git a/content/browser/renderer_host/render_frame_host_impl.cc b/content/b
    return GetContentClient()->browser()->IsFullCookieAccessAllowed(
        GetBrowserContext(), WebContents::FromRenderFrameHost(this),
        GetLastCommittedURL(), GetStorageKey(), GetCookieSettingOverrides());
-diff --git a/cromite_flags/third_party/blink/common/features_cc/Partition-blobs-by-top-frame-URL.inc b/cromite_flags/third_party/blink/common/features_cc/Partition-blobs-by-top-frame-URL.inc
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_cc/Partition-blobs-by-top-frame-URL.inc b/Spectre Browser_flags/third_party/blink/common/features_cc/Partition-blobs-by-top-frame-URL.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_cc/Partition-blobs-by-top-frame-URL.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_cc/Partition-blobs-by-top-frame-URL.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kEnforceNoopenerOnBlobURLNavigation);
++SET_Spectre Browser_FEATURE_ENABLED(kEnforceNoopenerOnBlobURLNavigation);
 diff --git a/storage/browser/blob/blob_url_registry.cc b/storage/browser/blob/blob_url_registry.cc
 --- a/storage/browser/blob/blob_url_registry.cc
 +++ b/storage/browser/blob/blob_url_registry.cc
@@ -353,7 +353,7 @@ diff --git a/storage/browser/blob/features.cc b/storage/browser/blob/features.cc
  // Please keep features in alphabetical order.
  BASE_FEATURE(kBlockCrossPartitionBlobUrlFetching,
               base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_ENABLED(kBlockCrossPartitionBlobUrlFetching);
++SET_Spectre Browser_FEATURE_ENABLED(kBlockCrossPartitionBlobUrlFetching);
  
  // Please keep features in alphabetical order.
  

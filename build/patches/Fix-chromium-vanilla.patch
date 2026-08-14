@@ -27,7 +27,7 @@ diff --git a/components/safe_browsing/android/java/src/org/chromium/components/s
      @CalledByNative
      private static void startUriLookupBySafeBrowsingApi(
              long callbackId, String uri, int[] threatTypes, int protocol) {
-+        if ((true)) return; // (unused code in cromite) fix chromium vanilla crash
++        if ((true)) return; // (unused code in Spectre Browser) fix chromium vanilla crash
          synchronized (sSafeBrowsingApiHandlerLock) {
              if (sSafeBrowsingApiHandler == null) {
                  // sSafeBrowsingApiHandler can only be null in tests.

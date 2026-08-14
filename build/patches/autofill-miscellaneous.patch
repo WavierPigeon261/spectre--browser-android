@@ -286,7 +286,7 @@ diff --git a/components/autofill/core/common/autofill_features.cc b/components/a
  // affect their functionality.
  BASE_FEATURE(kAutofillPopupZOrderSecuritySurface,
               base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_ENABLED(kAutofillPopupZOrderSecuritySurface);
++SET_Spectre Browser_FEATURE_ENABLED(kAutofillPopupZOrderSecuritySurface);
  
  // When enabled, we prefer a `PHONE_HOME_COUNTRY_CODE` heuristic type over a
  // `HtmlFieldType::kCountryCode`.

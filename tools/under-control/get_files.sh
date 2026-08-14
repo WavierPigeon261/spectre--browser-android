@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # FILE_LIST=/home/lg/working_dir/file_list.txt
-# OUTPUT_DIR=~/cromite/tools/under-control/src/
+# OUTPUT_DIR=~/Spectre Browser/tools/under-control/src/
 
 if [ -z "$CHR_SOURCE_DIR" ]; then
    echo "CHR_SOURCE_DIR is empty"

@@ -10,7 +10,7 @@ fi
 
 if [ -z "$2" ]
 then
-        PATCH_NEW_PATH=~/cromite/build/patches-new
+        PATCH_NEW_PATH=~/Spectre Browser/build/patches-new
 else
         PATCH_NEW_PATH=$2
 fi

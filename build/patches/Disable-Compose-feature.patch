@@ -68,8 +68,8 @@ diff --git a/components/compose/core/browser/compose_features.cc b/components/co
  
  BASE_FEATURE(kComposeUpfrontInputModes, base::FEATURE_ENABLED_BY_DEFAULT);
  
-+SET_CROMITE_FEATURE_DISABLED(kEnableCompose);
-+SET_CROMITE_FEATURE_DISABLED(kComposeEligible);
++SET_Spectre Browser_FEATURE_DISABLED(kEnableCompose);
++SET_Spectre Browser_FEATURE_DISABLED(kComposeEligible);
  }  // namespace compose::features
 diff --git a/components/compose/features.gni b/components/compose/features.gni
 --- a/components/compose/features.gni

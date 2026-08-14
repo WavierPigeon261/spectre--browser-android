@@ -218,7 +218,7 @@ diff --git a/chrome/browser/ui/chrome_pages.cc b/chrome/browser/ui/chrome_pages.
                    Profile* profile,
                    HelpSource source) {
 +  if (source == HelpSource::kWebUI) {
-+    GURL url = GURL("https://github.com/uazo/cromite/issues");
++    GURL url = GURL("https://github.com/uazo/Spectre Browser/issues");
 +    if (browser) {
 +      ShowSingletonTab(browser, url);
 +    } else {

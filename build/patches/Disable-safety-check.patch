@@ -19,7 +19,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../suggestions/action/OmniboxPedal.java      |  3 --
  .../Disable-safety-check.inc                  |  1 +
  14 files changed, 7 insertions(+), 81 deletions(-)
- create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc
+ create mode 100644 Spectre Browser_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
@@ -308,10 +308,10 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
              case OmniboxPedalId.MANAGE_SITE_SETTINGS:
                  delegate.openSettingsPage(SettingsFragment.SITE);
                  break;
-diff --git a/cromite_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc b/cromite_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc
+diff --git a/Spectre Browser_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc b/Spectre Browser_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc
++++ b/Spectre Browser_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc
 @@ -0,0 +1 @@
 +// intentionally empty
 --

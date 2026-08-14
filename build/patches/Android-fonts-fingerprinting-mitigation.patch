@@ -2,7 +2,7 @@ From: uazo <uazo@users.noreply.github.com>
 Date: Sat, 15 Feb 2025 16:25:31 +0000
 Subject: Android fonts fingerprinting mitigation
 
-Replaces system fonts with a predefined set downloaded from www.cromite.org
+Replaces system fonts with a predefined set downloaded from www.Spectre Browser.org
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
@@ -49,12 +49,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../src/ports/SkFontMgr_android_parser.cpp    |   69 +-
  .../skia/src/ports/SkFontMgr_android_parser.h |    5 +-
  42 files changed, 2451 insertions(+), 89 deletions(-)
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Android-fonts-fingerprinting-mitigation.grdp
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Android-fonts-fingerprinting-mitigation.grdp
  create mode 100644 components/component_updater/installer_policies/fonts_pack_component_installer.cc
  create mode 100644 components/component_updater/installer_policies/fonts_pack_component_installer.h
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Android-fonts-fingerprinting-mitigation.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_cc/Android-fonts-fingerprinting-mitigation.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_h/Android-fonts-fingerprinting-mitigation.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Android-fonts-fingerprinting-mitigation.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_cc/Android-fonts-fingerprinting-mitigation.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_h/Android-fonts-fingerprinting-mitigation.inc
  create mode 100644 third_party/skia/src/ports/SkFontMgr_android_data.cpp
 
 diff --git a/android_webview/java/src/org/chromium/android_webview/common/ProductionSupportedFlagList.java b/android_webview/java/src/org/chromium/android_webview/common/ProductionSupportedFlagList.java
@@ -85,10 +85,10 @@ diff --git a/android_webview/nonembedded/component_updater/registration.cc b/and
  void RegisterComponentsForUpdate(
 @@ -36,6 +39,12 @@ void RegisterComponentsForUpdate(
    std::vector<std::unique_ptr<component_updater::ComponentInstallerPolicy>>
-       component_installer_list_cromite;
+       component_installer_list_Spectre Browser;
  
 +  if (base::FeatureList::IsEnabled(blink::features::kAndroidFontsFingerprintingMitigation)) {
-+    component_installer_list_cromite.push_back(
++    component_installer_list_Spectre Browser.push_back(
 +      std::make_unique<
 +          component_updater::FontsPackComponentInstallerPolicy>());
 +  }
@@ -163,10 +163,10 @@ diff --git a/chrome/browser/component_updater/registration.cc b/chrome/browser/c
  
    if ((true)) return;
  
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Android-fonts-fingerprinting-mitigation.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Android-fonts-fingerprinting-mitigation.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Android-fonts-fingerprinting-mitigation.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Android-fonts-fingerprinting-mitigation.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Android-fonts-fingerprinting-mitigation.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Android-fonts-fingerprinting-mitigation.grdp
 @@ -0,0 +1,9 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>
@@ -798,7 +798,7 @@ diff --git a/content/renderer/renderer_blink_platform_impl.cc b/content/renderer
 +  if (!base::FeatureList::IsEnabled(blink::features::kAndroidFontsFingerprintingMitigation)) {
 +    return;
 +  }
-+  std::string font_config = "cromite_fonts.xml";
++  std::string font_config = "Spectre Browser_fonts.xml";
 +  sk_sp<SkFontConfigInterface> fci(SkFontConfigInterface::RefGlobal());
 +  SkStreamAsset* asset = fci->openStreamFromName(font_config.c_str());
 +  if (!asset) {
@@ -863,10 +863,10 @@ diff --git a/content/renderer/renderer_main.cc b/content/renderer/renderer_main.
  #endif
  
    // This function allows pausing execution using the --renderer-startup-dialog
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Android-fonts-fingerprinting-mitigation.inc b/cromite_flags/chrome/browser/about_flags_cc/Android-fonts-fingerprinting-mitigation.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Android-fonts-fingerprinting-mitigation.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Android-fonts-fingerprinting-mitigation.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Android-fonts-fingerprinting-mitigation.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Android-fonts-fingerprinting-mitigation.inc
 @@ -0,0 +1,12 @@
 +#if BUILDFLAG(IS_ANDROID)
 +
@@ -880,22 +880,22 @@ new file mode 100644
 +#endif
 +
 +#endif
-diff --git a/cromite_flags/third_party/blink/common/features_cc/Android-fonts-fingerprinting-mitigation.inc b/cromite_flags/third_party/blink/common/features_cc/Android-fonts-fingerprinting-mitigation.inc
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_cc/Android-fonts-fingerprinting-mitigation.inc b/Spectre Browser_flags/third_party/blink/common/features_cc/Android-fonts-fingerprinting-mitigation.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_cc/Android-fonts-fingerprinting-mitigation.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_cc/Android-fonts-fingerprinting-mitigation.inc
 @@ -0,0 +1,7 @@
 +#if BUILDFLAG(IS_ANDROID)
 +
-+CROMITE_FEATURE(kAndroidFontsFingerprintingMitigation,
++Spectre Browser_FEATURE(kAndroidFontsFingerprintingMitigation,
 +                "AndroidFontsFingerprintingMitigation",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
 +
 +#endif
-diff --git a/cromite_flags/third_party/blink/common/features_h/Android-fonts-fingerprinting-mitigation.inc b/cromite_flags/third_party/blink/common/features_h/Android-fonts-fingerprinting-mitigation.inc
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_h/Android-fonts-fingerprinting-mitigation.inc b/Spectre Browser_flags/third_party/blink/common/features_h/Android-fonts-fingerprinting-mitigation.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_h/Android-fonts-fingerprinting-mitigation.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_h/Android-fonts-fingerprinting-mitigation.inc
 @@ -0,0 +1,5 @@
 +#if BUILDFLAG(IS_ANDROID)
 +
@@ -918,7 +918,7 @@ diff --git a/skia/BUILD.gn b/skia/BUILD.gn
 +      "include/ports/SkFontConfigInterface.h",
 +      "include/ports/SkFontMgr_FontConfigInterface.h",
 +    ]
-+    defines += [ "CROMITE_IS_ANDROID" ]
++    defines += [ "Spectre Browser_IS_ANDROID" ]
 +  }
 +
    if (is_linux || is_chromeos || is_android) {
@@ -931,7 +931,7 @@ diff --git a/skia/ext/font_utils.cc b/skia/ext/font_utils.cc
  #if BUILDFLAG(IS_ANDROID)
  // https://crbug.com/461659286 Failure to create any font causes crash.
  BASE_FEATURE(kUseAndroidNDKFontAPI, base::FEATURE_DISABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kUseAndroidNDKFontAPI);
++SET_Spectre Browser_FEATURE_DISABLED(kUseAndroidNDKFontAPI);
  #endif
  
  }  // namespace
@@ -1027,7 +1027,7 @@ diff --git a/third_party/skia/src/ports/SkFontConfigInterface.cpp b/third_party/
      if (gFontConfigInterface) {
          return sk_ref_sp(gFontConfigInterface);
      }
-+#if defined(CROMITE_IS_ANDROID)
++#if defined(Spectre Browser_IS_ANDROID)
 +    SkASSERT(false);
 +    return nullptr;
 +#else
@@ -1326,7 +1326,7 @@ diff --git a/third_party/skia/src/ports/SkFontMgr_android.cpp b/third_party/skia
      }
  
 -    sk_sp<SkTypeface_AndroidSystem> matchAStyle(const SkFontStyle& pattern) {
-+    sk_sp<SkTypeface_AndroidSystemCustom> matchCromiteStyle(const SkFontStyle& pattern) {
++    sk_sp<SkTypeface_AndroidSystemCustom> matchSpectre BrowserStyle(const SkFontStyle& pattern) {
 +        return sk_sp_static_cast<SkTypeface_AndroidSystemCustom>(this->matchStyleCSS3(pattern));
 +    }
 +    sk_sp<SkTypeface_AndroidSystem> matchAndroidStyle(const SkFontStyle& pattern) {
@@ -1393,7 +1393,7 @@ diff --git a/third_party/skia/src/ports/SkFontMgr_android.cpp b/third_party/skia
              }
 -            sk_sp<SkTypeface_AndroidSystem> face(nameToFamily.styleSet->matchAStyle(style));
 +            if (custom_) {
-+                sk_sp<SkTypeface_AndroidSystemCustom> face(nameToFamily.styleSet->matchCromiteStyle(style));
++                sk_sp<SkTypeface_AndroidSystemCustom> face(nameToFamily.styleSet->matchSpectre BrowserStyle(style));
 +
 +                if (!langTag.isEmpty() &&
 +                    std::none_of(face->fLang.begin(), face->fLang.end(), [&](const SkLanguage& lang){

@@ -1,9 +1,9 @@
 From: uazo <uazo@users.noreply.github.com>
 Date: Thu, 29 Sep 2022 11:27:35 +0000
-Subject: Eyeo Adblock for Cromite
+Subject: Eyeo Adblock for Spectre Browser
 
 Change the normal behaviour of Eyeo Chromium SDK to
-suit Cromite logic.
+suit Spectre Browser logic.
 ---
  .../android/java/res/xml/main_preferences.xml |   19 +-
  .../adblock_chrome_content_browser_client.cc  |    6 +
@@ -143,7 +143,7 @@ suit Cromite logic.
  create mode 100644 components/adblock/core/resources/snippets/dist/isolated-first-all.source.jst
  create mode 100644 components/adblock/core/sha256_file.py
  create mode 100644 components/content_settings/core/browser/bromite_content_settings/ads.inc
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Stricter-popup-blocker.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Stricter-popup-blocker.inc
 
 diff --git a/chrome/android/java/res/xml/main_preferences.xml b/chrome/android/java/res/xml/main_preferences.xml
 --- a/chrome/android/java/res/xml/main_preferences.xml
@@ -274,7 +274,7 @@ diff --git a/chrome/browser/adblock/android/adblock_strings.grd b/chrome/browser
 +      <message name="IDS_ADBLOCK_SETTINGS_PRIVILEGED_FILTERS_ENABLED_SUMMARY" desc="">
 +        Snippets are pieces of JavaScript code, injected by the Adblock Plus, that execute within the context of a website and combat advanced ads that circumvent ordinary blocking.
 +The functionality is ONLY allowed for the list
-+https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt
++https://uazo.github.io/Spectre Browser/filters/abp-filters-anti-cv.txt
 +which is activated by this setting.
 +      </message>
 +      <message name="IDS_ADBLOCK_SETTINGS_OPEN_REPO_URL_TEXT" desc="">
@@ -1289,7 +1289,7 @@ new file mode 100644
 +                <div class="cr-secondary-text">
 +                    Snippets are pieces of JavaScript code, injected by the Adblock Plus, that execute within the context of a website and combat advanced ads that circumvent ordinary blocking.
 +                    The functionality is ONLY allowed for the list
-+                    <a href="https://uazo.github.io/cromite/filters/abp-filters-anti-cv.txt">abp-filters-anti-cv.txt</a>
++                    <a href="https://uazo.github.io/Spectre Browser/filters/abp-filters-anti-cv.txt">abp-filters-anti-cv.txt</a>
 +                    which is activated by this setting.
 +                    <br><a href="https://gitlab.com/eyeo/anti-cv/abp-filters-anti-cv">Open ABP anti-circumvention filter list repo</a>
 +                    <br><a href="https://developers.eyeo.com/snippets/snippets-overview">Open ABP Snippets Overview</a>
@@ -2279,20 +2279,20 @@ new file mode 100644
 +++ b/components/adblock/content/browser/adblock_blocking_page.cc
 @@ -0,0 +1,183 @@
 +/*
-+    This file is part of Cromite.
++    This file is part of Spectre Browser.
 +
-+    Cromite is free software: you can redistribute it and/or modify
++    Spectre Browser is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
 +    the Free Software Foundation, either version 2 of the License, or
 +    (at your option) any later version.
 +
-+    Cromite is distributed in the hope that it will be useful,
++    Spectre Browser is distributed in the hope that it will be useful,
 +    but WITHOUT ANY WARRANTY; without even the implied warranty of
 +    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +    GNU General Public License for more details.
 +
 +    You should have received a copy of the GNU General Public License
-+    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++    along with Spectre Browser. If not, see <https://www.gnu.org/licenses/>.
 +*/
 +
 +#include "components/adblock/content/browser/adblock_blocking_page.h"
@@ -2467,20 +2467,20 @@ new file mode 100644
 +++ b/components/adblock/content/browser/adblock_blocking_page.h
 @@ -0,0 +1,75 @@
 +/*
-+    This file is part of Cromite.
++    This file is part of Spectre Browser.
 +
-+    Cromite is free software: you can redistribute it and/or modify
++    Spectre Browser is free software: you can redistribute it and/or modify
 +    it under the terms of the GNU General Public License as published by
 +    the Free Software Foundation, either version 2 of the License, or
 +    (at your option) any later version.
 +
-+    Cromite is distributed in the hope that it will be useful,
++    Spectre Browser is distributed in the hope that it will be useful,
 +    but WITHOUT ANY WARRANTY; without even the implied warranty of
 +    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 +    GNU General Public License for more details.
 +
 +    You should have received a copy of the GNU General Public License
-+    along with Cromite. If not, see <https://www.gnu.org/licenses/>.
++    along with Spectre Browser. If not, see <https://www.gnu.org/licenses/>.
 +*/
 +
 +#ifndef COMPONENTS_ADBLOCK_CONTENT_BROWSER_ADBLOCK_BLOCKING_PAGE_H_
@@ -4912,7 +4912,7 @@ diff --git a/components/adblock/core/features.cc b/components/adblock/core/featu
 -BASE_FEATURE(kAdblockPlusFeature,
 -             "AdblockPlus",
 -             base::FEATURE_ENABLED_BY_DEFAULT);
-+CROMITE_FEATURE(kAdblockPlusFeature,
++Spectre Browser_FEATURE(kAdblockPlusFeature,
 +                "AdblockPlus",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
  
@@ -12415,7 +12415,7 @@ diff --git a/components/adblock/core/subscription/subscription_config.cc b/compo
  
  std::string GetHost() {
 -  GURL url("https://easylist-downloads.adblockplus.org");
-+  GURL url("https://uazo.github.io/cromite/filters/");
++  GURL url("https://uazo.github.io/Spectre Browser/filters/");
    if (!g_port_for_testing) {
      return url.spec();
    }
@@ -12507,8 +12507,8 @@ diff --git a/components/adblock/core/subscription/subscription_config.cc b/compo
 -       "I don't care about cookies",
 +       SubscriptionFirstRunBehavior::SubscribeAtFirstRun,
 +       SubscriptionPrivilegedFilterStatus::AllowedAndChecked},
-+      {GURL("https://raw.githubusercontent.com/uazo/cromite/master/tools/filters/experimental-cromite-filters.txt"),
-+       "Cromite experimental filters",
++      {GURL("https://raw.githubusercontent.com/uazo/Spectre Browser/master/tools/filters/experimental-Spectre Browser-filters.txt"),
++       "Spectre Browser experimental filters",
         {},
         SubscriptionUiVisibility::Visible,
 -       SubscriptionFirstRunBehavior::Ignore,
@@ -13018,7 +13018,7 @@ diff --git a/components/blocked_content/popup_blocker.cc b/components/blocked_co
  
  namespace blocked_content {
 +
-+CROMITE_FEATURE(kStrictPopupBlocker,
++Spectre Browser_FEATURE(kStrictPopupBlocker,
 +                "StrictPopupBlocker",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
 +
@@ -13186,10 +13186,10 @@ diff --git a/content/public/common/isolated_world_ids.h b/content/public/common/
  
    // Custom isolated world ids used by other embedders should start from here.
    ISOLATED_WORLD_ID_CONTENT_END,
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Stricter-popup-blocker.inc b/cromite_flags/chrome/browser/about_flags_cc/Stricter-popup-blocker.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Stricter-popup-blocker.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Stricter-popup-blocker.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Stricter-popup-blocker.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Stricter-popup-blocker.inc
 @@ -0,0 +1,14 @@
 +#ifdef ABOUT_FLAG_INCLUDE_SECTION
 +

@@ -10,8 +10,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../Disable-GetInstalledRelatedApps-API.inc                | 2 ++
  .../blink/renderer/platform/runtime_enabled_features.json5 | 3 +--
  5 files changed, 12 insertions(+), 3 deletions(-)
- create mode 100644 cromite_flags/content/common/features_cc/Disable-GetInstalledRelatedApps-API.inc
- create mode 100644 cromite_flags/content/public/common/content_features_cc/Disable-GetInstalledRelatedApps-API.inc
+ create mode 100644 Spectre Browser_flags/content/common/features_cc/Disable-GetInstalledRelatedApps-API.inc
+ create mode 100644 Spectre Browser_flags/content/public/common/content_features_cc/Disable-GetInstalledRelatedApps-API.inc
 
 diff --git a/components/installedapp/android/java/src/org/chromium/components/installedapp/InstalledAppProviderImpl.java b/components/installedapp/android/java/src/org/chromium/components/installedapp/InstalledAppProviderImpl.java
 --- a/components/installedapp/android/java/src/org/chromium/components/installedapp/InstalledAppProviderImpl.java
@@ -36,25 +36,25 @@ diff --git a/content/browser/installedapp/installed_app_provider_impl.cc b/conte
      base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
          FROM_HERE,
          base::BindOnce(std::move(callback),
-diff --git a/cromite_flags/content/common/features_cc/Disable-GetInstalledRelatedApps-API.inc b/cromite_flags/content/common/features_cc/Disable-GetInstalledRelatedApps-API.inc
+diff --git a/Spectre Browser_flags/content/common/features_cc/Disable-GetInstalledRelatedApps-API.inc b/Spectre Browser_flags/content/common/features_cc/Disable-GetInstalledRelatedApps-API.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/common/features_cc/Disable-GetInstalledRelatedApps-API.inc
++++ b/Spectre Browser_flags/content/common/features_cc/Disable-GetInstalledRelatedApps-API.inc
 @@ -0,0 +1,7 @@
-+SET_CROMITE_FEATURE_DISABLED(kFilterInstalledAppsWebAppMatching);
++SET_Spectre Browser_FEATURE_DISABLED(kFilterInstalledAppsWebAppMatching);
 +
 +#if BUILDFLAG(IS_WIN)
 +
-+SET_CROMITE_FEATURE_DISABLED(kFilterInstalledAppsWinMatching);
++SET_Spectre Browser_FEATURE_DISABLED(kFilterInstalledAppsWinMatching);
 +
 +#endif
-diff --git a/cromite_flags/content/public/common/content_features_cc/Disable-GetInstalledRelatedApps-API.inc b/cromite_flags/content/public/common/content_features_cc/Disable-GetInstalledRelatedApps-API.inc
+diff --git a/Spectre Browser_flags/content/public/common/content_features_cc/Disable-GetInstalledRelatedApps-API.inc b/Spectre Browser_flags/content/public/common/content_features_cc/Disable-GetInstalledRelatedApps-API.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/public/common/content_features_cc/Disable-GetInstalledRelatedApps-API.inc
++++ b/Spectre Browser_flags/content/public/common/content_features_cc/Disable-GetInstalledRelatedApps-API.inc
 @@ -0,0 +1,2 @@
-+SET_CROMITE_FEATURE_DISABLED(kInstalledApp);
-+SET_CROMITE_FEATURE_DISABLED(kInstalledAppProvider);
++SET_Spectre Browser_FEATURE_DISABLED(kInstalledApp);
++SET_Spectre Browser_FEATURE_DISABLED(kInstalledAppProvider);
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5

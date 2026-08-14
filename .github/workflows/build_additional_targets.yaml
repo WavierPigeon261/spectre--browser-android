@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       sha:
-        description: 'uazo/cromite SHA'
+        description: 'uazo/Spectre Browser SHA'
         required: true
         default: ''
       type:
@@ -28,7 +28,7 @@ on:
         default: 'false'
 
 env:
-  CROMITE_SHA: ${{ github.event.inputs.sha }}
+  Spectre Browser_SHA: ${{ github.event.inputs.sha }}
   REMOVEDOCKERSUPPORT: true
   USELOCALIMAGE: true
 
@@ -39,7 +39,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
         with:
-          path: cromite
+          path: Spectre Browser
           ref: ${{ github.event.inputs.sha }}
           fetch-depth: 1
 
@@ -56,29 +56,29 @@ jobs:
       - name: Get current chromium version
         shell: bash
         run: |
-          export VERSION=$( cat ./cromite/build/RELEASE )
+          export VERSION=$( cat ./Spectre Browser/build/RELEASE )
 
           echo Current version is $VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-          cd cromite/tools
+          cd Spectre Browser/tools
 
-      - name: Get uazo/cromite-build from docker hub if present
+      - name: Get uazo/Spectre Browser-build from docker hub if present
         shell: bash
         run: |
-          IS_PRESENT=$(docker manifest inspect uazo/cromite-build:$VERSION-$CROMITE_SHA > /dev/null ; echo $?)
+          IS_PRESENT=$(docker manifest inspect uazo/Spectre Browser-build:$VERSION-$Spectre Browser_SHA > /dev/null ; echo $?)
           if [ $IS_PRESENT -eq "0" ]; then
-            docker pull uazo/cromite-build:$VERSION-$CROMITE_SHA
+            docker pull uazo/Spectre Browser-build:$VERSION-$Spectre Browser_SHA
           fi
 
       - name: Mark image to build
         shell: bash
         run: |
-          IS_PRESENT=$(docker inspect --type=image uazo/cromite-build:build > /dev/null ; echo $?)
+          IS_PRESENT=$(docker inspect --type=image uazo/Spectre Browser-build:build > /dev/null ; echo $?)
           if [ $IS_PRESENT -eq "0" ]; then
-            docker rmi uazo/cromite-build:build
+            docker rmi uazo/Spectre Browser-build:build
           fi
-          docker tag uazo/cromite-build:$VERSION-$CROMITE_SHA uazo/cromite-build:build
+          docker tag uazo/Spectre Browser-build:$VERSION-$Spectre Browser_SHA uazo/Spectre Browser-build:build
 
   build:
     runs-on: ${{ github.event.inputs.type }}
@@ -87,7 +87,7 @@ jobs:
     timeout-minutes: 1440
 
     container:
-      image: uazo/cromite-build:build
+      image: uazo/Spectre Browser-build:build
       env:
         REMOVEDOCKERSUPPORT: true # CUSTOM RUNNER: remove sharing of docker socket
         USELOCALIMAGE: true       # CUSTOM RUNNER: permit use of local images
@@ -105,7 +105,7 @@ jobs:
         TARGET_ISDEBUG: ${{ github.event.inputs.debug }}
         USE_KEYSTORE: true
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        CROMITE_PREF_HASH_SEED_BIN: ${{ secrets.CROMITE_PREF_HASH_SEED_BIN }}
+        Spectre Browser_PREF_HASH_SEED_BIN: ${{ secrets.Spectre Browser_PREF_HASH_SEED_BIN }}
       volumes:
         - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/chr_arm:/home/lg/working_dir/chromium/src/out/chr_arm
         - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/chr_arm64:/home/lg/working_dir/chromium/src/out/chr_arm64
@@ -157,18 +157,18 @@ jobs:
           # prepare keystore
           echo "::group::-------- prepare keystore"
           cd $WORKSPACE
-          echo "${{ secrets.KEYSTORE }}" > cromite.keystore.asc
-          gpg --homedir ./ -d --passphrase "${{ secrets.KEYSTORE_PASSPHRASE }}" --batch cromite.keystore.asc > cromite.keystore
+          echo "${{ secrets.KEYSTORE }}" > Spectre Browser.keystore.asc
+          gpg --homedir ./ -d --passphrase "${{ secrets.KEYSTORE_PASSPHRASE }}" --batch Spectre Browser.keystore.asc > Spectre Browser.keystore
           echo "::endgroup::"
 
-      - name: Build Cromite System WebView x64
+      - name: Build Spectre Browser System WebView x64
         shell: bash
         run: |
           PATH=$WORKSPACE/chromium/src/third_party/llvm-build/Release+Asserts/bin:$WORKSPACE/depot_tools/:/usr/local/go/bin:$WORKSPACE/mtool/bin:$PATH
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="target_os = \"android\" target_cpu = \"x64\" $(cat /home/lg/working_dir/cromite/build/cromite.gn_args) system_webview_package_name=\"com.android.webview\" enable_trybot_verification=false " out/x64_webview
+          gn gen --args="target_os = \"android\" target_cpu = \"x64\" $(cat /home/lg/working_dir/Spectre Browser/build/Spectre Browser.gn_args) system_webview_package_name=\"com.android.webview\" enable_trybot_verification=false " out/x64_webview
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -177,7 +177,7 @@ jobs:
           echo "::endgroup::"
 
           vpython3 /home/lg/working_dir/depot_tools/siso.py ninja -C out/x64_webview system_webview_apk system_webview_shell --offline
-          cp ../../cromite/build/RELEASE out/x64_webview
+          cp ../../Spectre Browser/build/RELEASE out/x64_webview
 
       - name: Prepare Build Container for vanilla chromium
         shell: bash
@@ -197,7 +197,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/cromite/build/chromium.gn_args) target_cpu = \"x64\" " out/chr_x64
+          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/Spectre Browser/build/chromium.gn_args) target_cpu = \"x64\" " out/chr_x64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -207,7 +207,7 @@ jobs:
 
           vpython3 /home/lg/working_dir/depot_tools/siso.py ninja -C out/chr_x64 chrome_public_apk --offline
 
-          cp ../../cromite/build/RELEASE out/chr_x64
+          cp ../../Spectre Browser/build/RELEASE out/chr_x64
 
       - name: Build Chromium Vanilla Android arm64
         shell: bash
@@ -216,7 +216,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/cromite/build/chromium.gn_args) target_cpu = \"arm64\" " out/chr_arm64
+          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/Spectre Browser/build/chromium.gn_args) target_cpu = \"arm64\" " out/chr_arm64
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -226,7 +226,7 @@ jobs:
 
           vpython3 /home/lg/working_dir/depot_tools/siso.py ninja -C out/chr_arm64 chrome_public_apk --offline
 
-          cp ../../cromite/build/RELEASE out/chr_arm64
+          cp ../../Spectre Browser/build/RELEASE out/chr_arm64
 
       - name: Build Chromium Vanilla Android arm
         shell: bash
@@ -235,7 +235,7 @@ jobs:
           cd $WORKSPACE/chromium/src
 
           echo "::group::-------- gn gen"
-          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/cromite/build/chromium.gn_args) target_cpu = \"arm\" " out/chr_arm
+          gn gen --args="target_os = \"android\" $(cat /home/lg/working_dir/Spectre Browser/build/chromium.gn_args) target_cpu = \"arm\" " out/chr_arm
           echo "::endgroup::"
 
           echo "::group::-------- gn args"
@@ -245,4 +245,4 @@ jobs:
 
           vpython3 /home/lg/working_dir/depot_tools/siso.py ninja -C out/chr_arm chrome_public_apk --offline
 
-          cp ../../cromite/build/RELEASE out/chr_arm
+          cp ../../Spectre Browser/build/RELEASE out/chr_arm

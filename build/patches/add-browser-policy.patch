@@ -207,8 +207,8 @@ diff --git a/chrome/browser/navigation_predictor/search_engine_preconnector.cc b
  BASE_FEATURE(kPreconnectFromKeyedService, base::FEATURE_ENABLED_BY_DEFAULT);
  BASE_FEATURE(kPreconnectToSearch, base::FEATURE_ENABLED_BY_DEFAULT);
  
-+SET_CROMITE_FEATURE_DISABLED(kPreconnectFromKeyedService);
-+SET_CROMITE_FEATURE_DISABLED(kPreconnectToSearch);
++SET_Spectre Browser_FEATURE_DISABLED(kPreconnectFromKeyedService);
++SET_Spectre Browser_FEATURE_DISABLED(kPreconnectToSearch);
 +
  // Feature to control binding the receivers every time we attempt to
  // preconnect. This will trigger the destruction of the previous receiver
@@ -527,7 +527,7 @@ diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/comp
        <!-- Settings UI -->
        <message name="IDS_MANAGED_BY_YOUR_ORGANIZATION" desc="Popup message when the user clicks a UI element that has been disabled by enterprise policy.">
 -        Managed by your organization
-+        This setting is enforced by Cromite.
++        This setting is enforced by Spectre Browser.
        </message>
        <message name="IDS_MANAGED_BY_YOUR_PARENTS" desc="Popup message when the user clicks a UI element that has been disabled by their parents.">
          Managed by your parents
@@ -632,7 +632,7 @@ diff --git a/components/commerce/core/commerce_feature_list.cc b/components/comm
  }
  #endif
 +
-+SET_CROMITE_FEATURE_DISABLED(kEnableDiscountInfoApi);
++SET_Spectre Browser_FEATURE_DISABLED(kEnableDiscountInfoApi);
  }  // namespace commerce
 diff --git a/components/policy/core/browser/browser_policy_connector.cc b/components/policy/core/browser/browser_policy_connector.cc
 --- a/components/policy/core/browser/browser_policy_connector.cc
@@ -976,7 +976,7 @@ diff --git a/components/search/ntp_features.cc b/components/search/ntp_features.
  
  // If enabled, chrome cart module will be shown.
  BASE_FEATURE(kNtpChromeCartModule, base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kNtpChromeCartModule);
++SET_Spectre Browser_FEATURE_DISABLED(kNtpChromeCartModule);
  
  // If enabled, customization of Chrome will be promoted on the NTP.
  BASE_FEATURE(kNtpCustomizeChromeAutoOpen, base::FEATURE_DISABLED_BY_DEFAULT);
@@ -1020,7 +1020,7 @@ diff --git a/extensions/common/extension_features.cc b/extensions/common/extensi
  
  BASE_FEATURE(kAllowWithholdingExtensionPermissionsOnInstall,
               base::FEATURE_DISABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kExtensionsManifestV3Only);
++SET_Spectre Browser_FEATURE_DISABLED(kExtensionsManifestV3Only);
  
  BASE_FEATURE(kCheckingNoExtensionIdInExtensionIpcs,
               "EMF_NO_EXTENSION_ID_FOR_EXTENSION_SOURCE",

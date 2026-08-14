@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Allow playing videos in background
 // @version      1.0.0
-// @description  Allow playing youtube and vimeo videos in background in cromite. Original Javascript code by timdream and csagan5
+// @description  Allow playing youtube and vimeo videos in background in Spectre Browser. Original Javascript code by timdream and csagan5
 // @author       uazo
 // @match        https://*.youtube.com/*
 // @match        https://*.youtube-nocookie.com/*

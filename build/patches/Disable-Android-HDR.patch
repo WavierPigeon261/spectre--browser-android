@@ -14,7 +14,7 @@ diff --git a/ui/android/ui_android_features.cc b/ui/android/ui_android_features.
  namespace ui {
  
  BASE_FEATURE(kAndroidHDR, base::FEATURE_ENABLED_BY_DEFAULT);
-+SET_CROMITE_FEATURE_DISABLED(kAndroidHDR);
++SET_Spectre Browser_FEATURE_DISABLED(kAndroidHDR);
  
  BASE_FEATURE(kAndroidUseCorrectDisplayWorkArea,
               base::FEATURE_DISABLED_BY_DEFAULT);

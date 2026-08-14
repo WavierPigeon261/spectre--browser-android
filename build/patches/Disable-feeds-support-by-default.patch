@@ -87,8 +87,8 @@ diff --git a/components/feed/feed_feature_list.cc b/components/feed/feed_feature
           !base::FeatureList::IsEnabled(kWebFeedKillSwitch);
  }
  
-+SET_CROMITE_FEATURE_DISABLED(kInterestFeedV2);
-+SET_CROMITE_FEATURE_ENABLED(kWebFeedKillSwitch);
++SET_Spectre Browser_FEATURE_DISABLED(kInterestFeedV2);
++SET_Spectre Browser_FEATURE_ENABLED(kWebFeedKillSwitch);
 +
  }  // namespace feed
 --

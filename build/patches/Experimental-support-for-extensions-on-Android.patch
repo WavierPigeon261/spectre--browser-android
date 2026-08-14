@@ -217,10 +217,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../cr_elements/cr_toolbar/cr_toolbar.css     |  3 +
  ui/webui/resources/css/BUILD.gn               |  2 +-
  204 files changed, 657 insertions(+), 325 deletions(-)
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Enable-extensions-Android.grdp
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Extensions-Android.grdp
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Extensions-Android.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Experimental-support-for-extensions-on-Android.inc
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Enable-extensions-Android.grdp
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Extensions-Android.grdp
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Extensions-Android.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Experimental-support-for-extensions-on-Android.inc
 
 diff --git a/android_webview/BUILD.gn b/android_webview/BUILD.gn
 --- a/android_webview/BUILD.gn
@@ -242,7 +242,7 @@ diff --git a/base/allocator/partition_allocator/src/partition_alloc/BUILD.gn b/b
      "HAS_MEMORY_TAGGING=$has_memory_tagging",
      "IS_ANDROID=$is_android",
 +    "IS_DESKTOP_ANDROID_FALSE=false",
-+    "IS_DESKTOP_ANDROID_CROMITE=$is_desktop_android_cromite",
++    "IS_DESKTOP_ANDROID_Spectre Browser=$is_desktop_android_Spectre Browser",
      "IS_CASTOS=$is_castos",
      "IS_CHROMEOS=$is_chromeos",
      "IS_DEBUG=$partition_alloc_is_debug",
@@ -254,7 +254,7 @@ diff --git a/base/android/device_info.cc b/base/android/device_info.cc
  }
  
 -bool is_desktop() {
-+bool is_desktop_cromite() {
++bool is_desktop_Spectre Browser() {
    return get_device_info().isDesktop;
  }
  
@@ -282,7 +282,7 @@ diff --git a/base/android/device_info.h b/base/android/device_info.h
  BASE_EXPORT bool is_automotive();
  BASE_EXPORT bool is_foldable();
 -BASE_EXPORT bool is_desktop();
-+BASE_EXPORT bool is_desktop_cromite();
++BASE_EXPORT bool is_desktop_Spectre Browser();
 +BASE_EXPORT bool is_desktop_false();
  // Available only on Android T+.
  BASE_EXPORT int32_t vulkan_deqp_level();
@@ -295,7 +295,7 @@ diff --git a/base/android/java/src/org/chromium/base/DeviceInfo.java b/base/andr
      }
  
 -    public static boolean isDesktop() {
-+    public static boolean isDesktopCromite() {
++    public static boolean isDesktopSpectre Browser() {
          return getInstance().mIDeviceInfo.isDesktop;
      }
  
@@ -323,7 +323,7 @@ diff --git a/build/BUILD.gn b/build/BUILD.gn
  buildflag_header("android_buildflags") {
    header = "android_buildflags.h"
 -  flags = [ "IS_DESKTOP_ANDROID=$is_desktop_android" ]
-+  flags = [ "IS_DESKTOP_ANDROID_CROMITE=$is_desktop_android_cromite", "IS_DESKTOP_ANDROID_FALSE=false" ]
++  flags = [ "IS_DESKTOP_ANDROID_Spectre Browser=$is_desktop_android_Spectre Browser", "IS_DESKTOP_ANDROID_FALSE=false" ]
  }
  
  if (build_with_chromium) {
@@ -336,12 +336,12 @@ diff --git a/build/android/java/templates/BuildConfig.template b/build/android/j
      // build is fully functional.
 -#if defined(_IS_DESKTOP_ANDROID)
 -    public static boolean IS_DESKTOP_ANDROID = true;
-+#if defined(_IS_DESKTOP_ANDROID_CROMITE)
-+    public static boolean IS_DESKTOP_ANDROID_CROMITE = true;
++#if defined(_IS_DESKTOP_ANDROID_Spectre Browser)
++    public static boolean IS_DESKTOP_ANDROID_Spectre Browser = true;
 +    public static boolean IS_DESKTOP_ANDROID_FALSE;
  #else
 -    public static boolean IS_DESKTOP_ANDROID;
-+    public static boolean IS_DESKTOP_ANDROID_CROMITE;
++    public static boolean IS_DESKTOP_ANDROID_Spectre Browser;
 +    public static boolean IS_DESKTOP_ANDROID_FALSE;
  #endif
  
@@ -355,8 +355,8 @@ diff --git a/build/config/android/rules.gni b/build/config/android/rules.gni
        }
 -      if (is_desktop_android) {
 -        defines += [ "_IS_DESKTOP_ANDROID" ]
-+      if (is_desktop_android_cromite) {
-+        defines += [ "_IS_DESKTOP_ANDROID_CROMITE" ]
++      if (is_desktop_android_Spectre Browser) {
++        defines += [ "_IS_DESKTOP_ANDROID_Spectre Browser" ]
        }
  
        if (enable_javaless_renderers) {
@@ -368,7 +368,7 @@ diff --git a/build/config/chrome_build.gni b/build/config/chrome_build.gni
    # Set to true to set defaults that enable features on Android that are more
    # typically available on desktop.
 -  is_desktop_android = false
-+  is_desktop_android_cromite = is_android
++  is_desktop_android_Spectre Browser = is_android
 +  is_desktop_android_false = false
  
    if (is_android) {
@@ -378,13 +378,13 @@ diff --git a/build/config/chrome_build.gni b/build/config/chrome_build.gni
  is_high_end_android = is_high_end_android && is_android
  
 -if (is_desktop_android) {
-+if (is_desktop_android_cromite) {
++if (is_desktop_android_Spectre Browser) {
    assert(target_os == "android",
           "Target must be Android to use is_desktop_android.")
  
    # Disable for non-android secondary toolchains.
 -  is_desktop_android = is_android
-+  is_desktop_android_cromite = is_android
++  is_desktop_android_Spectre Browser = is_android
  }
  
  declare_args() {
@@ -432,7 +432,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
      ]
  
 -    if (is_desktop_android) {
-+    if (is_desktop_android_cromite) {
++    if (is_desktop_android_Spectre Browser) {
        deps +=
            [ "//chrome/browser/ui/android/extensions/windowing/internal:java" ]
      } else {
@@ -441,7 +441,7 @@ diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
      ]
  
 -    if (is_desktop_android) {
-+    if (is_desktop_android_cromite) {
++    if (is_desktop_android_Spectre Browser) {
        deps += [
          "//chrome/browser/ui/android/extensions/windowing/internal:javatests",
  
@@ -453,7 +453,7 @@ diff --git a/chrome/android/chrome_public_apk_tmpl.gni b/chrome/android/chrome_p
    "enable_openxr=$enable_openxr",
    "enable_arcore=$enable_arcore",
 -  "is_desktop_android=$is_desktop_android",
-+  "is_desktop_android_cromite=$is_desktop_android_cromite",
++  "is_desktop_android_Spectre Browser=$is_desktop_android_Spectre Browser",
    "enable_screen_capture=$enable_screen_capture",
    "zygote_preload_class=org.chromium.content_public.app.ZygotePreload",
  ]
@@ -575,7 +575,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/layo
              if (ChromeFeatureList.isEnabled(
                              ChromeFeatureList.ENABLE_TOOLBAR_SWIPE_ON_NON_DESKTOP_LFF)
 -                    ? DeviceInfo.isDesktop()
-+                    ? DeviceInfo.isDesktopCromite()
++                    ? DeviceInfo.isDesktopSpectre Browser()
                      : DeviceFormFactor.isNonMultiDisplayContextOnTablet(mHost.getContext())) {
                  return false;
              }
@@ -764,7 +764,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
              // isActivityStateBookmarkBarCompatible already checks the flag sAndroidBookmarkBar.
              if (BookmarkBarUtils.isActivityStateBookmarkBarCompatible(mActivity)) {
 -                if (DeviceInfo.isDesktop()) {
-+                if (DeviceInfo.isDesktopCromite()) {
++                if (DeviceInfo.isDesktopSpectre Browser()) {
                      // Desktop uses the synced UserPref.
                      BookmarkBarUtils.toggleUserPrefsShowBookmarksBar(
                              mProfileSupplier.get(), /* fromKeyboardShortcut= */ true);
@@ -808,7 +808,7 @@ diff --git a/chrome/app/theme/theme_resources.grd b/chrome/app/theme/theme_resou
        </if>
        <if expr="not _google_chrome">
 -        <if expr="not is_android or is_desktop_android">
-+        <if expr="not is_android or is_desktop_android_cromite">
++        <if expr="not is_android or is_desktop_android_Spectre Browser">
            <!-- Desktop Android supports extensions and the web store. -->
            <structure type="chrome_scaled_image" name="IDR_WEBSTORE_ICON" file="chromium/webstore_icon.png" />
            <structure type="chrome_scaled_image" name="IDR_WEBSTORE_ICON_16" file="chromium/webstore_icon_16.png" />
@@ -817,7 +817,7 @@ diff --git a/chrome/app/theme/theme_resources.grd b/chrome/app/theme/theme_resou
        </if>
        <if expr="_google_chrome">
 -        <if expr="not is_android or is_desktop_android">
-+        <if expr="not is_android or is_desktop_android_cromite">
++        <if expr="not is_android or is_desktop_android_Spectre Browser">
            <!-- Desktop Android supports extensions and the web store. -->
            <structure type="chrome_scaled_image" name="IDR_WEBSTORE_ICON" file="google_chrome/webstore_icon.png" />
            <structure type="chrome_scaled_image" name="IDR_WEBSTORE_ICON_16" file="google_chrome/webstore_icon_16.png" />
@@ -829,7 +829,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
    # TODO(https://crbug.com/356905053): Add more dependencies here and merge this
    # block with the `enable_extensions` block above.
 -  if (enable_desktop_android_extensions) {
-+  if (enable_desktop_android_extensions_cromite) {
++  if (enable_desktop_android_extensions_Spectre Browser) {
      sources += [
        # TODO(https://crbug.com/356905053): These files are temporary workarounds
        # allow for a lightweight extensions runtime in desktop-android builds.
@@ -838,7 +838,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      }
    }
 -  if (!is_android || is_desktop_android) {
-+  if (!is_android || is_desktop_android_cromite) {
++  if (!is_android || is_desktop_android_Spectre Browser) {
      public_deps += [ "//chrome/browser/ui/webui/discards:mojo_bindings" ]
    }
  
@@ -864,7 +864,7 @@ diff --git a/chrome/browser/android/selection/chrome_selection_dropdown_menu_del
  #include "extensions/buildflags/buildflags.h"
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  #include "chrome/browser/extensions/extension_menu_model_android.h"
  #endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
  
@@ -873,7 +873,7 @@ diff --git a/chrome/browser/android/selection/chrome_selection_dropdown_menu_del
      content::RenderFrameHost& render_frame_host,
      const content::ContextMenuParams& params) {
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    std::unique_ptr<extensions::ExtensionMenuModel> extension_menu_model =
        std::make_unique<extensions::ExtensionMenuModel>(render_frame_host,
                                                         params);
@@ -937,7 +937,7 @@ diff --git a/chrome/browser/browser_process_impl.cc b/chrome/browser/browser_pro
    // //chrome/browser/initialize_extensions_browser_client, analogous to
    // `EnsureExtensionsClientInitialized()` above?
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    extensions_browser_client_ = startup_data()->TakeExtensionsBrowserClient();
  #elif BUILDFLAG(ENABLE_EXTENSIONS)
    extensions_browser_client_ =
@@ -949,7 +949,7 @@ diff --git a/chrome/browser/chrome_browser_field_trials.cc b/chrome/browser/chro
    }
  #elif BUILDFLAG(IS_ANDROID)  // BUILDFLAG(IS_LINUX)
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    // Nota bene: Anything here is expected to be short-lived, unless deemed too
    // risky to launch to non-desktop platforms. New features being added here
    // should be the exception, and not the norm. Instead, you should place the
@@ -1114,7 +1114,7 @@ diff --git a/chrome/browser/chrome_browser_interface_binders_webui.cc b/chrome/b
  
  #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || \
 -    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID)
-+    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
  #include "chrome/browser/ui/webui/discards/discards.mojom.h"
  #include "chrome/browser/ui/webui/discards/discards_ui.h"
  #include "chrome/browser/ui/webui/discards/site_data.mojom.h"
@@ -1123,7 +1123,7 @@ diff --git a/chrome/browser/chrome_browser_interface_binders_webui.cc b/chrome/b
  
  #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || \
 -    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID)
-+    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    RegisterWebUIControllerInterfaceBinder<discards::mojom::DetailsProvider,
                                           DiscardsUI>(map);
  
@@ -1135,7 +1135,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
      // when there are matching certificates in the OS.
  #if BUILDFLAG(ENABLE_EXTENSIONS) && \
 -    !(BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_DESKTOP_ANDROID))
-+    !(BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE))
++    !(BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser))
      if (matching_certificates.empty() && nonmatching_certificates.empty()) {
        extensions::ProcessMap* process_map =
            extensions::ProcessMap::Get(profile);
@@ -1144,7 +1144,7 @@ diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/ch
  // with extensions (the chrome.fontSettings API can change these).
  // - http://crbug.com/40337093, http://crbug.com/41304476.
 -#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    // Enabling the FontFamilyCache needs some KeyedService that might not be
    // available for some irregular profiles, like the System Profile.
    if (!AreKeyedServicesDisabledForProfileByDefault(profile)) {
@@ -1156,7 +1156,7 @@ diff --git a/chrome/browser/devtools/BUILD.gn b/chrome/browser/devtools/BUILD.gn
    }
  
 -  if (!is_android || enable_desktop_android_extensions) {
-+  if (!is_android || enable_desktop_android_extensions_cromite) {
++  if (!is_android || enable_desktop_android_extensions_Spectre Browser) {
      sources += [
        "global_confirm_info_bar.cc",
        "global_confirm_info_bar.h",
@@ -1168,7 +1168,7 @@ diff --git a/chrome/browser/download/BUILD.gn b/chrome/browser/download/BUILD.gn
    }
  
 -  if (is_android && !enable_desktop_android_extensions) {
-+  if (is_android && !enable_desktop_android_extensions_cromite) {
++  if (is_android && !enable_desktop_android_extensions_Spectre Browser) {
      sources += [ "download_crx_util_android.cc" ]
    }
  
@@ -1192,7 +1192,7 @@ diff --git a/chrome/browser/download/download_offline_content_provider.cc b/chro
  #include "ui/base/device_form_factor.h"
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  #include "chrome/browser/download/download_core_service.h"
  #include "chrome/browser/download/download_core_service_factory.h"
  #endif
@@ -1201,7 +1201,7 @@ diff --git a/chrome/browser/download/download_offline_content_provider.cc b/chro
    }
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    // On desktop Android, the extensions chrome.download.setUiOptions() function
    // can disable UI updates.
    // TODO(crbug.com/459823225): Expand the IsDangerous() check to other
@@ -1213,7 +1213,7 @@ diff --git a/chrome/browser/extensions/BUILD.gn b/chrome/browser/extensions/BUIL
    ]
  
 -  if (enable_desktop_android_extensions) {
-+  if (enable_desktop_android_extensions_cromite) {
++  if (enable_desktop_android_extensions_Spectre Browser) {
      sources += [ "chrome_extensions_browser_client_android.cc" ]
  
      deps += [
@@ -1233,7 +1233,7 @@ diff --git a/chrome/browser/extensions/api/chrome_extensions_api_client_android.
  // to allow NOTIMPLEMENTED() logging and a place to put TODOs with bug IDs.
  
 -static_assert(BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS));
-+static_assert(BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE));
++static_assert(BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser));
  
  namespace extensions {
  
@@ -1245,7 +1245,7 @@ diff --git a/chrome/browser/extensions/api/identity/web_auth_flow.cc b/chrome/br
  #include "chrome/browser/ui/browser_window.h"
  #else
 -static_assert(BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS));
-+static_assert(BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE));
++static_assert(BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser));
  #include "base/functional/callback_forward.h"
  #include "chrome/browser/android/tab_android.h"
  #include "chrome/browser/tab_list/tab_list_interface.h"
@@ -1254,7 +1254,7 @@ diff --git a/chrome/browser/extensions/api/identity/web_auth_flow.cc b/chrome/br
  }
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  void WebAuthFlow::OnBrowserWindowInterfaceInitialized(
      BrowserWindowInterface* browser) {
    TabModel* tab_model =
@@ -1263,7 +1263,7 @@ diff --git a/chrome/browser/extensions/api/identity/web_auth_flow.cc b/chrome/br
    browser->window()->Show();
  #else
 -  static_assert(BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS));
-+  static_assert(BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE));
++  static_assert(BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser));
    BrowserWindowCreateParams params(BrowserWindowInterface::TYPE_POPUP,
                                     *profile_, user_gesture_);
    if (popup_bounds_.has_value()) {
@@ -1275,7 +1275,7 @@ diff --git a/chrome/browser/extensions/api/identity/web_auth_flow.h b/chrome/bro
    void OnTimeout();
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    void OnBrowserWindowInterfaceInitialized(BrowserWindowInterface* browser);
  #endif
  
@@ -1284,7 +1284,7 @@ diff --git a/chrome/browser/extensions/api/identity/web_auth_flow.h b/chrome/bro
    bool initial_url_loaded_ = false;
    base::ScopedObservation<Profile, ProfileObserver> profile_observation_{this};
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    base::WeakPtrFactory<WebAuthFlow> weak_factory_{this};
  #endif
  };
@@ -1463,7 +1463,7 @@ diff --git a/chrome/browser/extensions/extension_management.cc b/chrome/browser/
  }
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  bool ExtensionManagement::ExtensionsEnabledForDesktopAndroid() const {
 +  if ((true)) {
 +    return base::FeatureList::IsEnabled(
@@ -1477,7 +1477,7 @@ diff --git a/chrome/browser/extensions/extension_management.cc b/chrome/browser/
      const ExtensionId& extension_id,
      const std::string& update_url) {
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    // Block extensions for managed profiles on Desktop Android. This is
    // temporary until extensions are ready for dogfooding.
    // TODO(crbug.com/422307625): Remove this check once extensions are ready for
@@ -1489,7 +1489,7 @@ diff --git a/chrome/browser/extensions/extension_management.h b/chrome/browser/e
        const;
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    // Checks if extensions are enabled for Desktop Android for the current
    // profile. This is temporary for until extensions are ready for dogfooding.
    // TODO(crbug.com/422307625): Remove this check once extensions are ready for
@@ -1557,7 +1557,7 @@ diff --git a/chrome/browser/feed/android/java/src/org/chromium/chrome/browser/fe
       */
      public static boolean isFeedEnabled(Profile profile) {
 -        return (!ChromeFeatureList.sNtpSimplification.isEnabled() || !DeviceInfo.isDesktop())
-+        return (!ChromeFeatureList.sNtpSimplification.isEnabled() || !DeviceInfo.isDesktopCromite())
++        return (!ChromeFeatureList.sNtpSimplification.isEnabled() || !DeviceInfo.isDesktopSpectre Browser())
                  && FeedServiceBridge.isEnabled()
                  && isFeedEnabledByDse(profile);
      }
@@ -1611,7 +1611,7 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
      public static final CachedFlag sPriceChangeModule = newCachedFlag(PRICE_CHANGE_MODULE, true);
      public static final CachedFlag sProtectRecentlyVisibleTab =
 -            newCachedFlag(PROTECT_RECENTLY_VISIBLE_TAB, BuildConfig.IS_DESKTOP_ANDROID);
-+            newCachedFlag(PROTECT_RECENTLY_VISIBLE_TAB, BuildConfig.IS_DESKTOP_ANDROID_CROMITE);
++            newCachedFlag(PROTECT_RECENTLY_VISIBLE_TAB, BuildConfig.IS_DESKTOP_ANDROID_Spectre Browser);
      public static final CachedFlag sReportNotificationContentDetectionData =
              newCachedFlag(
                      REPORT_NOTIFICATION_CONTENT_DETECTION_DATA,
@@ -1623,7 +1623,7 @@ diff --git a/chrome/browser/glic/public/features.cc b/chrome/browser/glic/public
  
  BASE_FEATURE(kGlicDefaultToLastActiveConversation,
 -#if BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
               base::FEATURE_ENABLED_BY_DEFAULT
  #else
               base::FEATURE_DISABLED_BY_DEFAULT
@@ -1635,7 +1635,7 @@ diff --git a/chrome/browser/glic/service/glic_instance_impl.cc b/chrome/browser/
               base::FEATURE_ENABLED_BY_DEFAULT);
  
 -#if BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
  BASE_FEATURE(kGlicUnbindOnClose, base::FEATURE_ENABLED_BY_DEFAULT);
  #else
  BASE_FEATURE(kGlicUnbindOnClose, base::FEATURE_DISABLED_BY_DEFAULT);
@@ -1659,7 +1659,7 @@ diff --git a/chrome/browser/media/router/BUILD.gn b/chrome/browser/media/router/
    sources = []
  
 -  if (!is_android || is_desktop_android) {
-+  if (!is_android || is_desktop_android_cromite) {
++  if (!is_android || is_desktop_android_Spectre Browser) {
      deps += [
        "//base",
        "//chrome/browser/media/router/discovery",
@@ -1680,7 +1680,7 @@ diff --git a/chrome/browser/media/router/discovery/BUILD.gn b/chrome/browser/med
  import("//build/config/chrome_build.gni")
  
 -assert(!is_android || is_desktop_android, "Not supported on mobile")
-+assert(!is_android || is_desktop_android_cromite, "Not supported on mobile")
++assert(!is_android || is_desktop_android_Spectre Browser, "Not supported on mobile")
  assert(!is_fuchsia, "Fuchsia shouldn't use anything in //chrome")
  
  static_library("discovery") {
@@ -1773,7 +1773,7 @@ diff --git a/chrome/browser/ntp_customization/java/src/org/chromium/chrome/brows
      /** Returns whether the NTP simplification is enabled on desktop. */
      public static boolean isNtpSimplificationEnabledOnDesktop() {
 -        return ChromeFeatureList.sNtpSimplification.isEnabled() && DeviceInfo.isDesktop();
-+        return ChromeFeatureList.sNtpSimplification.isEnabled() && DeviceInfo.isDesktopCromite();
++        return ChromeFeatureList.sNtpSimplification.isEnabled() && DeviceInfo.isDesktopSpectre Browser();
      }
  
      /**
@@ -1809,7 +1809,7 @@ diff --git a/chrome/browser/profiles/chrome_browser_main_extra_parts_profiles.cc
  #endif
    extensions::EnsureBrowserContextKeyedServiceFactoriesBuilt();
 -#elif BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#elif BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#elif BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    chrome_extensions::EnsureBrowserContextKeyedServiceFactoriesBuilt();
    // EnsureBrowserContextKeyedServiceFactoriesBuilt() is invoked before the
    // ExtensionsBrowserClient is ready on Android. This is due to Android
@@ -1855,7 +1855,7 @@ diff --git a/chrome/browser/resources/BUILD.gn b/chrome/browser/resources/BUILD.
    }
  
 -  if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android) {
-+  if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android_cromite) {
++  if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android_Spectre Browser) {
      public_deps += [
        "discards:resources",
        "management:resources",
@@ -1867,7 +1867,7 @@ diff --git a/chrome/browser/resources/discards/BUILD.gn b/chrome/browser/resourc
  import("//ui/webui/resources/tools/generate_grd.gni")
  
 -assert(!is_android || is_desktop_android)
-+assert(!is_android || is_desktop_android_cromite)
++assert(!is_android || is_desktop_android_Spectre Browser)
  
  build_webui("build") {
    grd_prefix = "discards"
@@ -2011,7 +2011,7 @@ diff --git a/chrome/browser/startup_data.cc b/chrome/browser/startup_data.cc
  #include "services/preferences/public/mojom/tracked_preference_validation_delegate.mojom.h"
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  #include "chrome/browser/extensions/chrome_extensions_browser_client.h"
  #include "extensions/browser/extensions_browser_client.h"
  #endif
@@ -2020,7 +2020,7 @@ diff --git a/chrome/browser/startup_data.cc b/chrome/browser/startup_data.cc
    pref_registry_ = base::MakeRefCounted<user_prefs::PrefRegistrySyncable>();
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    // On desktop Android the ExtensionsBrowserClient is created here because it
    // must be initialized before BrowserContextKeyedServiceFactories are built.
    // Some factories use ExtensionsBrowserClient::Get() in their DependsOn().
@@ -2029,7 +2029,7 @@ diff --git a/chrome/browser/startup_data.cc b/chrome/browser/startup_data.cc
  #endif
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  std::unique_ptr<extensions::ExtensionsBrowserClient>
  StartupData::TakeExtensionsBrowserClient() {
    return std::move(extensions_browser_client_);
@@ -2041,7 +2041,7 @@ diff --git a/chrome/browser/startup_data.h b/chrome/browser/startup_data.h
  #include "extensions/buildflags/buildflags.h"
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  namespace extensions {
  class ExtensionsBrowserClient;
  }
@@ -2050,7 +2050,7 @@ diff --git a/chrome/browser/startup_data.h b/chrome/browser/startup_data.h
  #endif
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    // Passes ownership of the `extensions_browser_client_` to the caller.
    std::unique_ptr<extensions::ExtensionsBrowserClient>
    TakeExtensionsBrowserClient();
@@ -2059,7 +2059,7 @@ diff --git a/chrome/browser/startup_data.h b/chrome/browser/startup_data.h
  #endif
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    std::unique_ptr<extensions::ExtensionsBrowserClient>
        extensions_browser_client_;
  #endif
@@ -2071,7 +2071,7 @@ diff --git a/chrome/browser/task_manager/common/task_manager_features.cc b/chrom
  // Enables the Task Manager on Clank.
  BASE_FEATURE(kTaskManagerClank,
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
               base::FEATURE_ENABLED_BY_DEFAULT
  #else
               base::FEATURE_DISABLED_BY_DEFAULT
@@ -2083,7 +2083,7 @@ diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
  
    # Desktop-Android-only dependencies.
 -  if (is_desktop_android) {
-+  if (is_desktop_android_cromite) {
++  if (is_desktop_android_Spectre Browser) {
      deps += [ "//chrome/browser/ui/android/extensions/windowing/internal" ]
    }
  
@@ -2092,7 +2092,7 @@ diff --git a/chrome/browser/ui/BUILD.gn b/chrome/browser/ui/BUILD.gn
    }
  
 -  if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android) {
-+  if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android_cromite) {
++  if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android_Spectre Browser) {
      sources += [
        "webui/discards/discards_ui.cc",
        "webui/discards/discards_ui.h",
@@ -2104,7 +2104,7 @@ diff --git a/chrome/browser/ui/android/context_menu_helper.cc b/chrome/browser/u
  #include "url/gurl.h"
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  #include "chrome/browser/extensions/extension_menu_model_android.h"
  #include "ui/menus/simple_menu_model.h"
  #endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
@@ -2113,7 +2113,7 @@ diff --git a/chrome/browser/ui/android/context_menu_helper.cc b/chrome/browser/u
  
  ContextMenuHelper::~ContextMenuHelper() {
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    extension_menu_model_.reset();
  #endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
    JNIEnv* env = base::android::AttachCurrentThread();
@@ -2122,7 +2122,7 @@ diff --git a/chrome/browser/ui/android/context_menu_helper.cc b/chrome/browser/u
    gfx::NativeView view = GetWebContents().GetNativeView();
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    // Reset any previous menu model, in case a new menu is shown
    // before the old one was gracefully closed.
    extension_menu_model_.reset();
@@ -2130,7 +2130,7 @@ diff --git a/chrome/browser/ui/android/context_menu_helper.cc b/chrome/browser/u
  }
  
  void ContextMenuHelper::DismissContextMenu() {
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
 +  extension_menu_model_.reset();
 +#endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
    JNIEnv* env = base::android::AttachCurrentThread();
@@ -2138,7 +2138,7 @@ diff --git a/chrome/browser/ui/android/context_menu_helper.cc b/chrome/browser/u
  }
  
  void ContextMenuHelper::OnContextMenuClosed(JNIEnv* env) {
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
 +  extension_menu_model_.reset();
 +#endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
    GetWebContents().NotifyContextMenuClosed(context_menu_params_.link_followed,
@@ -2152,7 +2152,7 @@ diff --git a/chrome/browser/ui/android/context_menu_helper.h b/chrome/browser/ui
  #include "mojo/public/cpp/bindings/associated_remote.h"
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  namespace extensions {
  class ExtensionMenuModel;
  }
@@ -2161,7 +2161,7 @@ diff --git a/chrome/browser/ui/android/context_menu_helper.h b/chrome/browser/ui
    content::ContextMenuParams context_menu_params_;
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    std::unique_ptr<extensions::ExtensionMenuModel> extension_menu_model_;
  #endif  // BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
  
@@ -2207,8 +2207,8 @@ diff --git a/chrome/browser/ui/android/extensions/BUILD.gn b/chrome/browser/ui/a
    sources = [ "java/templates/ExtensionsBuildflags.template" ]
 -  if (enable_desktop_android_extensions) {
 -    defines = [ "_ENABLE_DESKTOP_ANDROID_EXTENSIONS" ]
-+  if (enable_desktop_android_extensions_cromite) {
-+    defines = [ "_ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE" ]
++  if (enable_desktop_android_extensions_Spectre Browser) {
++    defines = [ "_ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser" ]
    }
  }
  
@@ -2339,7 +2339,7 @@ diff --git a/chrome/browser/ui/android/extensions/windowing/internal/BUILD.gn b/
  import("//third_party/jni_zero/jni_zero.gni")
  
 -assert(is_desktop_android)
-+assert(is_desktop_android_cromite)
++assert(is_desktop_android_Spectre Browser)
  
  source_set("internal") {
    sources = [
@@ -2403,10 +2403,10 @@ diff --git a/chrome/browser/ui/android/extensions/windowing/internal/extension_w
  
    raw_ptr<WindowControllerListObserverForTesting>
        window_controller_list_observer_for_testing_;
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Enable-extensions-Android.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Enable-extensions-Android.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Enable-extensions-Android.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Enable-extensions-Android.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Enable-extensions-Android.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Enable-extensions-Android.grdp
 @@ -0,0 +1,15 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>
@@ -2423,10 +2423,10 @@ new file mode 100644
 +        All Chrome’s extension data will be deleted permanently.
 +    </message>
 +</grit-part>
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Extensions-Android.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Extensions-Android.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Extensions-Android.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Extensions-Android.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Extensions-Android.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Extensions-Android.grdp
 @@ -0,0 +1,9 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>
@@ -2445,7 +2445,7 @@ diff --git a/chrome/browser/ui/android/tab_model/tab_model.cc b/chrome/browser/u
  // static
  bool TabModel::EnableBrowserWindowInterfaceMobile() {
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    return true;
  #else   // !BUILDFLAG(IS_DESKTOP_ANDROID)
    return base::FeatureList::IsEnabled(
@@ -2457,7 +2457,7 @@ diff --git a/chrome/browser/ui/android/tab_model/tab_model_test_helper.h b/chrom
  // BrowserWindowInterface is available on desktop Android, but not other Android
  // builds.
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    void AssociateWithBrowserWindow(BrowserWindowInterface* browser_window);
  #endif
  
@@ -2635,7 +2635,7 @@ diff --git a/chrome/browser/ui/browser_window/BUILD.gn b/chrome/browser/ui/brows
  # These tests don't work on mobile Android due to the lack of multi-window
  # support.
 -if (!is_android || is_desktop_android) {
-+if (!is_android || is_desktop_android_cromite) {
++if (!is_android || is_desktop_android_Spectre Browser) {
    source_set("browser_tests") {
      testonly = true
      sources = [ "internal/profile_browser_collection_browsertest.cc" ]
@@ -2647,7 +2647,7 @@ diff --git a/chrome/browser/ui/browser_window/internal/android/java/src/org/chro
      @Nullable
      public static ChromeAndroidTaskTracker getInstance() {
 -        if (BuildConfig.IS_DESKTOP_ANDROID) {
-+        if (BuildConfig.IS_DESKTOP_ANDROID_CROMITE) {
++        if (BuildConfig.IS_DESKTOP_ANDROID_Spectre Browser) {
              return ChromeAndroidTaskTrackerImpl.getInstance();
          }
  
@@ -2659,7 +2659,7 @@ diff --git a/chrome/browser/ui/prefs/BUILD.gn b/chrome/browser/ui/prefs/BUILD.gn
  }
  
 -if (!is_android || enable_desktop_android_extensions) {
-+if (!is_android || enable_desktop_android_extensions_cromite) {
++if (!is_android || enable_desktop_android_extensions_Spectre Browser) {
    source_set("browser_tests") {
      testonly = true
      defines = [ "HAS_OUT_OF_PROC_TEST_RUNNER" ]
@@ -2668,7 +2668,7 @@ diff --git a/chrome/browser/ui/prefs/BUILD.gn b/chrome/browser/ui/prefs/BUILD.gn
      ]
  
 -    if (enable_desktop_android_extensions) {
-+    if (enable_desktop_android_extensions_cromite) {
++    if (enable_desktop_android_extensions_Spectre Browser) {
        deps += [ "//chrome/test:test_support_ui_android" ]
      } else {
        deps += [ "//chrome/test:test_support_ui" ]
@@ -2680,7 +2680,7 @@ diff --git a/chrome/browser/ui/prefs/prefs_tab_helper.cc b/chrome/browser/ui/pre
  namespace {
  
 -#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  // Registers a preference under the path |pref_name| for each script used for
  // per-script font prefs.
  // For example, for WEBKIT_WEBPREFS_FONTS_SERIF ("fonts.serif"):
@@ -2689,7 +2689,7 @@ diff --git a/chrome/browser/ui/prefs/prefs_tab_helper.cc b/chrome/browser/ui/pre
      {prefs::kWebKitMathFontFamily, IDS_MATH_FONT_FAMILY},
  #if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_WIN) || \
 -    BUILDFLAG(IS_LINUX) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+    BUILDFLAG(IS_LINUX) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++    BUILDFLAG(IS_LINUX) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
      {prefs::kWebKitStandardFontFamilyJapanese,
       IDS_STANDARD_FONT_FAMILY_JAPANESE},
      {prefs::kWebKitFixedFontFamilyJapanese, IDS_FIXED_FONT_FAMILY_JAPANESE},
@@ -2698,7 +2698,7 @@ diff --git a/chrome/browser/ui/prefs/prefs_tab_helper.cc b/chrome/browser/ui/pre
  }
  
 -#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  void RegisterLocalizedFontPref(user_prefs::PrefRegistrySyncable* registry,
                                 const char* path,
                                 int default_message_id) {
@@ -2707,7 +2707,7 @@ diff --git a/chrome/browser/ui/prefs/prefs_tab_helper.cc b/chrome/browser/ui/pre
  
  // Register font prefs.  This is only configurable on desktop Chrome.
 -#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if !BUILDFLAG(IS_ANDROID) || BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    RegisterFontFamilyPrefs(registry, fonts_with_defaults);
  
    registry->RegisterIntegerPref(prefs::kWebKitDefaultFontSize, 16);
@@ -2719,7 +2719,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_configs.cc b/chrome/browser/u
  
  #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || \
 -    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID)
-+    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
  #include "chrome/browser/ui/webui/discards/discards_ui.h"
  #include "chrome/browser/ui/webui/management/management_ui.h"
  #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) ||
@@ -2728,7 +2728,7 @@ diff --git a/chrome/browser/ui/webui/chrome_web_ui_configs.cc b/chrome/browser/u
  
  #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || \
 -    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID)
-+    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    map.AddWebUIConfig(std::make_unique<DiscardsUIConfig>());
    map.AddWebUIConfig(std::make_unique<ManagementUIConfig>());
  #endif  // BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) ||
@@ -2753,7 +2753,7 @@ diff --git a/chrome/browser/ui/webui/discards/discards_ui.cc b/chrome/browser/ui
  #include "url/origin.h"
  
 -#if !BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if !BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if !BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
  #include "chrome/browser/resource_coordinator/lifecycle_unit.h"
  #include "chrome/browser/resource_coordinator/lifecycle_unit_state.mojom.h"
  #include "chrome/browser/resource_coordinator/tab_lifecycle_unit.h"
@@ -2762,7 +2762,7 @@ diff --git a/chrome/browser/ui/webui/discards/discards_ui.cc b/chrome/browser/ui
        info->has_focus = page_node->IsFocused();
  
 -#if !BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if !BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if !BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
        auto* lifecycle_unit_external = resource_coordinator::
            TabLifecycleUnitSource::GetTabLifecycleUnitExternal(contents);
        // A TabLifecycleUnitExternal object is always a TabLifecycleUnit object.
@@ -2771,7 +2771,7 @@ diff --git a/chrome/browser/ui/webui/discards/discards_ui.cc b/chrome/browser/ui
  
    void RefreshPerformanceTabCpuMeasurements() override {
 -#if !BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if !BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if !BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
      performance_manager::user_tuning::PerformanceDetectionManager::GetInstance()
          ->ForceTabCpuDataRefresh();
  #endif  // !BUILDFLAG(IS_DESKTOP_ANDROID)
@@ -2780,7 +2780,7 @@ diff --git a/chrome/browser/ui/webui/discards/discards_ui.cc b/chrome/browser/ui
  
    bool demoModeEnabled = false;
 -#if !BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if !BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if !BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    demoModeEnabled = base::FeatureList::IsEnabled(
        performance_manager::features::kPerformanceInterventionDemoMode);
  #endif  // !BUILDFLAG(IS_DESKTOP_ANDROID)
@@ -2792,7 +2792,7 @@ diff --git a/chrome/chrome_paks.gni b/chrome/chrome_paks.gni
      }
  
 -    if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android) {
-+    if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android_cromite) {
++    if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android_Spectre Browser) {
        sources += [
          "$root_gen_dir/chrome/discards_resources.pak",
          "$root_gen_dir/chrome/management_resources.pak",
@@ -2857,7 +2857,7 @@ diff --git a/chrome/common/webui_url_constants.cc b/chrome/common/webui_url_cons
  #endif
  #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || \
 -    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID)
-+    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
        kChromeUIDiscardsHost,
  #endif
  #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX)
@@ -2869,7 +2869,7 @@ diff --git a/chrome/common/webui_url_constants.h b/chrome/common/webui_url_const
  
  #if BUILDFLAG(IS_WIN) || BUILDFLAG(IS_MAC) || BUILDFLAG(IS_LINUX) || \
 -    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID)
-+    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++    BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
  inline constexpr char kChromeUIDiscardsHost[] = "discards";
  inline constexpr char kChromeUIDiscardsURL[] = "chrome://discards/";
  #endif
@@ -2912,7 +2912,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
    }
  
 -  if (enable_desktop_android_extensions) {
-+  if (enable_desktop_android_extensions_cromite) {
++  if (enable_desktop_android_extensions_Spectre Browser) {
      public_deps += [
        "//extensions/browser:test_support",
        "//extensions/common:test_support",
@@ -2921,7 +2921,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
    # support pieces into here and eventually merge this with the
    # `enable_extensions` block above.
 -  if (enable_desktop_android_extensions) {
-+  if (enable_desktop_android_extensions_cromite) {
++  if (enable_desktop_android_extensions_Spectre Browser) {
      sources += [
        "../browser/extensions/test_extension_menu_model_android.cc",
        "../browser/extensions/test_extension_menu_model_android.h",
@@ -2930,7 +2930,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
    }
  
 -  if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android) {
-+  if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android_cromite) {
++  if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android_Spectre Browser) {
      sources += [ "../browser/net/network_context_configuration_browsertest.cc" ]
      deps += [
        "//chrome/browser/ui/browser_window:create_browser_window",
@@ -2939,7 +2939,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
    }
  
 -  if (!is_android || enable_desktop_android_extensions) {
-+  if (!is_android || enable_desktop_android_extensions_cromite) {
++  if (!is_android || enable_desktop_android_extensions_Spectre Browser) {
      deps += [ "//chrome/browser/ui/prefs:browser_tests" ]
    }
  
@@ -2948,7 +2948,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
        deps += [ "//components/guest_view/browser" ]
      }
 -    if (!is_android || enable_desktop_android_extensions) {
-+    if (!is_android || enable_desktop_android_extensions_cromite) {
++    if (!is_android || enable_desktop_android_extensions_Spectre Browser) {
        sources +=
            [ "../browser/devtools/global_confirm_info_bar_browsertest.cc" ]
      }
@@ -2957,7 +2957,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
  
      # TODO(crbug.com/473636857): Include once all Android builds correctly use BrowserWindowInterface.
 -    if (is_desktop_android) {
-+    if (is_desktop_android_cromite) {
++    if (is_desktop_android_Spectre Browser) {
        sources +=
            [ "../browser/ui/android/browser_navigator_android_browsertest.cc" ]
        deps += [
@@ -2966,7 +2966,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
      }
  
 -    if (enable_desktop_android_extensions) {
-+    if (enable_desktop_android_extensions_cromite) {
++    if (enable_desktop_android_extensions_Spectre Browser) {
        sources += [
          # These API tests can't be part of platform_browser_tests because they
          # run in interactive_ui_tests on Win/Mac/Linux.
@@ -2975,7 +2975,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
      args += [ "--chromium-output-directory=@WrappedPath(.)" ]
  
 -    if (is_desktop_android) {
-+    if (is_desktop_android_cromite) {
++    if (is_desktop_android_Spectre Browser) {
        data = [ "//third_party/crossbench-web-tests" ]
      }
  
@@ -2984,7 +2984,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
      }
  
 -    if (is_desktop_android) {
-+    if (is_desktop_android_cromite) {
++    if (is_desktop_android_Spectre Browser) {
        deps += [
          # Unit test targets for //chrome/browser/ui/browser_window/internal.
          #
@@ -2993,7 +2993,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
    }
  
 -  if (!is_android || enable_desktop_android_extensions) {
-+  if (!is_android || enable_desktop_android_extensions_cromite) {
++  if (!is_android || enable_desktop_android_extensions_Spectre Browser) {
      sources +=
          [ "../browser/policy/developer_tools_policy_handler_unittest.cc" ]
    }
@@ -3002,7 +3002,7 @@ diff --git a/chrome/test/BUILD.gn b/chrome/test/BUILD.gn
    }
  
 -  if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android) {
-+  if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android_cromite) {
++  if (is_win || is_mac || is_linux || is_chromeos || is_desktop_android_Spectre Browser) {
      sources += [
        "../browser/ui/webui/management/management_ui_handler_unittest.cc",
        "../browser/ui/webui/management/management_ui_unittest.cc",
@@ -3250,7 +3250,7 @@ diff --git a/components/policy/core/browser/configuration_policy_handler_list.cc
      const PolicyDetails& policy_details,
      PolicyMap::const_reference entry) const {
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    if (base::FeatureList::IsEnabled(features::kFuturePoliciesOnDesktopAndroid) &&
        policy_details.is_future) {
      return false;
@@ -3274,7 +3274,7 @@ diff --git a/components/policy/core/common/features.cc b/components/policy/core/
  BASE_FEATURE(kSafeSitesCaptivePortalCheck, base::FEATURE_ENABLED_BY_DEFAULT);
  
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
  // TODO(https://crbug.com/452666657): Remove this feature flag after launching
  // policies to supported on Android Desktop.
  BASE_FEATURE(kFuturePoliciesOnDesktopAndroid,
@@ -3286,7 +3286,7 @@ diff --git a/components/policy/core/common/policy_merger.cc b/components/policy/
  
  #if !BUILDFLAG(IS_IOS) && !BUILDFLAG(IS_FUCHSIA) && (!BUILDFLAG(IS_ANDROID) || \
 -    BUILDFLAG(IS_DESKTOP_ANDROID))
-+    BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE))
++    BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser))
  constexpr const char* kDictionaryPoliciesToMerge[] = {
  #if BUILDFLAG(IS_CHROMEOS)
      key::kExtensionSettings,       key::kDeviceLoginScreenPowerManagement,
@@ -3295,7 +3295,7 @@ diff --git a/components/policy/core/common/policy_merger.cc b/components/policy/
      base::flat_set<std::string> policies_to_merge)
  #if BUILDFLAG(IS_IOS) || BUILDFLAG(IS_FUCHSIA) || \
 -    (BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_DESKTOP_ANDROID))
-+    (BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE))
++    (BUILDFLAG(IS_ANDROID) && !BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser))
      : policies_to_merge_(std::move(policies_to_merge)){}
  #else
      : policies_to_merge_(std::move(policies_to_merge)),
@@ -3307,7 +3307,7 @@ diff --git a/components/webapps/browser/installable/installable_icon_fetcher.cc 
  }
  
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
  // Generates a homescreen icon for `page_url` and posts a task to invoke
  // `callback` on `ui_thread_task_runner.`
  void GenerateHomeScreenIconInBackground(
@@ -3316,7 +3316,7 @@ diff --git a/components/webapps/browser/installable/installable_icon_fetcher.cc 
  
  void InstallableIconFetcher::MaybeEndWithError(InstallableStatusCode code) {
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    // Desktop android will generate an icon if none is available.
    base::ThreadPool::PostTask(
        FROM_HERE,
@@ -3325,7 +3325,7 @@ diff --git a/components/webapps/browser/installable/installable_icon_fetcher.cc 
  }
  
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
  void InstallableIconFetcher::OnHomeScreenIconGenerated(const GURL& page_url,
                                                         const SkBitmap& bitmap) {
    if (bitmap.drawsNothing()) {
@@ -3337,7 +3337,7 @@ diff --git a/components/webapps/browser/installable/installable_icon_fetcher.h b
    void EndWithError(InstallableStatusCode code);
  
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    void OnHomeScreenIconGenerated(const GURL& page_url, const SkBitmap& bitmap);
  #endif
  
@@ -3387,7 +3387,7 @@ diff --git a/content/browser/browser_main_loop.cc b/content/browser/browser_main
                              SiteIsolationPolicy::IsSitePerProcessOrStricter());
  
 -#if BUILDFLAG(IS_ANDROID) && BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_ANDROID) && BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_ANDROID) && BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    base::UmaHistogramBoolean(
        "SiteIsolation.IsSitePerProcessOrStricter.AndroidDesktop",
        SiteIsolationPolicy::IsSitePerProcessOrStricter());
@@ -3475,10 +3475,10 @@ diff --git a/content/public/renderer/render_frame_media_playback_options.cc b/co
      // Do not suspend background media if feature is enabled AND it was launched
      // on a large display. Feature is enabled by default except for WebView
      return false;
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Extensions-Android.inc b/cromite_flags/chrome/browser/about_flags_cc/Extensions-Android.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Extensions-Android.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Extensions-Android.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Extensions-Android.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Extensions-Android.inc
 @@ -0,0 +1,12 @@
 +#ifdef FLAG_SECTION
 +
@@ -3492,9 +3492,9 @@ new file mode 100644
 +#endif
 +
 +#endif // ifdef FLAG_SECTION
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc b/cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
---- a/cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Webstore-protection.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
+--- a/Spectre Browser_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
 @@ -1,19 +1,15 @@
  #ifdef FLAG_SECTION
  
@@ -3517,12 +3517,12 @@ diff --git a/cromite_flags/chrome/browser/about_flags_cc/Webstore-protection.inc
 -#endif // !BUILDFLAG(IS_ANDROID)
 -
  #endif // ifdef FLAG_SECTION
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Experimental-support-for-extensions-on-Android.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Experimental-support-for-extensions-on-Android.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Experimental-support-for-extensions-on-Android.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Experimental-support-for-extensions-on-Android.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Experimental-support-for-extensions-on-Android.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Experimental-support-for-extensions-on-Android.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kProcessRankPolicyAndroid);
++SET_Spectre Browser_FEATURE_DISABLED(kProcessRankPolicyAndroid);
 diff --git a/extensions/browser/BUILD.gn b/extensions/browser/BUILD.gn
 --- a/extensions/browser/BUILD.gn
 +++ b/extensions/browser/BUILD.gn
@@ -3531,7 +3531,7 @@ diff --git a/extensions/browser/BUILD.gn b/extensions/browser/BUILD.gn
  import("//third_party/protobuf/proto_library.gni")
  
 -if (enable_desktop_android_extensions) {
-+if (enable_desktop_android_extensions_cromite) {
++if (enable_desktop_android_extensions_Spectre Browser) {
    import("//build/config/android/rules.gni")
  }
  
@@ -3540,7 +3540,7 @@ diff --git a/extensions/browser/BUILD.gn b/extensions/browser/BUILD.gn
  }
  
 -if (enable_desktop_android_extensions) {
-+if (enable_desktop_android_extensions_cromite) {
++if (enable_desktop_android_extensions_Spectre Browser) {
    java_cpp_enum("extension_action_enums") {
      sources = [ "extension_action.h" ]
    }
@@ -3564,7 +3564,7 @@ diff --git a/extensions/browser/api/system_cpu/BUILD.gn b/extensions/browser/api
    }
  
 -  if (is_linux || is_chromeos || enable_desktop_android_extensions) {
-+  if (is_linux || is_chromeos || enable_desktop_android_extensions_cromite) {
++  if (is_linux || is_chromeos || enable_desktop_android_extensions_Spectre Browser) {
      sources += [ "cpu_info_provider_linux.cc" ]
    }
  
@@ -3576,7 +3576,7 @@ diff --git a/extensions/browser/api/web_request/permission_helper.cc b/extension
    ExtensionsAPIClient* extensions_api_client = ExtensionsAPIClient::Get();
  
 -#if BUILDFLAG(IS_DESKTOP_ANDROID)
-+#if BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#if BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    // TODO(https://crbug.com/356905053): On Android, the startup and
    // initialization flow is different.
    // ExtensionsAPIClient is instantiated as part of the ExtensionsBrowserClient,
@@ -3631,11 +3631,11 @@ diff --git a/extensions/browser/extension_host.cc b/extensions/browser/extension
 +
 +#if BUILDFLAG(IS_ANDROID)
 +  if (extension_host_type() == mojom::ViewType::kExtensionPopup) {
-+    constexpr char kOsOverrideForCromite[] = "Linux; Android 10; Cromite";
++    constexpr char kOsOverrideForSpectre Browser[] = "Linux; Android 10; Spectre Browser";
 +    const std::string product = embedder_support::GetProductAndVersion();
 +    blink::UserAgentOverride ua_override;
 +    ua_override.ua_string_override =
-+        embedder_support::BuildUserAgentFromOSAndProduct(kOsOverrideForCromite,
++        embedder_support::BuildUserAgentFromOSAndProduct(kOsOverrideForSpectre Browser,
 +                                                        product);
 +    host_contents_->SetUserAgentOverride(ua_override,
 +                                         false /*override_in_new_tabs=*/);
@@ -3654,7 +3654,7 @@ diff --git a/extensions/buildflags/BUILD.gn b/extensions/buildflags/BUILD.gn
    flags = [
      "ENABLE_EXTENSIONS=$enable_extensions",
 -    "ENABLE_DESKTOP_ANDROID_EXTENSIONS=$enable_desktop_android_extensions",
-+    "ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE=$enable_desktop_android_extensions_cromite",
++    "ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser=$enable_desktop_android_extensions_Spectre Browser",
 +    "ENABLE_DESKTOP_ANDROID_EXTENSIONS_FALSE=false",
      "ENABLE_EXTENSIONS_CORE=$enable_extensions_core",
      "ENABLE_PLATFORM_APPS=$enable_platform_apps",
@@ -3667,7 +3667,7 @@ diff --git a/extensions/buildflags/buildflags.gni b/extensions/buildflags/buildf
    # TODO(https://crbug.com/356905053): Continue expanding the scope of
    # enable_desktop_android_extensions.
 -  enable_desktop_android_extensions = is_desktop_android
-+  enable_desktop_android_extensions_cromite = is_android
++  enable_desktop_android_extensions_Spectre Browser = is_android
  }
  
  # Note: GN forbids relying on args from the same declare_args() block, so we
@@ -3676,7 +3676,7 @@ diff --git a/extensions/buildflags/buildflags.gni b/extensions/buildflags/buildf
    # core handling in each of these implementations is similar.
    enable_extensions_core =
 -      enable_extensions || enable_desktop_android_extensions
-+      enable_extensions || enable_desktop_android_extensions_cromite
++      enable_extensions || enable_desktop_android_extensions_Spectre Browser
  }
 diff --git a/extensions/common/api/schema.gni b/extensions/common/api/schema.gni
 --- a/extensions/common/api/schema.gni
@@ -3686,7 +3686,7 @@ diff --git a/extensions/common/api/schema.gni b/extensions/common/api/schema.gni
  # extensions layer. These should be removed as we add support for the full
  # API by moving these entries to the `extensions_api_schema_files_` above.
 -if (enable_desktop_android_extensions) {
-+if (enable_desktop_android_extensions_cromite) {
++if (enable_desktop_android_extensions_Spectre Browser) {
    extensions_types_only_schema_files_ += [
      "clipboard.webidl",
      "scripts_internal.webidl",
@@ -3698,7 +3698,7 @@ diff --git a/extensions/common/command.cc b/extensions/common/command.cc
  #elif BUILDFLAG(IS_LINUX)
    return ui::kKeybindingPlatformLinux;
 -#elif BUILDFLAG(IS_DESKTOP_ANDROID)
-+#elif BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#elif BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    // For now, we use linux keybindings on desktop android.
    return ui::kKeybindingPlatformLinux;
  #else
@@ -3710,7 +3710,7 @@ diff --git a/extensions/common/extension_features.cc b/extensions/common/extensi
  BASE_FEATURE(kEnableWebHidInWebView, base::FEATURE_ENABLED_BY_DEFAULT);
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  // Disabled by default because on first-run we don't have a Finch seed yet, so
  // we want to default to the safe behavior of no extensions.
  BASE_FEATURE(kEnableExtensionsForCorpDesktopAndroid,
@@ -3719,17 +3719,17 @@ diff --git a/extensions/common/extension_features.cc b/extensions/common/extensi
  // removed for desktop-android builds as well.
  #if BUILDFLAG(GOOGLE_CHROME_BRANDING) && !BUILDFLAG(IS_CHROMEOS) && \
 -    !BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+    !BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++    !BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
               base::FEATURE_ENABLED_BY_DEFAULT
  #else
               base::FEATURE_DISABLED_BY_DEFAULT
-@@ -227,4 +227,10 @@ CROMITE_FEATURE(kEnableExtensionAutoupdate,
- CROMITE_FEATURE(kEnableExtensionManagementToChromeStore,
+@@ -227,4 +227,10 @@ Spectre Browser_FEATURE(kEnableExtensionAutoupdate,
+ Spectre Browser_FEATURE(kEnableExtensionManagementToChromeStore,
                  "EnableExtensionToChromeStore",
                  base::FEATURE_DISABLED_BY_DEFAULT);
 +
 +#if BUILDFLAG(IS_ANDROID)
-+CROMITE_FEATURE(kEnableExtensionsAndroid,
++Spectre Browser_FEATURE(kEnableExtensionsAndroid,
 +                "EnableExtensionsAndroid",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
 +#endif
@@ -3742,7 +3742,7 @@ diff --git a/extensions/common/extension_features.h b/extensions/common/extensio
  BASE_DECLARE_FEATURE(kEnableWebHidInWebView);
  
 -#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
  // If enabled, extensions will be enabled for @google.com and @managedchrome.com
  // users on desktop Android. Otherwise they will be blocked.
  BASE_DECLARE_FEATURE(kEnableExtensionsForCorpDesktopAndroid);
@@ -3764,7 +3764,7 @@ diff --git a/extensions/common/extension_l10n_util.cc b/extensions/common/extens
    }
  
    if (valid_locales->empty()) {
-+#if !BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if !BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
      *error = errors::kLocalesNoValidLocaleNamesListed;
      return false;
 +#endif
@@ -3775,7 +3775,7 @@ diff --git a/extensions/common/extension_l10n_util.cc b/extensions/common/extens
    // '.svn' directories.
    base::FilePath relative_path;
    if (!locales_path.AppendRelativePath(locale_path, &relative_path)) {
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
 +    return true;
 +#else
      NOTREACHED();
@@ -3791,7 +3791,7 @@ diff --git a/extensions/common/features/feature.cc b/extensions/common/features/
  #elif BUILDFLAG(IS_WIN)
    return WIN_PLATFORM;
 -#elif BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS)
-+#elif BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#elif BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
    return DESKTOP_ANDROID_PLATFORM;
  #else
    return UNSPECIFIED_PLATFORM;
@@ -3802,7 +3802,7 @@ diff --git a/extensions/common/manifest_handlers/default_locale_handler.cc b/ext
  
    // Only message file for default locale has to exist.
    if (!has_default_locale_message_file) {
-+#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_CROMITE)
++#if BUILDFLAG(ENABLE_DESKTOP_ANDROID_EXTENSIONS_Spectre Browser)
 +    if (base::PathExists(default_locale_path)) return true;
 +#endif
      *error = errors::kLocalesNoDefaultMessages;
@@ -3816,7 +3816,7 @@ diff --git a/extensions/renderer/bindings/api_binding_util.cc b/extensions/rende
  #elif BUILDFLAG(IS_WIN)
    return "win";
 -#elif BUILDFLAG(IS_DESKTOP_ANDROID)
-+#elif BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#elif BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    return "desktop_android";
  #else
    NOTREACHED();
@@ -3942,7 +3942,7 @@ diff --git a/tools/grit/grit_args.gni b/tools/grit/grit_args.gni
  
 -  "is_desktop_android=${is_desktop_android}",
 +  "is_desktop_android_false=${is_desktop_android_false}",
-+  "is_desktop_android_cromite=${is_desktop_android_cromite}",
++  "is_desktop_android_Spectre Browser=${is_desktop_android_Spectre Browser}",
  ]
  
  # Must match `enable_hidpi` in ui/base/ui_features.gni.
@@ -3954,7 +3954,7 @@ diff --git a/tools/json_schema_compiler/cpp_bundle_generator.py b/tools/json_sch
          ifdefs.append('BUILDFLAG(IS_CHROMEOS)')
        elif platform == Platforms.DESKTOP_ANDROID:
 -        ifdefs.append('BUILDFLAG(IS_DESKTOP_ANDROID)')
-+        ifdefs.append('BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)')
++        ifdefs.append('BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)')
        elif platform == Platforms.LINUX:
          ifdefs.append('BUILDFLAG(IS_LINUX)')
        elif platform == Platforms.MAC:
@@ -4043,7 +4043,7 @@ diff --git a/ui/base/accelerators/command.cc b/ui/base/accelerators/command.cc
    // used for Fuchsia.
    return ui::kKeybindingPlatformLinux;
 -#elif BUILDFLAG(IS_DESKTOP_ANDROID)
-+#elif BUILDFLAG(IS_DESKTOP_ANDROID_CROMITE)
++#elif BUILDFLAG(IS_DESKTOP_ANDROID_Spectre Browser)
    // For now, we use linux keybindings on desktop android.
    // TODO(https://crbug.com/356905053): Should this be ChromeOS keybindings?
    return ui::kKeybindingPlatformLinux;
@@ -4079,7 +4079,7 @@ diff --git a/ui/resources/ui_resources.grd b/ui/resources/ui_resources.grd
        <structure type="chrome_scaled_image" name="IDR_DEFAULT_FAVICON" file="common/default_favicon.png" />
        <structure type="chrome_scaled_image" name="IDR_DEFAULT_FAVICON_DARK" file="common/default_favicon_dark.png" />
 -      <if expr="not is_android or is_desktop_android">
-+      <if expr="not is_android or is_desktop_android_cromite">
++      <if expr="not is_android or is_desktop_android_Spectre Browser">
          <structure type="chrome_scaled_image" name="IDR_DEFAULT_FAVICON_32" file="common/default_favicon_32.png" />
          <structure type="chrome_scaled_image" name="IDR_DEFAULT_FAVICON_DARK_32" file="common/default_favicon_dark_32.png" />
          <structure type="chrome_scaled_image" name="IDR_DEFAULT_FAVICON_64" file="common/default_favicon_64.png" />
@@ -4091,7 +4091,7 @@ diff --git a/ui/webui/resources/BUILD.gn b/ui/webui/resources/BUILD.gn
    ]
  
 -  if ((!is_android && !is_ios) || is_desktop_android) {
-+  if ((!is_android && !is_ios) || is_desktop_android_cromite) {
++  if ((!is_android && !is_ios) || is_desktop_android_Spectre Browser) {
      public_deps += [
        "cr_components/cr_shortcut_input:build_grdp",
        "cr_components/managed_footnote:build_grdp",
@@ -4103,7 +4103,7 @@ diff --git a/ui/webui/resources/cr_components/cr_shortcut_input/BUILD.gn b/ui/we
  import("//ui/webui/resources/tools/build_webui.gni")
  
 -assert((!is_android && !is_ios) || is_desktop_android)
-+assert((!is_android && !is_ios) || is_desktop_android_cromite)
++assert((!is_android && !is_ios) || is_desktop_android_Spectre Browser)
  
  build_webui("build") {
    grd_prefix = "cr_components_cr_shortcut_input"
@@ -4115,7 +4115,7 @@ diff --git a/ui/webui/resources/cr_components/managed_footnote/BUILD.gn b/ui/web
  import("//ui/webui/resources/tools/build_webui.gni")
  
 -assert((!is_android && !is_ios) || is_desktop_android)
-+assert((!is_android && !is_ios) || is_desktop_android_cromite)
++assert((!is_android && !is_ios) || is_desktop_android_Spectre Browser)
  
  build_webui("build") {
    grd_prefix = "cr_components_managed_footnote"
@@ -4127,7 +4127,7 @@ diff --git a/ui/webui/resources/cr_elements/BUILD.gn b/ui/webui/resources/cr_ele
    }
  
 -  if ((!is_android && !is_ios) || is_desktop_android) {
-+  if ((!is_ios) || is_desktop_android_cromite) {
++  if ((!is_ios) || is_desktop_android_Spectre Browser) {
      static_files = [ "cr_a11y_announcer/cr_a11y_announcer.css" ]
      ts_files += [
        "cr_radio_button/cr_radio_button_mixin_lit.ts",
@@ -4152,7 +4152,7 @@ diff --git a/ui/webui/resources/css/BUILD.gn b/ui/webui/resources/css/BUILD.gn
    }
  
 -  if (include_polymer || is_desktop_android) {
-+  if (include_polymer || is_desktop_android_cromite) {
++  if (include_polymer || is_desktop_android_Spectre Browser) {
      in_files += [ "md_colors.css" ]
    }
  }

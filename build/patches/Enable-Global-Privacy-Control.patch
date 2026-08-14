@@ -47,7 +47,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/GpcSettings.java
  create mode 100644 chrome/browser/resources/settings/privacy_page/gpc_toggle.html
  create mode 100644 chrome/browser/resources/settings/privacy_page/gpc_toggle.ts
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Enable-Global-Privacy-Control.grdp
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Enable-Global-Privacy-Control.grdp
  create mode 100644 third_party/blink/renderer/modules/global_privacy_control/BUILD.gn
  create mode 100644 third_party/blink/renderer/modules/global_privacy_control/global_privacy_control.cc
  create mode 100644 third_party/blink/renderer/modules/global_privacy_control/global_privacy_control.h
@@ -108,8 +108,8 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 +        android:title="@string/gpc_title"
 +        android:fragment="org.chromium.chrome.browser.privacy.settings.GpcSettings" />
      <org.chromium.chrome.browser.about_settings.HyperlinkPreference
-         android:key="cromite_flags"
-         android:title="@string/cromite_flags_title"
+         android:key="Spectre Browser_flags"
+         android:title="@string/Spectre Browser_flags_title"
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/GpcSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/GpcSettings.java
 new file mode 100644
 --- /dev/null
@@ -435,10 +435,10 @@ new file mode 100644
 +
 +customElements.define(
 +  SettingsGpcToggleElement.is, SettingsGpcToggleElement);
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Enable-Global-Privacy-Control.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Enable-Global-Privacy-Control.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Enable-Global-Privacy-Control.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Enable-Global-Privacy-Control.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Enable-Global-Privacy-Control.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Enable-Global-Privacy-Control.grdp
 @@ -0,0 +1,15 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>

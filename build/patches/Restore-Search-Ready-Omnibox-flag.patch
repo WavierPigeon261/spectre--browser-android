@@ -16,9 +16,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../restore-Search-Ready-Omnibox-flag.inc           |  3 +++
  .../restore-Search-Ready-Omnibox-flag.inc           |  1 +
  6 files changed, 26 insertions(+), 1 deletion(-)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/restore-Search-Ready-Omnibox-flag.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/restore-Search-Ready-Omnibox-flag.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/restore-Search-Ready-Omnibox-flag.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/restore-Search-Ready-Omnibox-flag.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/restore-Search-Ready-Omnibox-flag.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/restore-Search-Ready-Omnibox-flag.inc
 
 diff --git a/chrome/browser/flags/android/chrome_feature_list.cc b/chrome/browser/flags/android/chrome_feature_list.cc
 --- a/chrome/browser/flags/android/chrome_feature_list.cc
@@ -77,10 +77,10 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
          for (int index = 0; index < mPriorityOrderedSuggestionProcessors.size(); index++) {
              mPriorityOrderedSuggestionProcessors.get(index).onNativeInitialized();
          }
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/restore-Search-Ready-Omnibox-flag.inc b/cromite_flags/chrome/browser/about_flags_cc/restore-Search-Ready-Omnibox-flag.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/restore-Search-Ready-Omnibox-flag.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/restore-Search-Ready-Omnibox-flag.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/restore-Search-Ready-Omnibox-flag.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/restore-Search-Ready-Omnibox-flag.inc
 @@ -0,0 +1,13 @@
 +#if BUILDFLAG(IS_ANDROID)
 +
@@ -95,18 +95,18 @@ new file mode 100644
 +#endif
 +
 +#endif
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/restore-Search-Ready-Omnibox-flag.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/restore-Search-Ready-Omnibox-flag.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/restore-Search-Ready-Omnibox-flag.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/restore-Search-Ready-Omnibox-flag.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/restore-Search-Ready-Omnibox-flag.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/restore-Search-Ready-Omnibox-flag.inc
 @@ -0,0 +1,3 @@
-+CROMITE_FEATURE(kSearchReadyOmniboxFeature,
++Spectre Browser_FEATURE(kSearchReadyOmniboxFeature,
 +               "SearchReadyOmnibox",
 +               base::FEATURE_ENABLED_BY_DEFAULT);
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/restore-Search-Ready-Omnibox-flag.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/restore-Search-Ready-Omnibox-flag.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/restore-Search-Ready-Omnibox-flag.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/restore-Search-Ready-Omnibox-flag.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/restore-Search-Ready-Omnibox-flag.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/restore-Search-Ready-Omnibox-flag.inc
 @@ -0,0 +1 @@
 +BASE_DECLARE_FEATURE(kSearchReadyOmniboxFeature);
 --

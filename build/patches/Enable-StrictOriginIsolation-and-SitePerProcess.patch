@@ -14,8 +14,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Enable-StrictOriginIsolation-and-SitePerProcess.inc       | 1 +
  .../Enable-StrictOriginIsolation-and-SitePerProcess.inc       | 1 +
  4 files changed, 7 insertions(+), 2 deletions(-)
- create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc
- create mode 100644 cromite_flags/content/public/common/content_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc
+ create mode 100644 Spectre Browser_flags/chrome/common/chrome_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc
+ create mode 100644 Spectre Browser_flags/content/public/common/content_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc
 
 diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
 --- a/chrome/browser/chrome_content_browser_client.cc
@@ -65,16 +65,16 @@ diff --git a/components/site_isolation/site_isolation_policy.cc b/components/sit
    if (!g_disallow_memory_threshold_caching_for_testing) {
      return CachedDisableSiteIsolation(site_isolation_mode);
    }
-diff --git a/cromite_flags/chrome/common/chrome_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc b/cromite_flags/chrome/common/chrome_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc
+diff --git a/Spectre Browser_flags/chrome/common/chrome_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc b/Spectre Browser_flags/chrome/common/chrome_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/common/chrome_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc
++++ b/Spectre Browser_flags/chrome/common/chrome_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kSitePerProcess);
-diff --git a/cromite_flags/content/public/common/content_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc b/cromite_flags/content/public/common/content_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc
++SET_Spectre Browser_FEATURE_ENABLED(kSitePerProcess);
+diff --git a/Spectre Browser_flags/content/public/common/content_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc b/Spectre Browser_flags/content/public/common/content_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/public/common/content_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc
++++ b/Spectre Browser_flags/content/public/common/content_features_cc/Enable-StrictOriginIsolation-and-SitePerProcess.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kStrictOriginIsolation);
++SET_Spectre Browser_FEATURE_ENABLED(kStrictOriginIsolation);
 --

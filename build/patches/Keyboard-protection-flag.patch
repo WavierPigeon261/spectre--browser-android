@@ -18,7 +18,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../keycodes/keyboard_code_conversion.cc      |  10 +-
  ui/events/keycodes/keyboard_code_conversion.h |   2 +-
  9 files changed, 185 insertions(+), 3 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
 
 diff --git a/android_webview/java/src/org/chromium/android_webview/common/ProductionSupportedFlagList.java b/android_webview/java/src/org/chromium/android_webview/common/ProductionSupportedFlagList.java
 --- a/android_webview/java/src/org/chromium/android_webview/common/ProductionSupportedFlagList.java
@@ -35,10 +35,10 @@ diff --git a/android_webview/java/src/org/chromium/android_webview/common/Produc
          Flag.baseFeature(
                  BlinkFeatures.ASYNC_SET_COOKIE,
                  "When enabled, the communication between renderer and network service is "
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc b/cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Keyboard-protection-flag.inc
 @@ -0,0 +1,10 @@
 +#ifdef FLAG_SECTION
 +
@@ -236,7 +236,7 @@ diff --git a/ui/base/ui_base_features.cc b/ui/base/ui_base_features.cc
  // Allows system keyboard event capture via the keyboard lock API.
  BASE_FEATURE(kSystemKeyboardLock, base::FEATURE_ENABLED_BY_DEFAULT);
  
-+CROMITE_FEATURE(kSystemKeyboardProtection,
++Spectre Browser_FEATURE(kSystemKeyboardProtection,
 +                "SystemKeyboardProtection",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
 +

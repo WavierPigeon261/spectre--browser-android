@@ -20,7 +20,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
         with:
-          path: cromite
+          path: Spectre Browser
           fetch-depth: 1
 
       - name: Build patched sysbox
@@ -31,7 +31,7 @@ jobs:
           git submodule update --recursive
 
           cd sysbox-runc/
-          git apply --ignore-whitespace ../../cromite/tools/images/sysbox/add-x86-x32-arch.patch
+          git apply --ignore-whitespace ../../Spectre Browser/tools/images/sysbox/add-x86-x32-arch.patch
           git status
           cd ..
 

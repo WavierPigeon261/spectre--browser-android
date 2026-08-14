@@ -19,7 +19,7 @@ jobs:
       - name: Checkout main branch
         uses: actions/checkout@v2
         with:
-          repository: 'uazo/cromite'
+          repository: 'uazo/Spectre Browser'
           path: main
           fetch-depth: 1
 
@@ -29,7 +29,7 @@ jobs:
       - name: Checkout pages branch
         uses: actions/checkout@v2
         with:
-          repository: 'uazo/cromite'
+          repository: 'uazo/Spectre Browser'
           ref: pages
           path: pages
           fetch-depth: 1
@@ -70,7 +70,7 @@ jobs:
               echo "FAILED: $url"
               FAILED+=("$file")
             fi
-          done < main/tools/images/update-cromite-org/filters-sources.txt
+          done < main/tools/images/update-Spectre Browser-org/filters-sources.txt
 
           if [ ${#FAILED[@]} -ne 0 ]; then
             echo "One or more downloads failed. Aborting deploy."
@@ -106,4 +106,4 @@ jobs:
 
           git commit -m "Update filters ($(date -u))"
 
-          git push https://x-access-token:${{ secrets.PAGE_PUBLISH }}@github.com/uazo/cromite.git HEAD:pages
+          git push https://x-access-token:${{ secrets.PAGE_PUBLISH }}@github.com/uazo/Spectre Browser.git HEAD:pages

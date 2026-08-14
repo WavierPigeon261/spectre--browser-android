@@ -13,7 +13,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...o-configure-maximum-connections-per-host.inc | 17 +++++++++++++++++
  net/socket/client_socket_pool_manager.cc        | 16 ++++++++++++++++
  4 files changed, 38 insertions(+)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/add-flag-to-configure-maximum-connections-per-host.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/add-flag-to-configure-maximum-connections-per-host.inc
 
 diff --git a/components/network_session_configurator/common/network_switch_list.h b/components/network_session_configurator/common/network_switch_list.h
 --- a/components/network_session_configurator/common/network_switch_list.h
@@ -40,10 +40,10 @@ diff --git a/components/url_formatter/spoof_checks/top_domains/BUILD.gn b/compon
    ]
    if (is_ios) {
      frameworks = [ "UIKit.framework" ]
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/add-flag-to-configure-maximum-connections-per-host.inc b/cromite_flags/chrome/browser/about_flags_cc/add-flag-to-configure-maximum-connections-per-host.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/add-flag-to-configure-maximum-connections-per-host.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/add-flag-to-configure-maximum-connections-per-host.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/add-flag-to-configure-maximum-connections-per-host.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/add-flag-to-configure-maximum-connections-per-host.inc
 @@ -0,0 +1,17 @@
 +#ifdef FEATURE_PARAM_SECTION
 +

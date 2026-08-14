@@ -23,10 +23,10 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../platform/web_content_settings_client.h    |  2 ++
  .../modules/speech/speech_synthesis.cc        | 19 ++++++++++++++++---
  11 files changed, 45 insertions(+), 7 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Disable-speechSynthesis-getVoices-API.inc
- create mode 100644 cromite_flags/media/base/media_switches_cc/Disable-speechSynthesis-getVoices-API.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-speechSynthesis-getVoices-API.inc
- create mode 100644 cromite_flags/third_party/blink/common/features_h/Disable-speechSynthesis-getVoices-API.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Disable-speechSynthesis-getVoices-API.inc
+ create mode 100644 Spectre Browser_flags/media/base/media_switches_cc/Disable-speechSynthesis-getVoices-API.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_cc/Disable-speechSynthesis-getVoices-API.inc
+ create mode 100644 Spectre Browser_flags/third_party/blink/common/features_h/Disable-speechSynthesis-getVoices-API.inc
 
 diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer/chrome_content_renderer_client.cc
 --- a/chrome/renderer/chrome_content_renderer_client.cc
@@ -102,10 +102,10 @@ diff --git a/content/browser/speech/tts_win.cc b/content/browser/speech/tts_win.
    bool PlatformImplInitialized() override;
  
    void Speak(int utterance_id,
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Disable-speechSynthesis-getVoices-API.inc b/cromite_flags/chrome/browser/about_flags_cc/Disable-speechSynthesis-getVoices-API.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Disable-speechSynthesis-getVoices-API.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Disable-speechSynthesis-getVoices-API.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Disable-speechSynthesis-getVoices-API.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Disable-speechSynthesis-getVoices-API.inc
 @@ -0,0 +1,8 @@
 +#ifdef FLAG_SECTION
 +
@@ -115,25 +115,25 @@ new file mode 100644
 +     FEATURE_VALUE_TYPE(blink::features::kDisableSpeechSynthesisVoiceList)},
 +
 +#endif
-diff --git a/cromite_flags/media/base/media_switches_cc/Disable-speechSynthesis-getVoices-API.inc b/cromite_flags/media/base/media_switches_cc/Disable-speechSynthesis-getVoices-API.inc
+diff --git a/Spectre Browser_flags/media/base/media_switches_cc/Disable-speechSynthesis-getVoices-API.inc b/Spectre Browser_flags/media/base/media_switches_cc/Disable-speechSynthesis-getVoices-API.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/media/base/media_switches_cc/Disable-speechSynthesis-getVoices-API.inc
++++ b/Spectre Browser_flags/media/base/media_switches_cc/Disable-speechSynthesis-getVoices-API.inc
 @@ -0,0 +1,2 @@
-+SET_CROMITE_FEATURE_DISABLED(kLiveCaption);
-+SET_CROMITE_FEATURE_DISABLED(kLiveCaptionWebAudio);
-diff --git a/cromite_flags/third_party/blink/common/features_cc/Disable-speechSynthesis-getVoices-API.inc b/cromite_flags/third_party/blink/common/features_cc/Disable-speechSynthesis-getVoices-API.inc
++SET_Spectre Browser_FEATURE_DISABLED(kLiveCaption);
++SET_Spectre Browser_FEATURE_DISABLED(kLiveCaptionWebAudio);
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_cc/Disable-speechSynthesis-getVoices-API.inc b/Spectre Browser_flags/third_party/blink/common/features_cc/Disable-speechSynthesis-getVoices-API.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_cc/Disable-speechSynthesis-getVoices-API.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_cc/Disable-speechSynthesis-getVoices-API.inc
 @@ -0,0 +1,3 @@
-+CROMITE_FEATURE(kDisableSpeechSynthesisVoiceList,
++Spectre Browser_FEATURE(kDisableSpeechSynthesisVoiceList,
 +                "DisableSpeechSynthesisVoiceList",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
-diff --git a/cromite_flags/third_party/blink/common/features_h/Disable-speechSynthesis-getVoices-API.inc b/cromite_flags/third_party/blink/common/features_h/Disable-speechSynthesis-getVoices-API.inc
+diff --git a/Spectre Browser_flags/third_party/blink/common/features_h/Disable-speechSynthesis-getVoices-API.inc b/Spectre Browser_flags/third_party/blink/common/features_h/Disable-speechSynthesis-getVoices-API.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/third_party/blink/common/features_h/Disable-speechSynthesis-getVoices-API.inc
++++ b/Spectre Browser_flags/third_party/blink/common/features_h/Disable-speechSynthesis-getVoices-API.inc
 @@ -0,0 +1 @@
 +BLINK_COMMON_EXPORT BASE_DECLARE_FEATURE(kDisableSpeechSynthesisVoiceList);
 diff --git a/third_party/blink/public/platform/web_content_settings_client.h b/third_party/blink/public/platform/web_content_settings_client.h

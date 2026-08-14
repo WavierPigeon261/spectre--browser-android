@@ -49,8 +49,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../Add-setting-to-clear-data-on-exit.inc     |  8 ++
  43 files changed, 473 insertions(+), 47 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/browsing_data/ClearBrowsingDataFragmentAtStart.java
- create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-setting-to-clear-data-on-exit.grdp
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-clear-data-on-exit.inc
+ create mode 100644 chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Add-setting-to-clear-data-on-exit.grdp
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Add-setting-to-clear-data-on-exit.inc
 
 diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java_sources.gni
 --- a/chrome/android/chrome_java_sources.gni
@@ -360,10 +360,10 @@ diff --git a/chrome/app/settings_strings.grdp b/chrome/app/settings_strings.grdp
    </message>
 +  <if expr="is_win or is_linux">
 +    <message name="IDS_SETTINGS_CLEAR_BROWSING_DATA_AT_CLOSE" desc="The title of the tab showing the at close clear browsing data options.">
-+      Clear browsing data when closing Cromite
++      Clear browsing data when closing Spectre Browser
 +    </message>
 +    <message name="IDS_SETTINGS_CLEAR_DATA_AT_CLOSE_DESCRIPTION" desc="Description for delete browsing data button at close in Privacy options. 'History' refers to browsing history. 'Cookies' refers to the technical meaning of a cookie, i.e. data saved by a website on the user's computer, as in when a website saves your preferences.">
-+      Choose what to automatically delete when you close Cromite
++      Choose what to automatically delete when you close Spectre Browser
 +    </message>
 +  </if>
    <message name="IDS_SETTINGS_CLEAR_DATA_DESCRIPTION" desc="Description for delete browsing data button in Privacy options. 'History' refers to browsing history. 'Cookies' refers to the technical meaning of a cookie, i.e. data saved by a website on the user's computer, as in when a website saves your preferences.">
@@ -996,10 +996,10 @@ diff --git a/chrome/browser/ui/android/strings/android_chrome_strings.grd b/chro
        <message name="IDS_ANDROID_HISTORY_OTHER_FORMS_OF_HISTORY" desc="The notification at the top of the history page indicating that deleting Chrome browsing history will not delete other forms of history stored at Google My Activity.">
          Your Google Account may have other forms of browsing history at <ph name="BEGIN_LINK">&lt;link&gt;</ph>myactivity.google.com<ph name="END_LINK">&lt;/link&gt;</ph>.
        </message>
-diff --git a/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-setting-to-clear-data-on-exit.grdp b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-setting-to-clear-data-on-exit.grdp
+diff --git a/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Add-setting-to-clear-data-on-exit.grdp b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Add-setting-to-clear-data-on-exit.grdp
 new file mode 100644
 --- /dev/null
-+++ b/chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-setting-to-clear-data-on-exit.grdp
++++ b/chrome/browser/ui/android/strings/Spectre Browser_android_chrome_strings_grd/Add-setting-to-clear-data-on-exit.grdp
 @@ -0,0 +1,9 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<grit-part>
@@ -1229,7 +1229,7 @@ diff --git a/components/favicon/core/favicon_database.cc b/components/favicon/co
  
  namespace favicon {
  
-+CROMITE_FEATURE(kClearFaviconsData,
++Spectre Browser_FEATURE(kClearFaviconsData,
 +                "ClearFaviconsData",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
 +
@@ -1331,10 +1331,10 @@ diff --git a/content/public/browser/browsing_data_remover.h b/content/public/bro
    // All data stored by the Attribution Reporting API.
    static constexpr DataType DATA_TYPE_ATTRIBUTION_REPORTING =
        DATA_TYPE_ATTRIBUTION_REPORTING_SITE_CREATED |
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-clear-data-on-exit.inc b/cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-clear-data-on-exit.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-setting-to-clear-data-on-exit.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-setting-to-clear-data-on-exit.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Add-setting-to-clear-data-on-exit.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-setting-to-clear-data-on-exit.inc
 @@ -0,0 +1,8 @@
 +#ifdef FLAG_SECTION
 +

@@ -21,7 +21,7 @@ on:
   workflow_dispatch:
     inputs:
       rtag:
-        description: 'uazo/cromite TAG or COMMIT'
+        description: 'uazo/Spectre Browser TAG or COMMIT'
         required: true
         default: ''
 
@@ -40,25 +40,25 @@ jobs:
             echo "RTAG=$RTAG"
           fi
 
-      - name: Checkout 'uazo/cromite' ${{ env.BRANCH }}
+      - name: Checkout 'uazo/Spectre Browser' ${{ env.BRANCH }}
         uses: actions/checkout@v2
         with:
-            repository: 'uazo/cromite'
+            repository: 'uazo/Spectre Browser'
             ref: ${{ github.event.inputs.rtag }}
-            path: 'cromite'
+            path: 'Spectre Browser'
             fetch-depth: 1
 
       - name: Generate patches doc
         run: |
           export HOME=$GITHUB_WORKSPACE
 
-          bash ~/cromite/tools/extract-all-patch-data.sh ~/cromite/build/patches
+          bash ~/Spectre Browser/tools/extract-all-patch-data.sh ~/Spectre Browser/build/patches
 
       - name: Check differences CHANGES=${{ env.CHANGES }}
         run: |
           export HOME=$GITHUB_WORKSPACE
 
-          cd ~/cromite
+          cd ~/Spectre Browser
           CHANGES=0 && git diff --quiet || CHANGES=1
           echo "CHANGES=$CHANGES" >> $GITHUB_ENV
 
@@ -70,8 +70,8 @@ jobs:
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c #v6.1.0
         if: env.CHANGES == '1'
         with:
-          token: ${{ secrets.CROMITE_PULLS }}
-          path: cromite
+          token: ${{ secrets.Spectre Browser_PULLS }}
+          path: Spectre Browser
           base: ${{ env.BRANCH }}
           add-paths: |
             docs/*.md

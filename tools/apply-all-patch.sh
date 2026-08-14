@@ -2,11 +2,11 @@
 
 git am --abort
 
-PATCH_OLD_PATH=~/cromite/build/patches
-PATCH_NEW_PATH=~/cromite/build/patches-new
+PATCH_OLD_PATH=~/Spectre Browser/build/patches
+PATCH_NEW_PATH=~/Spectre Browser/build/patches-new
 
-DESTINATION=~/cromite/build/cromite_patches_list_ok.txt
-DESTINATION_FAILED=~/cromite/build/cromite_patches_list_failed.txt
+DESTINATION=~/Spectre Browser/build/Spectre Browser_patches_list_ok.txt
+DESTINATION_FAILED=~/Spectre Browser/build/Spectre Browser_patches_list_failed.txt
 
 rm $DESTINATION
 rm $DESTINATION_FAILED
@@ -14,9 +14,9 @@ mkdir $PATCH_NEW_PATH
 
 IFS=$'\n'
 
-PATCH_LIST=~/cromite/build/cromite_patches_list_new.txt
+PATCH_LIST=~/Spectre Browser/build/Spectre Browser_patches_list_new.txt
 if [ ! -f $PATCH_LIST ]; then
-        cp ~/cromite/build/cromite_patches_list.txt $PATCH_LIST
+        cp ~/Spectre Browser/build/Spectre Browser_patches_list.txt $PATCH_LIST
 fi
 
 echo "Phase 1: check clean"
@@ -37,7 +37,7 @@ for current_file in $(cat $PATCH_LIST); do
         echo "Adding $current_file"
         echo "Executing bash ~/create-from-patch.sh $PATCH_OLD_PATH/${current_file:1} $PATCH_NEW_PATH"
 
-        bash ~/cromite/tools/create-from-patch.sh $PATCH_OLD_PATH/${current_file:1} $PATCH_NEW_PATH
+        bash ~/Spectre Browser/tools/create-from-patch.sh $PATCH_OLD_PATH/${current_file:1} $PATCH_NEW_PATH
 
        #echo "Press return"
        #read  -n 1
@@ -47,12 +47,12 @@ for current_file in $(cat $PATCH_LIST); do
 
         echo "Using new path $current_file"
 
-        bash ~/cromite/tools/apply-single-patch.sh $PATCH_NEW_PATH/${current_file:1} $PATCH_NEW_PATH
+        bash ~/Spectre Browser/tools/apply-single-patch.sh $PATCH_NEW_PATH/${current_file:1} $PATCH_NEW_PATH
 
         echo ""
         LAST_COMMIT=$(git rev-parse HEAD)
         echo "Last Commit " $LAST_COMMIT
-        bash ~/cromite/tools/export-single-patch.sh $LAST_COMMIT
+        bash ~/Spectre Browser/tools/export-single-patch.sh $LAST_COMMIT
 
     else
 
@@ -64,7 +64,7 @@ for current_file in $(cat $PATCH_LIST); do
            fi
         fi
 
-        bash ~/cromite/tools/apply-single-patch.sh $PATCH_OLD_PATH/$current_file $PATCH_NEW_PATH || exit 1
+        bash ~/Spectre Browser/tools/apply-single-patch.sh $PATCH_OLD_PATH/$current_file $PATCH_NEW_PATH || exit 1
 
         if [ -z "$SILENT" ]; then
            echo $current_file >>$DESTINATION
@@ -73,7 +73,7 @@ for current_file in $(cat $PATCH_LIST); do
            echo ""
            LAST_COMMIT=$(git rev-parse HEAD)
            echo "Last Commit " $LAST_COMMIT
-           bash ~/cromite/tools/export-single-patch.sh $LAST_COMMIT || exit 1
+           bash ~/Spectre Browser/tools/export-single-patch.sh $LAST_COMMIT || exit 1
         fi
 
     fi

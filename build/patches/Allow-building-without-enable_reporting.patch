@@ -27,7 +27,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../renderer/core/frame/reporting_context.h      |  7 +++++--
  .../renderer/core/frame/reporting_observer.cc    |  4 +---
  22 files changed, 64 insertions(+), 26 deletions(-)
- create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Allow-building-without-enable_reporting.inc
+ create mode 100644 Spectre Browser_flags/services/network/public/cpp/features_cc/Allow-building-without-enable_reporting.inc
 
 diff --git a/chrome/browser/net/chrome_report_sender.cc b/chrome/browser/net/chrome_report_sender.cc
 --- a/chrome/browser/net/chrome_report_sender.cc
@@ -271,13 +271,13 @@ diff --git a/content/public/common/content_switch_dependent_feature_overrides.cc
  #include "services/network/public/cpp/features.h"
  #include "services/network/public/cpp/network_switches.h"
  #include "third_party/blink/public/common/features.h"
-diff --git a/cromite_flags/services/network/public/cpp/features_cc/Allow-building-without-enable_reporting.inc b/cromite_flags/services/network/public/cpp/features_cc/Allow-building-without-enable_reporting.inc
+diff --git a/Spectre Browser_flags/services/network/public/cpp/features_cc/Allow-building-without-enable_reporting.inc b/Spectre Browser_flags/services/network/public/cpp/features_cc/Allow-building-without-enable_reporting.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/services/network/public/cpp/features_cc/Allow-building-without-enable_reporting.inc
++++ b/Spectre Browser_flags/services/network/public/cpp/features_cc/Allow-building-without-enable_reporting.inc
 @@ -0,0 +1,2 @@
-+SET_CROMITE_FEATURE_DISABLED(kNetworkErrorLogging);
-+SET_CROMITE_FEATURE_DISABLED(kReporting);
++SET_Spectre Browser_FEATURE_DISABLED(kNetworkErrorLogging);
++SET_Spectre Browser_FEATURE_DISABLED(kReporting);
 diff --git a/net/reporting/reporting_header_parser.cc b/net/reporting/reporting_header_parser.cc
 --- a/net/reporting/reporting_header_parser.cc
 +++ b/net/reporting/reporting_header_parser.cc

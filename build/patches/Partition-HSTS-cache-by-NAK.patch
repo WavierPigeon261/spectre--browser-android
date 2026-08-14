@@ -27,7 +27,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  services/network/network_context.h            |  15 ++-
  .../public/mojom/network_context.mojom        |  10 +-
  22 files changed, 181 insertions(+), 104 deletions(-)
- create mode 100644 cromite_flags/net/base/features_cc/Partition-HSTS-cache-by-NAK.inc
+ create mode 100644 Spectre Browser_flags/net/base/features_cc/Partition-HSTS-cache-by-NAK.inc
 
 diff --git a/chrome/browser/ssl/https_upgrades_interceptor.cc b/chrome/browser/ssl/https_upgrades_interceptor.cc
 --- a/chrome/browser/ssl/https_upgrades_interceptor.cc
@@ -219,12 +219,12 @@ diff --git a/content/browser/web_package/signed_exchange_request_handler.cc b/co
        frame_tree_node_id_, accept_langs_,
        false /* keep_entry_for_prefetch_cache */);
  
-diff --git a/cromite_flags/net/base/features_cc/Partition-HSTS-cache-by-NAK.inc b/cromite_flags/net/base/features_cc/Partition-HSTS-cache-by-NAK.inc
+diff --git a/Spectre Browser_flags/net/base/features_cc/Partition-HSTS-cache-by-NAK.inc b/Spectre Browser_flags/net/base/features_cc/Partition-HSTS-cache-by-NAK.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/net/base/features_cc/Partition-HSTS-cache-by-NAK.inc
++++ b/Spectre Browser_flags/net/base/features_cc/Partition-HSTS-cache-by-NAK.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kHstsTopLevelNavigationsOnly);
++SET_Spectre Browser_FEATURE_DISABLED(kHstsTopLevelNavigationsOnly);
 diff --git a/net/http/transport_security_state.cc b/net/http/transport_security_state.cc
 --- a/net/http/transport_security_state.cc
 +++ b/net/http/transport_security_state.cc

@@ -22,7 +22,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...oButtonGroupAdaptiveToolbarPreference.java | 19 ++++++++++++-------
  ...ve-button-in-top-toolbar-customization.inc |  1 +
  14 files changed, 45 insertions(+), 19 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/dom_distiller/ReaderModeToolbarButtonController.java b/chrome/android/java/src/org/chromium/chrome/browser/dom_distiller/ReaderModeToolbarButtonController.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/dom_distiller/ReaderModeToolbarButtonController.java
@@ -294,10 +294,10 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
              default:
                  assert false : "Unknown variant " + variant;
          }
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Restore-adaptive-button-in-top-toolbar-customization.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_ENABLED(kAdaptiveButtonInTopToolbarCustomizationV2);
++SET_Spectre Browser_FEATURE_ENABLED(kAdaptiveButtonInTopToolbarCustomizationV2);
 --

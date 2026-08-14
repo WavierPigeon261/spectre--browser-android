@@ -24,12 +24,12 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../blink/renderer/core/page/frame_tree.cc    | 21 +++++++++++++++++++
  .../platform/runtime_enabled_features.json5   |  6 ++++++
  14 files changed, 132 insertions(+), 3 deletions(-)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Log-dangling-attributes-in-some-html-elements.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Log-dangling-attributes-in-some-html-elements.inc
 
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Log-dangling-attributes-in-some-html-elements.inc b/cromite_flags/chrome/browser/about_flags_cc/Log-dangling-attributes-in-some-html-elements.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Log-dangling-attributes-in-some-html-elements.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Log-dangling-attributes-in-some-html-elements.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Log-dangling-attributes-in-some-html-elements.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Log-dangling-attributes-in-some-html-elements.inc
 @@ -0,0 +1,8 @@
 +#ifdef FLAG_SECTION
 +

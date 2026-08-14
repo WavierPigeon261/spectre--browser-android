@@ -13,7 +13,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/android/chrome_java_sources.gni        |   2 +
  .../java/res/xml/about_chrome_preferences.xml |   5 +
  .../about_settings/AboutChromeSettings.java   |  28 +-
- .../omaha/CromiteUpdateStatusProvider.java    |  42 +++
+ .../omaha/Spectre BrowserUpdateStatusProvider.java    |  42 +++
  .../chrome/browser/omaha/OmahaBase.java       |   7 +-
  .../browser/omaha/UpdateMenuItemHelper.java   |  89 +++++-
  .../inline/BromiteInlineUpdateController.java | 285 ++++++++++++++++++
@@ -49,7 +49,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Bromite-auto-updater.inc                  |   3 +
  .../Bromite-auto-updater.inc                  |   1 +
  40 files changed, 1158 insertions(+), 104 deletions(-)
- create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java
+ create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/Spectre BrowserUpdateStatusProvider.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
  create mode 100644 chrome/browser/endpoint_fetcher/BUILD.gn
  create mode 100644 chrome/browser/endpoint_fetcher/DEPS
@@ -59,8 +59,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  create mode 100644 chrome/browser/endpoint_fetcher/java/src/org/chromium/chrome/browser/endpoint_fetcher/EndpointHeaderResponse.java
  create mode 100644 chrome/browser/endpoint_fetcher/java/src/org/chromium/chrome/browser/endpoint_fetcher/EndpointResponse.java
  create mode 100644 chrome/browser/omaha/android/java/src/org/chromium/chrome/browser/omaha/inline/InlineUpdateController.java
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Bromite-auto-updater.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Bromite-auto-updater.inc
 
 diff --git a/build/android/java/templates/BuildConfig.template b/build/android/java/templates/BuildConfig.template
 --- a/build/android/java/templates/BuildConfig.template
@@ -94,7 +94,7 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
    "java/src/org/chromium/chrome/browser/omaha/OmahaBase.java",
    "java/src/org/chromium/chrome/browser/omaha/OmahaDelegate.java",
    "java/src/org/chromium/chrome/browser/omaha/OmahaDelegateBase.java",
-+  "java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java",
++  "java/src/org/chromium/chrome/browser/omaha/Spectre BrowserUpdateStatusProvider.java",
 +  "java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java",
    "java/src/org/chromium/chrome/browser/omaha/OmahaService.java",
    "java/src/org/chromium/chrome/browser/omaha/RequestData.java",
@@ -176,10 +176,10 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/about_settings/
      @Override
      public @SettingsFragment.AnimationType int getAnimationType() {
          return SettingsFragment.AnimationType.PROPERTY;
-diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/Spectre BrowserUpdateStatusProvider.java b/chrome/android/java/src/org/chromium/chrome/browser/omaha/Spectre BrowserUpdateStatusProvider.java
 new file mode 100644
 --- /dev/null
-+++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/omaha/Spectre BrowserUpdateStatusProvider.java
 @@ -0,0 +1,42 @@
 +package org.chromium.chrome.browser.omaha;
 +
@@ -193,12 +193,12 @@ new file mode 100644
 +import org.chromium.chrome.browser.omaha.UpdateStatusProvider;
 +import org.chromium.chrome.browser.omaha.inline.BromiteInlineUpdateController;
 +
-+public class CromiteUpdateStatusProvider extends UpdateStatusProvider {
++public class Spectre BrowserUpdateStatusProvider extends UpdateStatusProvider {
 +    private static final class LazyHolder {
-+        private static final UpdateStatusProvider INSTANCE = new CromiteUpdateStatusProvider();
++        private static final UpdateStatusProvider INSTANCE = new Spectre BrowserUpdateStatusProvider();
 +    }
 +
-+    private CromiteUpdateStatusProvider() {
++    private Spectre BrowserUpdateStatusProvider() {
 +        super(new BromiteInlineUpdateController());
 +    }
 +
@@ -262,7 +262,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateMen
  import org.chromium.chrome.R;
  import org.chromium.chrome.browser.omaha.UpdateStatusProvider.UpdateState;
  import org.chromium.chrome.browser.omaha.UpdateStatusProvider.UpdateStatus;
-+import org.chromium.chrome.browser.omaha.CromiteUpdateStatusProvider;
++import org.chromium.chrome.browser.omaha.Spectre BrowserUpdateStatusProvider;
  import org.chromium.chrome.browser.preferences.Pref;
  import org.chromium.chrome.browser.profiles.Profile;
  import org.chromium.chrome.browser.profiles.ProfileKeyedMap;
@@ -271,7 +271,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateMen
          }
  
 -        UpdateStatusProvider.getInstance().addObserver(mUpdateCallback);
-+        CromiteUpdateStatusProvider.getInstance().addObserver(mUpdateCallback);
++        Spectre BrowserUpdateStatusProvider.getInstance().addObserver(mUpdateCallback);
      }
  
      /** Unregisters {@code observer} from menu state changes. */
@@ -280,7 +280,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateMen
  
                  try {
 -                    UpdateStatusProvider.getInstance()
-+                    CromiteUpdateStatusProvider.getInstance()
++                    Spectre BrowserUpdateStatusProvider.getInstance()
                              .startIntentUpdate(activity, /* newTask= */ false);
                  } catch (ActivityNotFoundException e) {
                      Log.e(TAG, "Failed to launch Activity for: %s", mStatus.updateUrl);
@@ -289,13 +289,13 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateMen
 +            case UpdateState.VULNERABLE_VERSION:
 +            // Intentional fall through.
 +            case UpdateState.INLINE_UPDATE_AVAILABLE:
-+                CromiteUpdateStatusProvider.getInstance().startInlineUpdate(activity);
++                Spectre BrowserUpdateStatusProvider.getInstance().startInlineUpdate(activity);
 +                break;
 +            case UpdateState.INLINE_UPDATE_READY:
-+                CromiteUpdateStatusProvider.getInstance().finishInlineUpdate();
++                Spectre BrowserUpdateStatusProvider.getInstance().finishInlineUpdate();
 +                break;
 +            case UpdateState.INLINE_UPDATE_FAILED:
-+                CromiteUpdateStatusProvider.getInstance().retryInlineUpdate(activity);
++                Spectre BrowserUpdateStatusProvider.getInstance().retryInlineUpdate(activity);
 +                break;
              case UpdateState.UNSUPPORTED_OS_VERSION:
                  // Intentional fall through.
@@ -309,7 +309,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateMen
          if (mStatus.updateState != UpdateState.UNSUPPORTED_OS_VERSION) return;
  
 -        UpdateStatusProvider.getInstance().updateLatestUnsupportedVersion();
-+        CromiteUpdateStatusProvider.getInstance().updateLatestUnsupportedVersion();
++        Spectre BrowserUpdateStatusProvider.getInstance().updateLatestUnsupportedVersion();
      }
  
      private void handleStateChanged() {
@@ -1803,7 +1803,7 @@ diff --git a/components/endpoint_fetcher/endpoint_fetcher.cc b/components/endpoi
                .SetTimeout(kDefaultTimeOut)
                .Build()) {}
  
-+// constructor used by Cromite
++// constructor used by Spectre Browser
 +EndpointFetcher::EndpointFetcher(
 +    const scoped_refptr<network::SharedURLLoaderFactory>& url_loader_factory,
 +    const GURL& url,
@@ -1988,7 +1988,7 @@ diff --git a/components/endpoint_fetcher/endpoint_fetcher.h b/components/endpoin
 +      RequestParams request_params,
 +      const net::NetworkTrafficAnnotationTag& annotation_tag);
 +
-+  // Constructor used by cromite
++  // Constructor used by Spectre Browser
 +  EndpointFetcher(const scoped_refptr<network::SharedURLLoaderFactory>& url_loader_factory,
 +                  const GURL& url,
 +                  const std::string& http_method,
@@ -2056,18 +2056,18 @@ diff --git a/components/manta/base_provider.cc b/components/manta/base_provider.
  }
  
  }  // namespace manta
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc
 @@ -0,0 +1,3 @@
-+CROMITE_FEATURE(kInlineUpdateFlow,
++Spectre Browser_FEATURE(kInlineUpdateFlow,
 +                "InlineUpdateFlow",
 +                base::FEATURE_ENABLED_BY_DEFAULT);
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Bromite-auto-updater.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Bromite-auto-updater.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Bromite-auto-updater.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Bromite-auto-updater.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Bromite-auto-updater.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Bromite-auto-updater.inc
 @@ -0,0 +1 @@
 +BASE_DECLARE_FEATURE(kInlineUpdateFlow);
 --

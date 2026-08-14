@@ -13,9 +13,9 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Add-AllowUserCertificates-flag.inc              |  1 +
  net/android/java/src/org/chromium/net/X509Util.java |  5 +++++
  7 files changed, 30 insertions(+)
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-AllowUserCertificates-flag.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Add-AllowUserCertificates-flag.inc
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Add-AllowUserCertificates-flag.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/about_flags_cc/Add-AllowUserCertificates-flag.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Add-AllowUserCertificates-flag.inc
+ create mode 100644 Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Add-AllowUserCertificates-flag.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
@@ -76,10 +76,10 @@ diff --git a/chrome/browser/flags/android/java/src/org/chromium/chrome/browser/f
                      sAndroidApb144Patch2,
                      sAndroidApb144Patch3,
                      sAndroidApb144Patch4,
-diff --git a/cromite_flags/chrome/browser/about_flags_cc/Add-AllowUserCertificates-flag.inc b/cromite_flags/chrome/browser/about_flags_cc/Add-AllowUserCertificates-flag.inc
+diff --git a/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-AllowUserCertificates-flag.inc b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-AllowUserCertificates-flag.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/about_flags_cc/Add-AllowUserCertificates-flag.inc
++++ b/Spectre Browser_flags/chrome/browser/about_flags_cc/Add-AllowUserCertificates-flag.inc
 @@ -0,0 +1,13 @@
 +#ifdef FLAG_SECTION
 +
@@ -94,18 +94,18 @@ new file mode 100644
 +#endif
 +
 +#endif
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Add-AllowUserCertificates-flag.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Add-AllowUserCertificates-flag.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Add-AllowUserCertificates-flag.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Add-AllowUserCertificates-flag.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Add-AllowUserCertificates-flag.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_cc/Add-AllowUserCertificates-flag.inc
 @@ -0,0 +1,3 @@
-+CROMITE_FEATURE(kAllowUserCertificates,
++Spectre Browser_FEATURE(kAllowUserCertificates,
 +                "AllowUserCertificates",
 +                base::FEATURE_DISABLED_BY_DEFAULT);
-diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Add-AllowUserCertificates-flag.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Add-AllowUserCertificates-flag.inc
+diff --git a/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Add-AllowUserCertificates-flag.inc b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Add-AllowUserCertificates-flag.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/Add-AllowUserCertificates-flag.inc
++++ b/Spectre Browser_flags/chrome/browser/flags/android/chrome_feature_list_h/Add-AllowUserCertificates-flag.inc
 @@ -0,0 +1 @@
 +BASE_DECLARE_FEATURE(kAllowUserCertificates);
 diff --git a/net/android/java/src/org/chromium/net/X509Util.java b/net/android/java/src/org/chromium/net/X509Util.java

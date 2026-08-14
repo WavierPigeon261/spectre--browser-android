@@ -2,8 +2,8 @@ ARG VERSION
 
 FROM uazo/chromium:$VERSION
 
-ARG CROMITE_SHA
-ENV CROMITE_SHA=$CROMITE_SHA
+ARG Spectre Browser_SHA
+ENV Spectre Browser_SHA=$Spectre Browser_SHA
 
 ARG HTTP_PROXY
 ENV HTTP_PROXY=$HTTP_PROXY
@@ -17,16 +17,16 @@ RUN sudo chown lg /etc/apt/apt.conf.d/proxy.conf
 RUN sudo echo "Acquire::http::Proxy \"$HTTP_PROXY\";" >/etc/apt/apt.conf.d/proxy.conf
 RUN sudo apt-get update
 
-COPY apply-cromite-patches.sh .
+COPY apply-Spectre Browser-patches.sh .
 
-RUN sudo chmod +x ./apply-cromite-patches.sh && \
-    mkdir cromite && \
-    cd cromite && \
+RUN sudo chmod +x ./apply-Spectre Browser-patches.sh && \
+    mkdir Spectre Browser && \
+    cd Spectre Browser && \
     git init && \
-    git remote add origin https://github.com/uazo/cromite && \
-    git fetch origin $CROMITE_SHA && \
+    git remote add origin https://github.com/uazo/Spectre Browser && \
+    git fetch origin $Spectre Browser_SHA && \
     git reset --hard FETCH_HEAD && \
     cd ..
 
-RUN ./apply-cromite-patches.sh
+RUN ./apply-Spectre Browser-patches.sh
 

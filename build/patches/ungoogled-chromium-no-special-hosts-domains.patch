@@ -72,7 +72,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  net/base/url_util.cc                          |  25 +-
  services/network/network_context.cc           |   2 +-
  64 files changed, 58 insertions(+), 891 deletions(-)
- create mode 100644 cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
+ create mode 100644 Spectre Browser_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
@@ -1944,10 +1944,10 @@ diff --git a/content/common/webid/identity_url_loader_throttle.cc b/content/comm
    return std::make_unique<IdentityUrlLoaderThrottle>(std::move(cb));
  }
  
-diff --git a/cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc b/cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
+diff --git a/Spectre Browser_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc b/Spectre Browser_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 new file mode 100644
 --- /dev/null
-+++ b/cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
++++ b/Spectre Browser_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 @@ -0,0 +1 @@
 +// none
 diff --git a/net/base/url_util.cc b/net/base/url_util.cc
