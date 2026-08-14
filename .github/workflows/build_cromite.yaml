@@ -46,7 +46,7 @@ env:
 
 jobs:
   check_images:
-    runs-on: ${{ github.event.inputs.type }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
@@ -165,7 +165,7 @@ jobs:
           docker tag uazo/Spectre Browser-build:$VERSION-$Spectre_Browser_SHA uazo/Spectre Browser-build:build
 
   build:
-    runs-on: ${{ github.event.inputs.type }}
+    runs-on: ubuntu-latest
     needs: check_images
     if: success()
     timeout-minutes: 1440
