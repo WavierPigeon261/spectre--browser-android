@@ -74,12 +74,12 @@ jobs:
       - name: Get current chromium version
         shell: bash
         run: |
-          export VERSION=$( cat ./Spectre Browser/build/RELEASE )
+          export VERSION=$( cat "./Spectre Browser/build/RELEASE" )
 
           echo Current version is $VERSION
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-          cd Spectre Browser/tools
+          cd "Spectre Browser/tools"
 
       - name: Building build-deps container ${{ env.VERSION }}
         shell: bash
