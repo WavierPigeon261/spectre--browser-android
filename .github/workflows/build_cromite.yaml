@@ -40,7 +40,7 @@ on:
         default: 'false'
 
 env:
-  Spectre Browser_SHA: ${{ github.event.inputs.sha }}
+  Spectre_Browser_SHA: ${{ github.event.inputs.sha }}
   REMOVEDOCKERSUPPORT: true
   USELOCALIMAGE: true
 
@@ -114,32 +114,32 @@ jobs:
             fi
           fi
 
-      - name: Building Spectre Browser container ${{ env.VERSION }}-${{ env.Spectre Browser_SHA }}
+      - name: Building Spectre Browser container ${{ env.VERSION }}-${{ env.Spectre_Browser_SHA }}
         shell: bash
         run: |
-          docker pull uazo/Spectre Browser:$VERSION-$Spectre Browser_SHA || true
-          IS_PRESENT=$(docker inspect --type=image uazo/Spectre Browser:$VERSION-$Spectre Browser_SHA > /dev/null ; echo $?)
+          docker pull uazo/Spectre Browser:$VERSION-$Spectre_Browser_SHA || true
+          IS_PRESENT=$(docker inspect --type=image uazo/Spectre Browser:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
           if [ $IS_PRESENT -ne "0" ]; then
-            IS_PRESENT=$(./regctl image inspect uazo/Spectre Browser:$VERSION-$Spectre Browser_SHA > /dev/null ; echo $?)
+            IS_PRESENT=$(./regctl image inspect uazo/Spectre Browser:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
             if [ $IS_PRESENT -ne "0" ]; then
-              DOCKER_BUILDKIT=1 docker build -t uazo/Spectre Browser:$VERSION-$Spectre Browser_SHA --progress plain \
-                --build-arg Spectre Browser_SHA=$Spectre Browser_SHA \
+              DOCKER_BUILDKIT=1 docker build -t uazo/Spectre Browser:$VERSION-$Spectre_Browser_SHA --progress plain \
+                --build-arg Spectre_Browser_SHA=$Spectre_Browser_SHA \
                 --build-arg VERSION=$VERSION \
                 --build-arg HTTP_PROXY="$PROXY_ADDR" \
                 Spectre Browser/tools/images/Spectre Browser-source/.
             fi
           fi
 
-      - name: Building Spectre Browser-build container ${{ env.VERSION }}-${{ env.Spectre Browser_SHA }}
+      - name: Building Spectre Browser-build container ${{ env.VERSION }}-${{ env.Spectre_Browser_SHA }}
         shell: bash
         run: |
-          docker pull uazo/Spectre Browser-build:$VERSION-$Spectre Browser_SHA || true
-          IS_PRESENT=$(docker inspect --type=image uazo/Spectre Browser-build:$VERSION-$Spectre Browser_SHA > /dev/null ; echo $?)
+          docker pull uazo/Spectre Browser-build:$VERSION-$Spectre_Browser_SHA || true
+          IS_PRESENT=$(docker inspect --type=image uazo/Spectre Browser-build:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
           if [ $IS_PRESENT -ne "0" ]; then
-            IS_PRESENT=$(./regctl image inspect uazo/Spectre Browser-build:$VERSION-$Spectre Browser_SHA > /dev/null ; echo $?)
+            IS_PRESENT=$(./regctl image inspect uazo/Spectre Browser-build:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
             if [ $IS_PRESENT -ne "0" ]; then
-              DOCKER_BUILDKIT=1 docker build -t uazo/Spectre Browser-build:$VERSION-$Spectre Browser_SHA --progress plain \
-                --build-arg Spectre Browser_SHA=$Spectre Browser_SHA \
+              DOCKER_BUILDKIT=1 docker build -t uazo/Spectre Browser-build:$VERSION-$Spectre_Browser_SHA --progress plain \
+                --build-arg Spectre_Browser_SHA=$Spectre_Browser_SHA \
                 --build-arg VERSION=$VERSION \
                 --build-arg HTTP_PROXY="$PROXY_ADDR" \
                 --no-cache \
@@ -150,9 +150,9 @@ jobs:
       - name: Get uazo/Spectre Browser-build from docker hub if present
         shell: bash
         run: |
-          IS_PRESENT=$(./regctl image inspect uazo/Spectre Browser-build:$VERSION-$Spectre Browser_SHA > /dev/null ; echo $?)
+          IS_PRESENT=$(./regctl image inspect uazo/Spectre Browser-build:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
           if [ $IS_PRESENT -eq "0" ]; then
-            docker pull uazo/Spectre Browser-build:$VERSION-$Spectre Browser_SHA
+            docker pull uazo/Spectre Browser-build:$VERSION-$Spectre_Browser_SHA
           fi
 
       - name: Mark image to build
@@ -162,7 +162,7 @@ jobs:
           if [ $IS_PRESENT -eq "0" ]; then
             docker rmi uazo/Spectre Browser-build:build
           fi
-          docker tag uazo/Spectre Browser-build:$VERSION-$Spectre Browser_SHA uazo/Spectre Browser-build:build
+          docker tag uazo/Spectre Browser-build:$VERSION-$Spectre_Browser_SHA uazo/Spectre Browser-build:build
 
   build:
     runs-on: ${{ github.event.inputs.type }}
@@ -191,7 +191,7 @@ jobs:
         TARGET_OS: ${{ github.event.inputs.target_os }}
         USE_KEYSTORE: true
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-        Spectre Browser_PREF_HASH_SEED_BIN: ${{ secrets.Spectre Browser_PREF_HASH_SEED_BIN }}
+        Spectre_Browser_PREF_HASH_SEED_BIN: ${{ secrets.Spectre_Browser_PREF_HASH_SEED_BIN }}
       volumes:
         - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/arm:/home/lg/working_dir/chromium/src/out/arm
         - /storage/images/${{ github.event.inputs.sha }}/android/${{ github.event.inputs.debug }}/arm64:/home/lg/working_dir/chromium/src/out/arm64
