@@ -126,7 +126,7 @@ jobs:
                 --build-arg Spectre_Browser_SHA=$Spectre_Browser_SHA \
                 --build-arg VERSION=$VERSION \
                 --build-arg HTTP_PROXY="$PROXY_ADDR" \
-                spectre-browser/tools/images/spectre-browser-source/.
+                spectre-browser/tools/images/cromite-source/.
             fi
           fi
 
@@ -143,7 +143,7 @@ jobs:
                 --build-arg VERSION=$VERSION \
                 --build-arg HTTP_PROXY="$PROXY_ADDR" \
                 --no-cache \
-                spectre-browser/tools/images/spectre-browser-build/.
+                spectre-browser/tools/images/cromite-build/.
             fi
           fi
 
