@@ -15,7 +15,7 @@ on:
   workflow_dispatch:
     inputs:
       sha:
-        description: 'uazo/spectre-browser SHA'
+        description: 'WavierPigeon261/spectre-browser SHA'
         required: true
         default: ''
       target_os:
@@ -84,12 +84,12 @@ jobs:
       - name: Building build-deps container ${{ env.VERSION }}
         shell: bash
         run: |
-          docker pull uazo/build-deps:$VERSION || true
-          IS_PRESENT=$(docker inspect --type=image uazo/build-deps:$VERSION > /dev/null ; echo $?)
+          docker pull WavierPigeon261/build-deps:$VERSION || true
+          IS_PRESENT=$(docker inspect --type=image WavierPigeon261/build-deps:$VERSION > /dev/null ; echo $?)
           if [ $IS_PRESENT -ne "0" ]; then
-            IS_PRESENT=$(./regctl image inspect uazo/build-deps:$VERSION > /dev/null ; echo $?)
+            IS_PRESENT=$(./regctl image inspect WavierPigeon261/build-deps:$VERSION > /dev/null ; echo $?)
             if [ $IS_PRESENT -ne "0" ]; then
-              DOCKER_BUILDKIT=1 docker build -t uazo/build-deps:$VERSION \
+              DOCKER_BUILDKIT=1 docker build -t WavierPigeon261/build-deps:$VERSION \
                 --progress plain \
                 --build-arg VERSION=$VERSION \
                 --build-arg HTTP_PROXY="$PROXY_ADDR" \
@@ -101,12 +101,12 @@ jobs:
       - name: Building chromium container ${{ env.VERSION }}
         shell: bash
         run: |
-          docker pull uazo/chromium:$VERSION || true
-          IS_PRESENT=$(docker inspect --type=image uazo/chromium:$VERSION > /dev/null ; echo $?)
+          docker pull WavierPigeon261/chromium:$VERSION || true
+          IS_PRESENT=$(docker inspect --type=image WavierPigeon261/chromium:$VERSION > /dev/null ; echo $?)
           if [ $IS_PRESENT -ne "0" ]; then
-            IS_PRESENT=$(./regctl image inspect uazo/chromium:$VERSION > /dev/null ; echo $?)
+            IS_PRESENT=$(./regctl image inspect WavierPigeon261/chromium:$VERSION > /dev/null ; echo $?)
             if [ $IS_PRESENT -ne "0" ]; then
-              DOCKER_BUILDKIT=1 docker build -t uazo/chromium:$VERSION \
+              DOCKER_BUILDKIT=1 docker build -t WavierPigeon261/chromium:$VERSION \
                 --progress plain \
                 --build-arg VERSION=$VERSION \
                 --build-arg HTTP_PROXY="$PROXY_ADDR" \
@@ -117,12 +117,12 @@ jobs:
       - name: Building spectre-browser container ${{ env.VERSION }}-${{ env.Spectre_Browser_SHA }}
         shell: bash
         run: |
-          docker pull uazo/spectre-browser:$VERSION-$Spectre_Browser_SHA || true
-          IS_PRESENT=$(docker inspect --type=image uazo/spectre-browser:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
+          docker pull WavierPigeon261/spectre-browser:$VERSION-$Spectre_Browser_SHA || true
+          IS_PRESENT=$(docker inspect --type=image WavierPigeon261/spectre-browser:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
           if [ $IS_PRESENT -ne "0" ]; then
-            IS_PRESENT=$(./regctl image inspect uazo/spectre-browser:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
+            IS_PRESENT=$(./regctl image inspect WavierPigeon261/spectre-browser:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
             if [ $IS_PRESENT -ne "0" ]; then
-              DOCKER_BUILDKIT=1 docker build -t uazo/spectre-browser:$VERSION-$Spectre_Browser_SHA --progress plain \
+              DOCKER_BUILDKIT=1 docker build -t WavierPigeon261/spectre-browser:$VERSION-$Spectre_Browser_SHA --progress plain \
                 --build-arg Spectre_Browser_SHA=$Spectre_Browser_SHA \
                 --build-arg VERSION=$VERSION \
                 --build-arg HTTP_PROXY="$PROXY_ADDR" \
@@ -133,12 +133,12 @@ jobs:
       - name: Building spectre-browser-build container ${{ env.VERSION }}-${{ env.Spectre_Browser_SHA }}
         shell: bash
         run: |
-          docker pull uazo/spectre-browser-build:$VERSION-$Spectre_Browser_SHA || true
-          IS_PRESENT=$(docker inspect --type=image uazo/spectre-browser-build:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
+          docker pull WavierPigeon261/spectre-browser-build:$VERSION-$Spectre_Browser_SHA || true
+          IS_PRESENT=$(docker inspect --type=image WavierPigeon261/spectre-browser-build:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
           if [ $IS_PRESENT -ne "0" ]; then
-            IS_PRESENT=$(./regctl image inspect uazo/spectre-browser-build:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
+            IS_PRESENT=$(./regctl image inspect WavierPigeon261/spectre-browser-build:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
             if [ $IS_PRESENT -ne "0" ]; then
-              DOCKER_BUILDKIT=1 docker build -t uazo/spectre-browser-build:$VERSION-$Spectre_Browser_SHA --progress plain \
+              DOCKER_BUILDKIT=1 docker build -t WavierPigeon261/spectre-browser-build:$VERSION-$Spectre_Browser_SHA --progress plain \
                 --build-arg Spectre_Browser_SHA=$Spectre_Browser_SHA \
                 --build-arg VERSION=$VERSION \
                 --build-arg HTTP_PROXY="$PROXY_ADDR" \
@@ -147,22 +147,22 @@ jobs:
             fi
           fi
 
-      - name: Get uazo/spectre-browser-build from docker hub if present
+      - name: Get WavierPigeon261/spectre-browser-build from docker hub if present
         shell: bash
         run: |
-          IS_PRESENT=$(./regctl image inspect uazo/spectre-browser-build:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
+          IS_PRESENT=$(./regctl image inspect WavierPigeon261/spectre-browser-build:$VERSION-$Spectre_Browser_SHA > /dev/null ; echo $?)
           if [ $IS_PRESENT -eq "0" ]; then
-            docker pull uazo/spectre-browser-build:$VERSION-$Spectre_Browser_SHA
+            docker pull WavierPigeon261/spectre-browser-build:$VERSION-$Spectre_Browser_SHA
           fi
 
       - name: Mark image to build
         shell: bash
         run: |
-          IS_PRESENT=$(docker inspect --type=image uazo/spectre-browser-build:build > /dev/null ; echo $?)
+          IS_PRESENT=$(docker inspect --type=image WavierPigeon261/spectre-browser-build:build > /dev/null ; echo $?)
           if [ $IS_PRESENT -eq "0" ]; then
-            docker rmi uazo/spectre-browser-build:build
+            docker rmi WavierPigeon261/spectre-browser-build:build
           fi
-          docker tag uazo/spectre-browser-build:$VERSION-$Spectre_Browser_SHA uazo/spectre-browser-build:build
+          docker tag WavierPigeon261/spectre-browser-build:$VERSION-$Spectre_Browser_SHA WavierPigeon261/spectre-browser-build:build
 
   build:
     runs-on: ubuntu-latest
@@ -171,7 +171,7 @@ jobs:
     timeout-minutes: 1440
 
     container:
-      image: uazo/spectre-browser-build:build
+      image: WavierPigeon261/spectre-browser-build:build
       env:
         REMOVEDOCKERSUPPORT: true # CUSTOM RUNNER: remove sharing of docker socket
         USELOCALIMAGE: true       # CUSTOM RUNNER: permit use of local images
