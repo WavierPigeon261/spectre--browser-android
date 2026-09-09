@@ -13,7 +13,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/android/java/AndroidManifest.xml       |   1 -
  .../menu/bookmark_toolbar_menu_improved.xml   |  14 +
- .../browser/TabbedModeTabDelegateFactory.java |   5 +-
+ .../browser/TabbedModeTabDelegateFactory.java |   7 +-
  .../app/bookmarks/BookmarkActivity.java       |  20 ++
  .../native_page/NativePageFactory.java        |   9 +-
  chrome/browser/BUILD.gn                       |   7 +
@@ -51,7 +51,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ui/shell_dialogs/select_file_dialog_linux.cc  |   4 +
  ui/shell_dialogs/select_file_dialog_linux.h   |   2 +
  ui/shell_dialogs/select_file_dialog_win.cc    |   5 +
- 40 files changed, 788 insertions(+), 22 deletions(-)
+ 40 files changed, 788 insertions(+), 24 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/add-bookmark-import-export-actions.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/add-bookmark-import-export-actions.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/add-bookmark-import-export-actions.inc
@@ -94,7 +94,14 @@ diff --git a/chrome/android/java/res/menu/bookmark_toolbar_menu_improved.xml b/c
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDelegateFactory.java b/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDelegateFactory.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDelegateFactory.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDelegateFactory.java
-@@ -11,6 +11,7 @@ import org.chromium.base.supplier.NonNullObservableSupplier;
+@@ -4,13 +4,12 @@
+ 
+ package org.chromium.chrome.browser;
+ 
+-import android.app.Activity;
+-
+ import org.chromium.base.supplier.MonotonicObservableSupplier;
+ import org.chromium.base.supplier.NonNullObservableSupplier;
  import org.chromium.base.supplier.OneshotSupplier;
  import org.chromium.build.annotations.NullMarked;
  import org.chromium.build.annotations.Nullable;
@@ -102,7 +109,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDe
  import org.chromium.chrome.browser.app.tab_activity_glue.ActivityTabWebContentsDelegateAndroid;
  import org.chromium.chrome.browser.back_press.BackPressManager;
  import org.chromium.chrome.browser.browser_controls.BrowserControlsStateProvider;
-@@ -62,7 +63,7 @@ import java.util.function.Supplier;
+@@ -62,7 +61,7 @@ import java.util.function.Supplier;
   */
  @NullMarked
  public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
@@ -111,7 +118,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDe
      private final BrowserControlsVisibilityDelegate mAppBrowserControlsVisibilityDelegate;
      private final Supplier<@Nullable ShareDelegate> mShareDelegateSupplier;
      private final Supplier<@Nullable EphemeralTabCoordinator> mEphemeralTabCoordinatorSupplier;
-@@ -96,7 +97,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
+@@ -96,7 +95,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
      private final Supplier<Integer> mLeftSideUiWidthSupplier;
  
      public TabbedModeTabDelegateFactory(

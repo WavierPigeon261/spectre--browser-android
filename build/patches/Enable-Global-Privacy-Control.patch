@@ -27,14 +27,11 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../renderer_preferences.h                    |   1 +
  .../renderer_preferences_mojom_traits.h       |   5 +
  .../public/mojom/renderer_preferences.mojom   |   2 +
- .../renderer/bindings/idl_in_modules.gni      |   5 +
  .../renderer/core/exported/web_view_impl.cc   |   3 +
- third_party/blink/renderer/modules/BUILD.gn   |   4 +
  .../global_privacy_control.cc                 |  12 ++
  .../global_privacy_control.h                  |  15 +++
- ...orker_navigator_global_privacy_control.idl |   6 +
- .../platform/runtime_enabled_features.json5   |   5 +
- 30 files changed, 336 insertions(+)
+ .../platform/runtime_enabled_features.json5   |  13 +-
+ 27 files changed, 321 insertions(+), 8 deletions(-)
  create mode 100644 chrome/android/java/res/xml/gpc_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/GpcSettings.java
  create mode 100644 chrome/browser/resources/settings/privacy_page/gpc_toggle.html
@@ -42,7 +39,6 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Enable-Global-Privacy-Control.grdp
  create mode 100644 third_party/blink/renderer/modules/global_privacy_control/global_privacy_control.cc
  create mode 100644 third_party/blink/renderer/modules/global_privacy_control/global_privacy_control.h
- create mode 100644 third_party/blink/renderer/modules/global_privacy_control/worker_navigator_global_privacy_control.idl
 
 diff --git a/chrome/android/chrome_java_resources.gni b/chrome/android/chrome_java_resources.gni
 --- a/chrome/android/chrome_java_resources.gni
@@ -542,21 +538,6 @@ diff --git a/third_party/blink/public/mojom/renderer_preferences.mojom b/third_p
    // Whether to allow the use of Encrypted Media Extensions (EME), except for
    // the use of Clear Key key system which is always allowed as required by the
    // spec.
-diff --git a/third_party/blink/renderer/bindings/idl_in_modules.gni b/third_party/blink/renderer/bindings/idl_in_modules.gni
---- a/third_party/blink/renderer/bindings/idl_in_modules.gni
-+++ b/third_party/blink/renderer/bindings/idl_in_modules.gni
-@@ -1303,6 +1303,11 @@ static_idl_files_in_modules = [
-   "//third_party/blink/renderer/modules/xr/xr_webgl_sub_image.idl",
- ]
- 
-+static_idl_files_in_modules += [
-+  "//third_party/blink/renderer/modules/global_privacy_control/navigator_global_privacy_control.idl",
-+  "//third_party/blink/renderer/modules/global_privacy_control/worker_navigator_global_privacy_control.idl",
-+]
-+
- # Direct Sockets
- # This uses target_os rather than current_os (which is what is_android is set
- # from) for the case of generating the v8 context snapshot for android. When
 diff --git a/third_party/blink/renderer/core/exported/web_view_impl.cc b/third_party/blink/renderer/core/exported/web_view_impl.cc
 --- a/third_party/blink/renderer/core/exported/web_view_impl.cc
 +++ b/third_party/blink/renderer/core/exported/web_view_impl.cc
@@ -570,20 +551,6 @@ diff --git a/third_party/blink/renderer/core/exported/web_view_impl.cc b/third_p
  #if BUILDFLAG(IS_OZONE)
    GetSettings()->SetSelectionClipboardBufferAvailable(
        renderer_preferences_.selection_clipboard_buffer_available);
-diff --git a/third_party/blink/renderer/modules/BUILD.gn b/third_party/blink/renderer/modules/BUILD.gn
---- a/third_party/blink/renderer/modules/BUILD.gn
-+++ b/third_party/blink/renderer/modules/BUILD.gn
-@@ -169,6 +169,10 @@ component("modules") {
-     "//third_party/blink/renderer/modules/xr",
-   ]
- 
-+  sub_modules += [
-+    "//third_party/blink/renderer/modules/global_privacy_control",
-+  ]
-+
-   # This uses target_os rather than current_os (which is what is_android is set
-   # from) for the case of generating the v8 context snapshot for android. When
-   # generating the snapshot for android, blink is compiled with
 diff --git a/third_party/blink/renderer/modules/global_privacy_control/global_privacy_control.cc b/third_party/blink/renderer/modules/global_privacy_control/global_privacy_control.cc
 new file mode 100644
 --- /dev/null
@@ -621,21 +588,25 @@ new file mode 100644
 +}  // namespace blink
 +
 +#endif  // THIRD_PARTY_BLINK_RENDERER_MODULES_GLOBAL_PRIVACY_CONTROL_GLOBAL_PRIVACY_CONTROL_H_
-diff --git a/third_party/blink/renderer/modules/global_privacy_control/worker_navigator_global_privacy_control.idl b/third_party/blink/renderer/modules/global_privacy_control/worker_navigator_global_privacy_control.idl
-new file mode 100644
---- /dev/null
-+++ b/third_party/blink/renderer/modules/global_privacy_control/worker_navigator_global_privacy_control.idl
-@@ -0,0 +1,6 @@
-+[
-+    RuntimeEnabled=GlobalPrivacyControl,
-+    ImplementedAs=GlobalPrivacyControl
-+] partial interface WorkerNavigator {
-+    readonly attribute boolean globalPrivacyControl;
-+};
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -4111,6 +4111,11 @@
+@@ -3403,14 +3403,6 @@
+       name: "GetUserMediaEchoCancellationModes",
+       status: "stable",
+     },
+-    {
+-      name: "GlobalPrivacyControl",
+-      implied_by: [
+-        "GlobalPrivacyControlForce",
+-        "GlobalPrivacyControlTest"
+-      ],
+-      base_feature: "none",
+-    },
+     {
+       name: "GlobalPrivacyControlForce",
+     },
+@@ -4106,6 +4098,11 @@
        status: "stable",
        base_feature: "none",
      },

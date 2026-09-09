@@ -65,10 +65,10 @@ diff --git a/storage/browser/blob/blob_memory_controller.cc b/storage/browser/bl
  
 +// static
 +#if BUILDFLAG(IS_ANDROID)
-+constexpr base::ByteCount approximated_device_memory_gb_ = base::GiB(4.0);
++constexpr base::ByteSize approximated_device_memory_gb_ = base::GiB(4.0);
 +constexpr int64_t approximated_device_disk_size = 8ull * 1024 * 1024 * 1024;
 +#else
-+constexpr base::ByteCount approximated_device_memory_gb_ = base::GiB(8.0);
++constexpr base::ByteSize approximated_device_memory_gb_ = base::GiB(8.0);
 +constexpr int64_t approximated_device_disk_size = 200ull * 1024 * 1024 * 1024;
 +#endif
 +
@@ -80,7 +80,7 @@ diff --git a/storage/browser/blob/blob_memory_controller.cc b/storage/browser/bl
        optional_memory_size_for_testing
            ? optional_memory_size_for_testing.value()
 -          : base::SysInfo::AmountOfTotalPhysicalMemory().InBytes();
-+          : approximated_device_memory_gb_.InBytesUnsigned();
++          : approximated_device_memory_gb_.InBytes();
    if (disk_enabled && CreateBlobDirectory(storage_dir) == base::File::FILE_OK)
 -    disk_size = base::SysInfo::AmountOfTotalDiskSpace(storage_dir).value_or(-1);
 +    disk_size = approximated_device_disk_size;
@@ -97,7 +97,7 @@ diff --git a/storage/browser/blob/blob_memory_controller.cc b/storage/browser/bl
 -#else
 -    limits.max_blob_in_memory_space = static_cast<size_t>(memory_size / 5);
 -#endif
-+    limits.max_blob_in_memory_space = base::GiB(2).InBytesUnsigned();
++    limits.max_blob_in_memory_space = base::GiB(2).InBytes();
    }
    // Devices just on the edge (RAM == 256MB) should not fail because
    // max_blob_in_memory_space turns out smaller than min_page_file_size
@@ -112,10 +112,10 @@ diff --git a/storage/browser/quota/quota_device_info_helper.cc b/storage/browser
 +
 +// static
 +#if BUILDFLAG(IS_ANDROID)
-+constexpr base::ByteCount approximated_device_memory_gb_ = base::GiB(4.0);
++constexpr base::ByteSize approximated_device_memory_gb_ = base::GiB(4.0);
 +constexpr int64_t approximated_device_disk_size = 8ull * 1024 * 1024 * 1024;
 +#else
-+constexpr base::ByteCount approximated_device_memory_gb_ = base::GiB(8.0);
++constexpr base::ByteSize approximated_device_memory_gb_ = base::GiB(8.0);
 +constexpr int64_t approximated_device_disk_size = 200ull * 1024 * 1024 * 1024;
 +#endif
 +
@@ -133,7 +133,7 @@ diff --git a/storage/browser/quota/quota_device_info_helper.cc b/storage/browser
  
  uint64_t QuotaDeviceInfoHelper::AmountOfPhysicalMemory() const {
 -  return base::SysInfo::AmountOfTotalPhysicalMemory().InBytes();
-+  return approximated_device_memory_gb_.InBytesUnsigned();
++  return approximated_device_memory_gb_.InBytes();
  }
  
  }  // namespace storage

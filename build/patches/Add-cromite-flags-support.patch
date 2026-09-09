@@ -18,16 +18,17 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../src/org/chromium/base/FeatureMap.java     |   5 +
  .../base/ImmutableFlagWithDefault.java        |  25 +++
  .../base/cached_flags/ValuesReturned.java     |   2 +-
- base/feature.h                                | 103 ++++++++++-
+ base/feature.h                                | 107 ++++++++++-
  base/feature_list.cc                          |  76 ++++++++
  base/feature_list.h                           |   5 +
- build/android/gyp/java_cpp_features.py        |  17 +-
+ build/android/gyp/java_cpp_features.py        |  15 ++
  chrome/android/java/res/values/values.xml     |   3 +
  .../java/res/xml/privacy_preferences.xml      |   4 +
  .../homepage/settings/HomepageSettings.java   |   2 +-
  .../privacy/settings/PrivacySettings.java     |   2 +-
  .../settings/FragmentDependencyProvider.java  |  10 +-
  .../browser/settings/SettingsActivity.java    |  43 ++++-
+ .../settings/SettingsHostFragment.java        |   2 +-
  .../SettingsPageFragmentDelegateImpl.java     |   3 +-
  .../tracing/settings/DeveloperSettings.java   |   5 +-
  chrome/browser/about_flags.cc                 |  11 ++
@@ -110,40 +111,40 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  third_party/blink/public/common/features.h    |   1 +
  ui/base/ui_base_features.cc                   |   1 +
  ui/base/ui_base_features.h                    |   1 +
- 97 files changed, 901 insertions(+), 32 deletions(-)
+ 98 files changed, 904 insertions(+), 33 deletions(-)
  create mode 100644 base/android/java/src/org/chromium/base/ImmutableFlagWithDefault.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/include_all_directory.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/java_template/CromiteCachedFlag.java.tmpl
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Add-cromite-flags-support.grdp
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/placeholder.txt
  create mode 100644 components/cromite_components_strings_grd/placeholder.txt
- create mode 100644 cromite_flags/BUILD.gn
- create mode 100644 cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
- create mode 100644 cromite_flags/chrome/browser/browser_features_cc/placeholder.txt
- create mode 100644 cromite_flags/chrome/browser/browser_features_h/placeholder.txt
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/placeholder.txt
- create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/placeholder.txt
- create mode 100644 cromite_flags/chrome/browser/ui/ui_features_cc/placeholder.txt
- create mode 100644 cromite_flags/chrome/common/chrome_features_cc/placeholder.txt
- create mode 100644 cromite_flags/chrome/common/chrome_features_h/placeholder.txt
- create mode 100644 cromite_flags/components/content_settings/core/common/features_cc/placeholder.txt
- create mode 100644 cromite_flags/components/offline_pages/core/offline_page_feature_cc/placeholder.txt
- create mode 100644 cromite_flags/components/offline_pages/core/offline_page_feature_h/placeholder.txt
- create mode 100644 cromite_flags/components/password_manager/core/browser/features/password_features_cc/placeholder.txt
- create mode 100644 cromite_flags/components/permissions/features_cc/placeholder.txt
- create mode 100644 cromite_flags/content/common/features_cc/placeholder.txt
- create mode 100644 cromite_flags/content/public/common/content_features_cc/placeholder.txt
- create mode 100644 cromite_flags/content/public/common/content_features_h/placeholder.txt
- create mode 100644 cromite_flags/media/base/media_switches_cc/placeholder.txt
- create mode 100644 cromite_flags/media/base/media_switches_h/placeholder.txt
- create mode 100644 cromite_flags/net/base/features_cc/placeholder.txt
- create mode 100644 cromite_flags/net/base/features_h/placeholder.txt
- create mode 100644 cromite_flags/services/network/public/cpp/features_cc/placeholder.txt
- create mode 100644 cromite_flags/services/network/public/cpp/features_h/placeholder.txt
- create mode 100644 cromite_flags/third_party/blink/common/features_cc/placeholder.txt
- create mode 100644 cromite_flags/third_party/blink/common/features_h/placeholder.txt
- create mode 100644 cromite_flags/ui/base/features_cc/placeholder.txt
- create mode 100644 cromite_flags/ui/base/features_h/placeholder.txt
+ create mode 100755 cromite_flags/BUILD.gn
+ create mode 100755 cromite_flags/chrome/browser/about_flags_cc/placeholder.txt
+ create mode 100755 cromite_flags/chrome/browser/browser_features_cc/placeholder.txt
+ create mode 100755 cromite_flags/chrome/browser/browser_features_h/placeholder.txt
+ create mode 100755 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/placeholder.txt
+ create mode 100755 cromite_flags/chrome/browser/flags/android/chrome_feature_list_h/placeholder.txt
+ create mode 100755 cromite_flags/chrome/browser/ui/ui_features_cc/placeholder.txt
+ create mode 100755 cromite_flags/chrome/common/chrome_features_cc/placeholder.txt
+ create mode 100755 cromite_flags/chrome/common/chrome_features_h/placeholder.txt
+ create mode 100755 cromite_flags/components/content_settings/core/common/features_cc/placeholder.txt
+ create mode 100755 cromite_flags/components/offline_pages/core/offline_page_feature_cc/placeholder.txt
+ create mode 100755 cromite_flags/components/offline_pages/core/offline_page_feature_h/placeholder.txt
+ create mode 100755 cromite_flags/components/password_manager/core/browser/features/password_features_cc/placeholder.txt
+ create mode 100755 cromite_flags/components/permissions/features_cc/placeholder.txt
+ create mode 100755 cromite_flags/content/common/features_cc/placeholder.txt
+ create mode 100755 cromite_flags/content/public/common/content_features_cc/placeholder.txt
+ create mode 100755 cromite_flags/content/public/common/content_features_h/placeholder.txt
+ create mode 100755 cromite_flags/media/base/media_switches_cc/placeholder.txt
+ create mode 100755 cromite_flags/media/base/media_switches_h/placeholder.txt
+ create mode 100755 cromite_flags/net/base/features_cc/placeholder.txt
+ create mode 100755 cromite_flags/net/base/features_h/placeholder.txt
+ create mode 100755 cromite_flags/services/network/public/cpp/features_cc/placeholder.txt
+ create mode 100755 cromite_flags/services/network/public/cpp/features_h/placeholder.txt
+ create mode 100755 cromite_flags/third_party/blink/common/features_cc/placeholder.txt
+ create mode 100755 cromite_flags/third_party/blink/common/features_h/placeholder.txt
+ create mode 100755 cromite_flags/ui/base/features_cc/placeholder.txt
+ create mode 100755 cromite_flags/ui/base/features_h/placeholder.txt
 
 diff --git a/base/BUILD.gn b/base/BUILD.gn
 --- a/base/BUILD.gn
@@ -294,8 +295,8 @@ diff --git a/base/feature.h b/base/feature.h
                      internal::FeatureMacroHandshake handshake,
 -                    bool is_country_specific)
 +                    bool is_country_specific,
-+                    bool cromite = false,
-+                    bool is_new_flag = false)
++                    bool cromite,
++                    bool is_new_flag)
        : name(name),
          default_state(default_state),
 +        is_cromite(cromite),
@@ -303,7 +304,18 @@ diff --git a/base/feature.h b/base/feature.h
          cached_value(is_runtime_mutable ? kRuntimeMutabilityMask : 0) {
      if (is_country_specific != IsCountrySpecificFeatureState(default_state)) {
        LOG(FATAL) << "Pass a country-specific default state if and only if you "
-@@ -370,4 +383,88 @@ struct BASE_EXPORT LOGICALLY_CONST FeatureWithCountryRestriction
+@@ -355,7 +368,9 @@ struct BASE_EXPORT LOGICALLY_CONST FeatureWithCountryRestriction
+                 feature_default_state,
+                 /*is_runtime_mutable=*/false,
+                 handshake,
+-                /*is_country_specific=*/true),
++                /*is_country_specific=*/true,
++                /* cromite */ false,
++                /* is_new_flag */ false),
+         countries(countries_list) {}
+ 
+   FeatureWithCountryRestriction(const FeatureWithCountryRestriction&) = delete;
+@@ -370,4 +385,88 @@ struct BASE_EXPORT LOGICALLY_CONST FeatureWithCountryRestriction
  
  }  // namespace base
  
@@ -510,20 +522,18 @@ diff --git a/base/feature_list.h b/base/feature_list.h
 diff --git a/build/android/gyp/java_cpp_features.py b/build/android/gyp/java_cpp_features.py
 --- a/build/android/gyp/java_cpp_features.py
 +++ b/build/android/gyp/java_cpp_features.py
-@@ -24,7 +24,12 @@ class FeatureParserDelegate(java_cpp_utils.CppConstantParser.Delegate):
+@@ -24,6 +24,11 @@ class FeatureParserDelegate(java_cpp_utils.CppConstantParser.Delegate):
      # TODO(crbug.com/482451012): Support parsing `BASE_RUNTIME_MUTABLE_FEATURE`
      # macros with mutabilty support in the generated Java code.
      _FEATURE_RE = re.compile(r'BASE_FEATURE\(\s*(k\w+),')
--    _STRING_LITERAL_RE = re.compile(r'"(?:\\"|[^"])*"')
-+  _FEATURE_RE1 = re.compile(r'CROMITE_FEATURE\(\s*(k\w+),')
-+  _FEATURE_RE2 = re.compile(r'BASE_FEATURE_DISABLED\(\s*(k\w+),')
-+  _FEATURE_RE3 = re.compile(r'CROMITE_FEATURE_DISABLED\(\s*(k\w+),')
-+  _FEATURE_RE4 = re.compile(r'BASE_FEATURE_ENABLED\(\s*(k\w+),')
-+  _FEATURE_RE5 = re.compile(r'CROMITE_FEATURE_ENABLED\(\s*(k\w+),')
-+  _STRING_LITERAL_RE = re.compile(r'"(?:\\"|[^"])*"')
++    _FEATURE_RE1 = re.compile(r'CROMITE_FEATURE\(\s*(k\w+),')
++    _FEATURE_RE2 = re.compile(r'BASE_FEATURE_DISABLED\(\s*(k\w+),')
++    _FEATURE_RE3 = re.compile(r'CROMITE_FEATURE_DISABLED\(\s*(k\w+),')
++    _FEATURE_RE4 = re.compile(r'BASE_FEATURE_ENABLED\(\s*(k\w+),')
++    _FEATURE_RE5 = re.compile(r'CROMITE_FEATURE_ENABLED\(\s*(k\w+),')
+     _STRING_LITERAL_RE = re.compile(r'"(?:\\"|[^"])*"')
      _constant_name = None  # The name of the current macro.
      _comma_count = 0  # Number of commas seen in the current macro.
-     _string_literals = []  # All string literals seen in the current macro.
 @@ -36,6 +41,16 @@ class FeatureParserDelegate(java_cpp_utils.CppConstantParser.Delegate):
          self._constant_name = None
  
@@ -727,6 +737,18 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
                  /* recursive= */ true);
          fragmentManager.registerFragmentLifecycleCallbacks(
                  new WideDisplayPaddingApplier(
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsHostFragment.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsHostFragment.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsHostFragment.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsHostFragment.java
+@@ -230,7 +230,7 @@ public class SettingsHostFragment extends Fragment
+                 snackbarSupplier,
+                 bottomSheetSupplier,
+                 modalDialogSupplier,
+-                SupplierUtils.ofNull());
++                SupplierUtils.ofNull(), SupplierUtils.ofNull());
+     }
+ 
+     @Override
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsPageFragmentDelegateImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsPageFragmentDelegateImpl.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsPageFragmentDelegateImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsPageFragmentDelegateImpl.java

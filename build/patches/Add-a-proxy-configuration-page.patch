@@ -30,7 +30,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/resources/proxy_config.js      | 278 +++++++++++++
  chrome/browser/ui/webui/BUILD.gn              |   2 +
  .../browser/ui/webui/chrome_web_ui_configs.cc |   3 +
- chrome/browser/ui/webui/proxy_config_ui.cc    | 390 ++++++++++++++++++
+ chrome/browser/ui/webui/proxy_config_ui.cc    | 393 ++++++++++++++++++
  chrome/browser/ui/webui/proxy_config_ui.h     |  41 ++
  chrome/common/webui_url_constants.cc          |   1 +
  chrome/common/webui_url_constants.h           |   2 +
@@ -43,7 +43,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  net/proxy_resolution/pac_file_fetcher_impl.cc |   8 -
  net/proxy_resolution/proxy_config.cc          |  53 ++-
  net/proxy_resolution/proxy_config.h           |   3 +
- 27 files changed, 986 insertions(+), 26 deletions(-)
+ 27 files changed, 989 insertions(+), 26 deletions(-)
  create mode 100644 chrome/browser/resources/proxy_config.css
  create mode 100644 chrome/browser/resources/proxy_config.html
  create mode 100644 chrome/browser/resources/proxy_config.js
@@ -684,7 +684,7 @@ diff --git a/chrome/browser/ui/webui/proxy_config_ui.cc b/chrome/browser/ui/webu
 new file mode 100644
 --- /dev/null
 +++ b/chrome/browser/ui/webui/proxy_config_ui.cc
-@@ -0,0 +1,390 @@
+@@ -0,0 +1,393 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -719,6 +719,7 @@ new file mode 100644
 +#include "base/values.h"
 +#include "chrome/browser/browser_process.h"
 +#include "chrome/browser/net/proxy_service_factory.h"
++#include "chrome/browser/policy/profile_policy_connector.h"
 +#include "chrome/browser/platform_util.h"
 +#include "chrome/browser/profiles/profile.h"
 +#include "chrome/common/url_constants.h"
@@ -807,7 +808,9 @@ new file mode 100644
 +  if (!pref_proxy_config_tracker_) {
 +    pref_proxy_config_tracker_ =
 +        ProxyServiceFactory::CreatePrefProxyConfigTrackerOfProfile(
-+            profile->GetPrefs(), g_browser_process->local_state());
++            profile->GetPrefs(), g_browser_process->local_state(),
++            profile->GetProfilePolicyConnector()->policy_service(),
++            /* enterprise_proxy_service */ nullptr);
 +  }
 +
 +  proxy_config_service_ = ProxyServiceFactory::CreateProxyConfigService(

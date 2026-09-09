@@ -18,10 +18,10 @@ Pre-requisites: eyeo Browser Ad filtering Solution: Base Module
  chrome/browser/resources/BUILD.gn             |  5 +++
  chrome/browser/ui/BUILD.gn                    |  6 ++++
  chrome/browser/ui/prefs/pref_watcher.cc       | 13 ++++++++
- chrome/browser/ui/tab_helpers.cc              | 13 ++++++++
+ chrome/browser/ui/tab_helpers.cc              | 12 +++++++
  chrome/chrome_paks.gni                        |  5 +++
  chrome/common/BUILD.gn                        |  3 ++
- 15 files changed, 164 insertions(+), 1 deletion(-)
+ 15 files changed, 163 insertions(+), 1 deletion(-)
  create mode 100644 chrome/browser/adblock/README.md
  create mode 100644 chrome/browser/adblock/adblock_chrome_content_browser_client.cc
  create mode 100644 chrome/browser/adblock/adblock_chrome_content_browser_client.h
@@ -439,14 +439,6 @@ diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
    // AutofillClientProvider initializes ContentAutofillClient for web_contents,
    // which is gated by enable_browser_autofill.
    if (enable_browser_autofill) {
-@@ -390,6 +402,7 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents,
-         web_contents, "SensitiveContent.Chrome.");
-   }
- #endif  // BUILDFLAG(IS_ANDROID)
-+
-   if (breadcrumbs::IsEnabled(g_browser_process->local_state())) {
-     BreadcrumbManagerTabHelper::CreateForWebContents(web_contents);
-   }
 diff --git a/chrome/chrome_paks.gni b/chrome/chrome_paks.gni
 --- a/chrome/chrome_paks.gni
 +++ b/chrome/chrome_paks.gni

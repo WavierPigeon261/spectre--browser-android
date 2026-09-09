@@ -8,12 +8,13 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  .../chrome/browser/ChromeTabbedActivity.java  |  10 +-
  .../chrome/browser/app/ChromeActivity.java    |  40 ++++-
+ ...StripLayoutTrailingButtonsCoordinator.java |   2 +-
  .../customtabs/BaseCustomTabActivity.java     |   3 +-
  .../CustomTabIntentDataProvider.java          |   3 +
  .../tabbed_mode/TabbedRootUiCoordinator.java  |   2 +-
  .../browser/tabmodel/TabModelJniBridge.java   |   3 +-
  .../tabmodel/TabModelSelectorBase.java        |  14 ++
- .../browser/toolbar/ToolbarManager.java       |   6 +-
+ .../browser/toolbar/ToolbarManager.java       |  37 ++--
  .../developer_private_functions.cc            |   3 +-
  .../browser/extensions/extension_tab_util.cc  |   2 +-
  .../page_live_state_decorator_helper.cc       |  17 ++
@@ -36,18 +37,20 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../extensions/ExtensionsMenuCoordinator.java |  18 +-
  .../extensions/ExtensionsMenuMediator.java    |  28 ++-
  .../ExtensionsToolbarCoordinator.java         |   4 +
- .../ExtensionsToolbarCoordinatorImpl.java     |  26 ++-
+ .../ExtensionsToolbarCoordinatorImpl.java     |  34 ++--
  .../browser/toolbar/top/ToolbarPhone.java     |  19 ++
  .../browser_window/ChromeAndroidTaskImpl.java |  53 ++++--
  .../ChromeAndroidTaskFeature.java             |   2 +-
  .../ChromeAndroidTaskFeatureKey.java          |  15 +-
  .../extensions/extensions_menu_view_model.cc  |   7 +-
  .../extensions/extensions_menu_view_model.h   |   6 +-
- components/tabs/impl/tab_collection.cc        |  23 +++
+ .../SidePanelContainerCoordinatorImpl.java    |   4 +-
+ .../dev/SidePanelDevFeatureFactory.java       |   2 +-
+ components/tabs/impl/tab_collection.cc        |  19 ++
  components/tabs/impl/tab_strip_collection.cc  |   4 +-
  .../chromium/ui/listmenu/ListMenuHost.java    |   4 +
  .../ui/widget/AnchoredPopupWindow.java        |   7 +
- 41 files changed, 579 insertions(+), 177 deletions(-)
+ 44 files changed, 606 insertions(+), 193 deletions(-)
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
@@ -171,6 +174,18 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActiv
      }
  
      @Override
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/overlays/strip/StripLayoutTrailingButtonsCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/compositor/overlays/strip/StripLayoutTrailingButtonsCoordinator.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/compositor/overlays/strip/StripLayoutTrailingButtonsCoordinator.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/compositor/overlays/strip/StripLayoutTrailingButtonsCoordinator.java
+@@ -560,7 +560,7 @@ public class StripLayoutTrailingButtonsCoordinator {
+             if (task != null) {
+                 task.addFeature(
+                         new ChromeAndroidTaskFeatureKey(
+-                                GlicSplitButtonDelegateBridge.class, profile, mWindowAndroid),
++                                GlicSplitButtonDelegateBridge.class, profile, mWindowAndroid, /*destructionOrder*/ 10),
+                         () -> mGlicSplitButtonDelegateBridge);
+             }
+         }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/BaseCustomTabActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/BaseCustomTabActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/customtabs/BaseCustomTabActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/customtabs/BaseCustomTabActivity.java
@@ -278,25 +293,83 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/toolbar/Toolbar
  import org.chromium.chrome.browser.toolbar.extensions.ExtensionsToolbarCoordinator;
  import org.chromium.chrome.browser.toolbar.forward_button.ForwardButtonCoordinator;
  import org.chromium.chrome.browser.toolbar.home_button.HomeButtonCoordinator;
-@@ -2701,7 +2702,7 @@ public class ToolbarManager
+@@ -427,6 +428,7 @@ public class ToolbarManager
+     private @MonotonicNonNull BackButtonCoordinator mBackButtonCoordinator;
+     private @MonotonicNonNull ForwardButtonCoordinator mForwardButtonCoordinator;
+     private @Nullable ExtensionsToolbarCoordinator mExtensionsToolbarCoordinator;
++    private Runnable mInitExtensionsToolbarCoordinator;
+ 
+     private final BrowserStateBrowserControlsVisibilityDelegate mControlsVisibilityDelegate;
+     private int mFullscreenFocusToken = TokenHolder.INVALID_TOKEN;
+@@ -2682,8 +2684,6 @@ public class ToolbarManager
+             ChromeAndroidTask task = mChromeAndroidTaskSupplier.get();
+             // ChromeAndroidTask is available only on Desktop Android.
+             if (task != null) {
+-                Profile tabModelProfile =
+-                        assertNonNull(mTabModelSelector.getCurrentModel().getProfile());
+                 // Register as an Activity-scoped feature of {@link ChromeAndroidTask}. This ensures
+                 // its C++ UnownedUserData objects are destroyed prior to the host (BWI) when a
+                 // Profile is destroyed on mobile Android. Explicit destruction in
+@@ -2695,17 +2695,20 @@ public class ToolbarManager
+                             }
+                             mExtensionsToolbarCoordinator = null;
+                         };
+-                mExtensionsToolbarCoordinator =
++                mInitExtensionsToolbarCoordinator = () -> {
++                    Profile tabModelProfile =
++                            assertNonNull(mTabModelSelector.getCurrentModel().getProfile());
++                    mExtensionsToolbarCoordinator =
+                         (ExtensionsToolbarCoordinator)
+                                 task.addFeature(
                                          new ChromeAndroidTaskFeatureKey(
                                                  ExtensionsToolbarCoordinator.class,
                                                  tabModelProfile,
 -                                                (ActivityWindowAndroid) mWindowAndroid),
+-                                        () ->
+-                                                ExtensionsToolbarCoordinator.maybeCreate(
 +                                                (ActivityWindowAndroid) mWindowAndroid, /*destructionOrder*/ 9),
-                                         () ->
-                                                 ExtensionsToolbarCoordinator.maybeCreate(
++                                        () -> {
++                                                var coordinator = ExtensionsToolbarCoordinator.maybeCreate(
                                                          mActivity,
-@@ -2717,6 +2718,9 @@ public class ToolbarManager
+-                                                        extensionsToolbarStub,
++                                                        mControlContainer.findViewById(R.id.extensions_toolbar_container_stub),
+                                                         mWindowAndroid,
+                                                         task,
+                                                         tabModelProfile,
+@@ -2717,10 +2720,21 @@ public class ToolbarManager
                                                          selectionDropdownMenuDelegate,
                                                          mTabModelSelector,
                                                          mModalDialogManagerSupplier.get(),
+-                                                        cleanup));
+-                if (mExtensionsToolbarCoordinator != null) {
+-                    mToolbar.setExtensionsToolbarCoordinator(mExtensionsToolbarCoordinator);
+-                }
 +                                                        AlwaysIncognitoLinkInterceptor.isAlwaysIncognito()
 +                                                                ? (url) -> CustomTabActivity.showInfoPage(mActivity, url)
 +                                                                : null,
-                                                         cleanup));
-                 if (mExtensionsToolbarCoordinator != null) {
-                     mToolbar.setExtensionsToolbarCoordinator(mExtensionsToolbarCoordinator);
++                                                        cleanup);
++                                                if (mExtensionsToolbarCoordinator == null) {
++                                                    mExtensionsToolbarCoordinator = coordinator;
++                                                    mToolbar.setExtensionsToolbarCoordinator(coordinator);
++                                                }
++                                                return coordinator;
++                                        });
++                    if (mExtensionsToolbarCoordinator != null) {
++                        mToolbar.setExtensionsToolbarCoordinator(mExtensionsToolbarCoordinator);
++                    }
++                };
++                mInitExtensionsToolbarCoordinator.run();
+             }
+         }
+ 
+@@ -3995,6 +4009,7 @@ public class ToolbarManager
+      *     if extensions are not supported on this build.
+      */
+     public @Nullable ExtensionsToolbarCoordinator getExtensionsToolbarCoordinator() {
++        if (mExtensionsToolbarCoordinator == null) mInitExtensionsToolbarCoordinator.run();
+         return mExtensionsToolbarCoordinator;
+     }
+ 
 diff --git a/chrome/browser/extensions/api/developer_private/developer_private_functions.cc b/chrome/browser/extensions/api/developer_private/developer_private_functions.cc
 --- a/chrome/browser/extensions/api/developer_private/developer_private_functions.cc
 +++ b/chrome/browser/extensions/api/developer_private/developer_private_functions.cc
@@ -479,7 +552,7 @@ diff --git a/chrome/browser/ui/android/extensions/extension_actions_bridge.cc b/
 +      new ExtensionActionsBridge(profile, java_object));
  }
  
- 
+ static bool JNI_ExtensionActionsBridge_ExtensionsEnabled(JNIEnv* env,
 diff --git a/chrome/browser/ui/android/extensions/extension_actions_bridge.h b/chrome/browser/ui/android/extensions/extension_actions_bridge.h
 --- a/chrome/browser/ui/android/extensions/extension_actions_bridge.h
 +++ b/chrome/browser/ui/android/extensions/extension_actions_bridge.h
@@ -1700,7 +1773,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
  
      private final MenuButtonWidthConsumer mMenuButtonWidthConsumer = new MenuButtonWidthConsumer();
      private final RequestAccessButtonWidthConsumer mRequestAccessButtonWidthConsumer =
-@@ -124,9 +130,12 @@ public class ExtensionsToolbarCoordinatorImpl
+@@ -124,17 +130,24 @@ public class ExtensionsToolbarCoordinatorImpl
              @Nullable SelectionDropdownMenuDelegate selectionDropdownMenuDelegate,
              TabModelSelector tabModelSelector,
              ModalDialogManager modalDialogManager,
@@ -1714,16 +1787,22 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
          mProfile = profile;
          mCurrentTabSupplier = currentTabSupplier;
          mOnFeatureRemoved = onFeatureRemoved;
-@@ -134,7 +143,7 @@ public class ExtensionsToolbarCoordinatorImpl
-         extensionsToolbarStub.setLayoutResource(R.layout.extensions_toolbar_container);
-         mContainer = (LinearLayout) extensionsToolbarStub.inflate();
+ 
+-        extensionsToolbarStub.setLayoutResource(R.layout.extensions_toolbar_container);
+-        mContainer = (LinearLayout) extensionsToolbarStub.inflate();
++        if (extensionsToolbarStub != null) {
++            extensionsToolbarStub.setLayoutResource(R.layout.extensions_toolbar_container);
++            mContainer = (LinearLayout) extensionsToolbarStub.inflate();
++        } else {
++            mContainer = (LinearLayout) rootView.findViewById(R.id.extensions_toolbar_container);
++        }
  
 -        mExtensionsToolbarBridge = new ExtensionsToolbarBridge(task, profile);
 +        mExtensionsToolbarBridge = ExtensionsToolbarBridge.Instance();
          mExtensionsToolbarBridge.addObserver(mExtensionsToolbarBridgeObserver);
  
          mPrefService = UserPrefs.get(profile);
-@@ -173,7 +182,8 @@ public class ExtensionsToolbarCoordinatorImpl
+@@ -173,7 +186,8 @@ public class ExtensionsToolbarCoordinatorImpl
                          tabCreator,
                          mExtensionsToolbarBridge,
                          mMenuButtonPinningDelegate,
@@ -1733,7 +1812,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
  
          mExtensionAccessControlButtonCoordinator =
                  new ExtensionAccessControlButtonCoordinator(
-@@ -250,8 +260,6 @@ public class ExtensionsToolbarCoordinatorImpl
+@@ -250,8 +264,6 @@ public class ExtensionsToolbarCoordinatorImpl
          mExtensionAccessControlButtonCoordinator.destroy();
          mExtensionsMenuCoordinator.destroy();
          mExtensionActionListCoordinator.destroy();
@@ -1742,7 +1821,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
          mCurrentTabSupplier = null;
  
          LifetimeAssert.setSafeToGc(mLifetimeAssert, true);
-@@ -304,6 +312,8 @@ public class ExtensionsToolbarCoordinatorImpl
+@@ -304,6 +316,8 @@ public class ExtensionsToolbarCoordinatorImpl
          mToolbarModel.set(
                  ExtensionsToolbarProperties.EXTENSIONS_MENU_BUTTON_DEFAULT_BACKGROUND,
                  backgroundResource);
@@ -1751,7 +1830,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
      }
  
      @Override
-@@ -457,6 +467,8 @@ public class ExtensionsToolbarCoordinatorImpl
+@@ -457,6 +471,8 @@ public class ExtensionsToolbarCoordinatorImpl
              mExtensionsMenuCoordinator.setMenuButtonPinned(isMenuButtonPinned());
          }
  
@@ -1760,7 +1839,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
          // Trigger layout and wait for the toolbar to provide us with width allocation.
          ViewUtils.requestLayout(
                  mContainer, "ExtensionsToolbarCoordinatorImpl.updateMenuButtonPinState()");
-@@ -478,9 +490,7 @@ public class ExtensionsToolbarCoordinatorImpl
+@@ -478,9 +494,7 @@ public class ExtensionsToolbarCoordinatorImpl
      }
  
      private boolean shouldShowMenuIcon() {
@@ -2071,6 +2150,39 @@ diff --git a/chrome/browser/ui/extensions/extensions_menu_view_model.h b/chrome/
    // Returns the id's of the extensions that have valid host access requests for
    // the current site.
    const std::vector<extensions::ExtensionId>& host_access_requests() {
+diff --git a/chrome/browser/ui/side_panel/internal/android/java/src/org/chromium/chrome/browser/ui/side_panel/SidePanelContainerCoordinatorImpl.java b/chrome/browser/ui/side_panel/internal/android/java/src/org/chromium/chrome/browser/ui/side_panel/SidePanelContainerCoordinatorImpl.java
+--- a/chrome/browser/ui/side_panel/internal/android/java/src/org/chromium/chrome/browser/ui/side_panel/SidePanelContainerCoordinatorImpl.java
++++ b/chrome/browser/ui/side_panel/internal/android/java/src/org/chromium/chrome/browser/ui/side_panel/SidePanelContainerCoordinatorImpl.java
+@@ -141,7 +141,7 @@ final class SidePanelContainerCoordinatorImpl
+         // BrowserWindowInterfaces, one for each tab model's profile.
+         chromeAndroidTask.addFeature(
+                 new ChromeAndroidTaskFeatureKey(
+-                        WindowScopedSidePanelRegistryBridge.class, profile, windowAndroid),
++                        WindowScopedSidePanelRegistryBridge.class, profile, windowAndroid, /*destructionOrder*/ 10),
+                 WindowScopedSidePanelRegistryBridge::new);
+         mSidePanelCoordinatorAndroidBridge =
+                 (SidePanelCoordinatorAndroidBridge)
+@@ -149,7 +149,7 @@ final class SidePanelContainerCoordinatorImpl
+                                 new ChromeAndroidTaskFeatureKey(
+                                         SidePanelCoordinatorAndroidBridge.class,
+                                         profile,
+-                                        windowAndroid),
++                                        windowAndroid, /*destructionOrder*/ 10),
+                                 () -> new SidePanelCoordinatorAndroidBridge(this));
+         assert mSidePanelCoordinatorAndroidBridge != null;
+         mSidePanelCoordinatorAndroidBridge.init();
+diff --git a/chrome/browser/ui/side_panel/internal/android/java/src/org/chromium/chrome/browser/ui/side_panel/dev/SidePanelDevFeatureFactory.java b/chrome/browser/ui/side_panel/internal/android/java/src/org/chromium/chrome/browser/ui/side_panel/dev/SidePanelDevFeatureFactory.java
+--- a/chrome/browser/ui/side_panel/internal/android/java/src/org/chromium/chrome/browser/ui/side_panel/dev/SidePanelDevFeatureFactory.java
++++ b/chrome/browser/ui/side_panel/internal/android/java/src/org/chromium/chrome/browser/ui/side_panel/dev/SidePanelDevFeatureFactory.java
+@@ -33,7 +33,7 @@ public final class SidePanelDevFeatureFactory {
+                             new ChromeAndroidTaskFeatureKey(
+                                     SidePanelWindowScopedDevFeatureImpl.class,
+                                     profile,
+-                                    windowAndroid),
++                                    windowAndroid, /*destructionOrder*/ 10),
+                             () -> new SidePanelWindowScopedDevFeatureImpl(profile, windowAndroid));
+         }
+ 
 diff --git a/components/tabs/impl/tab_collection.cc b/components/tabs/impl/tab_collection.cc
 --- a/components/tabs/impl/tab_collection.cc
 +++ b/components/tabs/impl/tab_collection.cc
@@ -2085,7 +2197,7 @@ diff --git a/components/tabs/impl/tab_collection.cc b/components/tabs/impl/tab_c
  namespace tabs {
  
  DEFINE_HANDLE_FACTORY(TabCollection);
-@@ -195,6 +199,25 @@ TabCollection::TabCollection(Type type,
+@@ -195,6 +199,21 @@ TabCollection::TabCollection(Type type,
  
  TabCollection::~TabCollection() {
    DispatchPendingNotifications();
@@ -2096,11 +2208,7 @@ diff --git a/components/tabs/impl/tab_collection.cc b/components/tabs/impl/tab_c
 +  auto& childrens = GetChildren();
 +  for (auto it = childrens.begin(); it != childrens.end(); ) {
 +    auto& child = *it;
-+    if (std::holds_alternative<std::unique_ptr<TabInterface>>(child)) {
-+      TabInterface* tab =
-+          std::get<std::unique_ptr<TabInterface>>(child).get();
-+      auto removed_tab = MaybeRemoveTab(tab);
-+    } else if (std::holds_alternative<std::unique_ptr<TabCollection>>(child)) {
++    if (std::holds_alternative<std::unique_ptr<TabCollection>>(child)) {
 +      TabCollection* collection =
 +          std::get<std::unique_ptr<TabCollection>>(child).get();
 +      auto removed_collection = MaybeRemoveCollection(collection);
@@ -2114,24 +2222,22 @@ diff --git a/components/tabs/impl/tab_collection.cc b/components/tabs/impl/tab_c
 diff --git a/components/tabs/impl/tab_strip_collection.cc b/components/tabs/impl/tab_strip_collection.cc
 --- a/components/tabs/impl/tab_strip_collection.cc
 +++ b/components/tabs/impl/tab_strip_collection.cc
-@@ -49,7 +49,7 @@ tabs::TabCollection* GetCommonAncestor(tabs::TabCollection* collection_a,
-     current_b = current_b->GetParentCollection();
-   }
- 
--  return nullptr;
-+  return RemoveTabImpl(tab);
- }
- 
- }  // namespace
-@@ -332,7 +332,7 @@ ScopedTab TabStripCollection::RemoveTabAtIndexRecursive(size_t index) {
+@@ -332,13 +332,13 @@ ScopedTab TabStripCollection::RemoveTabAtIndexRecursive(size_t index) {
  
  ScopedTab TabStripCollection::MaybeRemoveTab(TabInterface* tab) {
    CHECK(tab);
 -  return nullptr;
-+  return TabStripCollection::RemoveTabCollection(collection);
++  return RemoveTabImpl(tab);
  }
  
  std::unique_ptr<TabCollection> TabStripCollection::MaybeRemoveCollection(
+     TabCollection* collection) {
+   CHECK(collection);
+-  return nullptr;
++  return TabStripCollection::RemoveTabCollection(collection);
+ }
+ 
+ void TabStripCollection::InsertTabCollectionAt(
 diff --git a/ui/android/java/src/org/chromium/ui/listmenu/ListMenuHost.java b/ui/android/java/src/org/chromium/ui/listmenu/ListMenuHost.java
 --- a/ui/android/java/src/org/chromium/ui/listmenu/ListMenuHost.java
 +++ b/ui/android/java/src/org/chromium/ui/listmenu/ListMenuHost.java

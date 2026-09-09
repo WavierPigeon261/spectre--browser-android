@@ -24,7 +24,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../java/res/xml/incognito_preferences.xml    |  37 ++++
  .../java/res/xml/privacy_preferences.xml      |   5 +
  .../AlwaysIncognitoLinkInterceptor.java       |  54 ++++++
- .../chrome/browser/ChromeTabbedActivity.java  |  27 ++-
+ .../chrome/browser/ChromeTabbedActivity.java  |  29 ++-
  .../chrome/browser/app/ChromeActivity.java    |   4 +
  .../AppMenuPropertiesDelegateImpl.java        |   5 +-
  .../ChromeContextMenuPopulator.java           |   5 +-
@@ -35,6 +35,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../history/HistoryContentManager.java        |  10 +-
  .../browser/history/HistoryManager.java       |  27 ++-
  .../chrome/browser/history/HistoryPage.java   |  16 ++
+ .../chrome/browser/hub/HubProvider.java       |   4 +-
  .../native_page/NativePageFactory.java        |   5 +-
  .../chrome/browser/ntp/RecentTabsManager.java |  29 ++-
  .../privacy/settings/IncognitoSettings.java   | 177 ++++++++++++++++++
@@ -55,6 +56,11 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../host_content_settings_map_factory.cc      |  22 ++-
  chrome/browser/history/history_tab_helper.cc  |  20 ++
  chrome/browser/history/history_tab_helper.h   |  10 +-
+ .../hub/DefaultPaneOrderController.java       |  14 +-
+ .../chrome/browser/hub/HubCoordinator.java    |   5 +-
+ .../chrome/browser/hub/HubManagerFactory.java |   6 +-
+ .../chrome/browser/hub/HubManagerImpl.java    |   8 +-
+ .../browser/hub/HubPaneHostCoordinator.java   |   5 +-
  .../android/offline_page_bridge.cc            |  11 +-
  .../android/offline_page_model_factory.cc     |  20 +-
  .../android/request_coordinator_factory.cc    |  33 +++-
@@ -86,7 +92,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../add-an-always-incognito-mode.inc          |   3 +
  .../add-an-always-incognito-mode.inc          |   1 +
  .../webstore_private/webstore_private_api.cc  |  41 +++-
- 67 files changed, 824 insertions(+), 152 deletions(-)
+ 73 files changed, 856 insertions(+), 164 deletions(-)
  create mode 100644 chrome/android/java/res/xml/incognito_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/AlwaysIncognitoLinkInterceptor.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/privacy/settings/IncognitoSettings.java
@@ -290,6 +296,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
  
              // Defer creation of this helper so it triggers after TabModel observers.
              mUndoRefocusHelper =
+@@ -1246,7 +1256,7 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
+                 new HubProvider(
+                         this,
+                         getProfileProviderSupplier(),
+-                        new DefaultPaneOrderController(),
++                        new DefaultPaneOrderController(AlwaysIncognitoLinkInterceptor.isAlwaysIncognito()),
+                         mBackPressManager,
+                         getMenuOrKeyboardActionController(),
+                         this::getSnackbarManager,
 @@ -3765,7 +3775,8 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
                          && persistentState != null
                          && persistentState.getBoolean(IS_INCOGNITO_SELECTED, false);
@@ -354,7 +369,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/Chr
  import org.chromium.chrome.browser.bookmarks.BookmarkUtils;
  import org.chromium.chrome.browser.contextmenu.ChromeContextMenuItem.Item;
  import org.chromium.chrome.browser.contextmenu.ContextMenuCoordinator.ContextMenuItemType;
-@@ -554,6 +555,8 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
+@@ -553,6 +554,8 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
          mShowEphemeralTabNewLabel = null;
          mCustomActionMap.clear();
  
@@ -363,7 +378,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/Chr
          List<ModelList> groupedItems = new ArrayList<>();
  
          if (mParams.isPage() && shouldShowEmptySpaceContextMenu()) {
-@@ -733,7 +736,7 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
+@@ -732,7 +735,7 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
                  }
              }
              if (areMandatoryFlowsCompleted(getProfile())) {
@@ -603,6 +618,27 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/history/History
          Uri uri = Uri.parse(url);
          assert UrlConstants.HISTORY_HOST.equals(uri.getHost());
  
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/hub/HubProvider.java b/chrome/android/java/src/org/chromium/chrome/browser/hub/HubProvider.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/hub/HubProvider.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/hub/HubProvider.java
+@@ -18,6 +18,7 @@ import org.chromium.base.supplier.NullableObservableSupplier;
+ import org.chromium.base.supplier.OneshotSupplier;
+ import org.chromium.build.annotations.NullMarked;
+ import org.chromium.build.annotations.Nullable;
++import org.chromium.chrome.browser.AlwaysIncognitoLinkInterceptor;
+ import org.chromium.chrome.browser.back_press.BackPressManager;
+ import org.chromium.chrome.browser.profiles.ProfileProvider;
+ import org.chromium.chrome.browser.tab.Tab;
+@@ -110,7 +111,8 @@ public class HubProvider {
+                                     edgeToEdgeSupplier,
+                                     searchActivityClient,
+                                     xrSpaceModeObservableSupplier,
+-                                    defaultPaneId);
++                                    defaultPaneId,
++                                    AlwaysIncognitoLinkInterceptor.isAlwaysIncognito());
+                         });
+ 
+         mOnPaneFocused =
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/native_page/NativePageFactory.java b/chrome/android/java/src/org/chromium/chrome/browser/native_page/NativePageFactory.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/native_page/NativePageFactory.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/native_page/NativePageFactory.java
@@ -1014,7 +1050,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
              modelList.add(buildNewTabItem(isIncognitoForced));
          }
  
-@@ -607,7 +609,8 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
+@@ -610,7 +612,8 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
          boolean isIncognitoForced = IncognitoUtils.isIncognitoModeForced(profile);
          boolean separateIncognitoWindow = IncognitoUtils.shouldOpenIncognitoAsWindow();
          boolean isIncognito = isIncognitoShowing();
@@ -1392,6 +1428,134 @@ diff --git a/chrome/browser/history/history_tab_helper.h b/chrome/browser/histor
    // Returns true if our observed web contents is an eligible tab.
    bool IsEligibleTab(const history::HistoryAddPageArgs& add_page_args) const;
  
+diff --git a/chrome/browser/hub/android/java/src/org/chromium/chrome/browser/hub/DefaultPaneOrderController.java b/chrome/browser/hub/android/java/src/org/chromium/chrome/browser/hub/DefaultPaneOrderController.java
+--- a/chrome/browser/hub/android/java/src/org/chromium/chrome/browser/hub/DefaultPaneOrderController.java
++++ b/chrome/browser/hub/android/java/src/org/chromium/chrome/browser/hub/DefaultPaneOrderController.java
+@@ -11,14 +11,24 @@ import org.chromium.build.annotations.NullMarked;
+ /** The default {@link PaneOrderController}. */
+ @NullMarked
+ public class DefaultPaneOrderController implements PaneOrderController {
++    private final boolean mAlwaysIncognito;
++
++    public DefaultPaneOrderController(boolean alwaysIncognito) {
++        mAlwaysIncognito = alwaysIncognito;
++    }
++
+     @Override
+     public ImmutableSet<Integer> getPaneOrder() {
+-        return ImmutableSet.of(
+-                PaneId.TAB_SWITCHER,
++        ImmutableSet.Builder<Integer> builder = ImmutableSet.builder();
++        if (!mAlwaysIncognito) {
++            builder.add(PaneId.TAB_SWITCHER);
++        }
++        builder.add(
+                 PaneId.INCOGNITO_TAB_SWITCHER,
+                 PaneId.TAB_GROUPS,
+                 PaneId.CROSS_DEVICE,
+                 PaneId.HISTORY,
+                 PaneId.BOOKMARKS);
++        return builder.build();
+     }
+ }
+diff --git a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubCoordinator.java b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubCoordinator.java
+--- a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubCoordinator.java
++++ b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubCoordinator.java
+@@ -109,7 +109,8 @@ public class HubCoordinator implements PaneHubController, BackPressHandler, Pane
+             HubColorMixer hubColorMixer,
+             SettableNullableObservableSupplier<ColorBlendProgress> swipeAnimationProgressSupplier,
+             NonNullObservableSupplier<Boolean> xrSpaceModeObservableSupplier,
+-            @PaneId int defaultPaneId) {
++            @PaneId int defaultPaneId,
++            boolean alwaysIncognito) {
+         mSwipeAnimationProgressSupplier = swipeAnimationProgressSupplier;
+         Context context = containerView.getContext();
+         mBackPressStateChangeCallback = (ignored) -> updateHandleBackPressSupplier();
+@@ -183,7 +184,7 @@ public class HubCoordinator implements PaneHubController, BackPressHandler, Pane
+                         paneManager.getFocusedPaneSupplier(),
+                         hubColorMixer,
+                         /* defaultPaneId= */ defaultPaneId,
+-                        this);
++                        this, alwaysIncognito);
+ 
+         NullableObservableSupplier<View> overlayViewSupplier =
+                 mPaneManager
+diff --git a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubManagerFactory.java b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubManagerFactory.java
+--- a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubManagerFactory.java
++++ b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubManagerFactory.java
+@@ -61,7 +61,8 @@ public class HubManagerFactory {
+             MonotonicObservableSupplier<EdgeToEdgeController> edgeToEdgeSupplier,
+             SearchActivityClient searchActivityClient,
+             NonNullObservableSupplier<Boolean> xrSpaceModeObservableSupplier,
+-            @PaneId int defaultPaneId) {
++            @PaneId int defaultPaneId,
++            boolean alwaysIncognito) {
+         return new HubManagerImpl(
+                 activity,
+                 profileProviderSupplier,
+@@ -77,6 +78,7 @@ public class HubManagerFactory {
+                 edgeToEdgeSupplier,
+                 searchActivityClient,
+                 xrSpaceModeObservableSupplier,
+-                defaultPaneId);
++                defaultPaneId,
++                alwaysIncognito);
+     }
+ }
+diff --git a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubManagerImpl.java b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubManagerImpl.java
+--- a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubManagerImpl.java
++++ b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubManagerImpl.java
+@@ -92,6 +92,7 @@ public class HubManagerImpl implements HubManager, HubController {
+     private boolean mHasSnackbarOverride;
+     private int mStatusIndicatorHeight;
+     private int mAppHeaderHeight;
++    private final boolean mAlwaysIncognito;
+ 
+     /** See {@link HubManagerFactory#createHubManager}. */
+     public HubManagerImpl(
+@@ -109,7 +110,9 @@ public class HubManagerImpl implements HubManager, HubController {
+             MonotonicObservableSupplier<EdgeToEdgeController> edgeToEdgeSupplier,
+             SearchActivityClient searchActivityClient,
+             NonNullObservableSupplier<Boolean> xrSpaceModeObservableSupplier,
+-            @PaneId int defaultPaneId) {
++            @PaneId int defaultPaneId,
++            boolean alwaysIncognito) {
++        mAlwaysIncognito = alwaysIncognito;
+         mActivity = activity;
+         mProfileProviderSupplier = profileProviderSupplier;
+         mPaneManager = new PaneManagerImpl(paneListBuilder, mHubVisibilitySupplier, defaultPaneId);
+@@ -304,7 +307,8 @@ public class HubManagerImpl implements HubManager, HubController {
+                         mHubColorMixer,
+                         mSwipeAnimationProgressSupplier,
+                         mXrSpaceModeObservableSupplier,
+-                        mDefaultPaneId);
++                        mDefaultPaneId,
++                        mAlwaysIncognito);
+         mBackPressManager.addHandler(mHubCoordinator, BackPressHandler.Type.HUB);
+         Pane pane = mPaneManager.getFocusedPaneSupplier().get();
+         attachPaneDependencies(pane);
+diff --git a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubPaneHostCoordinator.java b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubPaneHostCoordinator.java
+--- a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubPaneHostCoordinator.java
++++ b/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/HubPaneHostCoordinator.java
+@@ -37,7 +37,8 @@ public class HubPaneHostCoordinator {
+             MonotonicObservableSupplier<Pane> paneSupplier,
+             HubColorMixer hubColorMixer,
+             @PaneId int defaultPaneId,
+-            @Nullable PaneViewProvider paneViewProvider) {
++            @Nullable PaneViewProvider paneViewProvider,
++            boolean alwaysIncognito) {
+         mHubPaneHostView = hubPaneHostView;
+         mModel =
+                 new PropertyModel.Builder(HubPaneHostProperties.ALL_KEYS)
+@@ -47,7 +48,7 @@ public class HubPaneHostCoordinator {
+         PropertyModelChangeProcessor.create(mModel, hubPaneHostView, HubPaneHostViewBinder::bind);
+         mMediator =
+                 new HubPaneHostMediator(
+-                        mModel, paneSupplier, new DefaultPaneOrderController(), defaultPaneId);
++                        mModel, paneSupplier, new DefaultPaneOrderController(alwaysIncognito), defaultPaneId);
+     }
+ 
+     /** Cleans up observers and resources. */
 diff --git a/chrome/browser/offline_pages/android/offline_page_bridge.cc b/chrome/browser/offline_pages/android/offline_page_bridge.cc
 --- a/chrome/browser/offline_pages/android/offline_page_bridge.cc
 +++ b/chrome/browser/offline_pages/android/offline_page_bridge.cc

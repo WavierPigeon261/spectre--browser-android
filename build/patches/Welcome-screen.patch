@@ -15,7 +15,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/firstrun/FirstRunActivity.java    |  47 +--
  .../firstrun/FirstRunFlowSequencer.java       |  61 +---
  .../browser/firstrun/FirstRunFragment.java    |   3 +
- .../browser/firstrun/FirstRunUtils.java       |   2 +-
+ .../browser/firstrun/FirstRunUtils.java       |   1 +
  .../firstrun/ToSAndUMAFirstRunFragment.java   | 321 +++++++++++++++++
  .../firstrun/TosAndUmaFragmentView.java       | 336 ++++++++++++++++++
  .../signin/AppRestrictionSupplier.java        |   4 +
@@ -23,7 +23,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...creenSigninAndHistorySyncActivityBase.java |   6 +-
  .../browser/locale/LocaleManagerDelegate.java |   5 +-
  .../Welcome-screen.grdp                       |  27 ++
- 17 files changed, 926 insertions(+), 91 deletions(-)
+ 17 files changed, 926 insertions(+), 90 deletions(-)
  create mode 100644 chrome/android/java/res/layout/fre_tosanduma.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/firstrun/TosAndUmaFragmentView.java
@@ -532,15 +532,14 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstR
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunUtils.java b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunUtils.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunUtils.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunUtils.java
-@@ -88,7 +88,7 @@ public class FirstRunUtils {
+@@ -87,6 +87,7 @@ public class FirstRunUtils {
+      *     collect stats.
       */
      static void acceptTermsOfService(boolean allowMetricsAndCrashUploading) {
++        allowMetricsAndCrashUploading = false;
          UmaSessionStats.changeMetricsReportingState(
--                allowMetricsAndCrashUploading, ChangeMetricsReportingStateCalledFrom.UI_FIRST_RUN);
-+                false, ChangeMetricsReportingStateCalledFrom.UI_FIRST_RUN);
+                 allowMetricsAndCrashUploading, ChangeMetricsReportingStateCalledFrom.UI_FIRST_RUN);
          setEulaAccepted();
-     }
- 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/ToSAndUMAFirstRunFragment.java
 new file mode 100644
 --- /dev/null

@@ -7,12 +7,12 @@ Corrected Exit functionality
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/android/java/res/values/ids.xml        |  1 +
- .../chrome/browser/ChromeTabbedActivity.java  |  4 ++++
- .../chrome/browser/app/ChromeActivity.java    |  6 ++++++
+ .../chrome/browser/ChromeTabbedActivity.java  |  4 +++
+ .../chrome/browser/app/ChromeActivity.java    |  6 +++++
  .../init/ChromeLifetimeController.java        |  2 ++
- .../TabbedAppMenuPropertiesDelegate.java      | 20 +++++++++++++++++++
+ .../TabbedAppMenuPropertiesDelegate.java      | 26 +++++++++++++++++++
  .../strings/android_chrome_strings.grd        |  3 +++
- 6 files changed, 36 insertions(+)
+ 6 files changed, 42 insertions(+)
 
 diff --git a/chrome/android/java/res/values/ids.xml b/chrome/android/java/res/values/ids.xml
 --- a/chrome/android/java/res/values/ids.xml
@@ -91,36 +91,42 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/init/ChromeLife
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedAppMenuPropertiesDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedAppMenuPropertiesDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedAppMenuPropertiesDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedAppMenuPropertiesDelegate.java
-@@ -577,6 +577,16 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
+@@ -577,6 +577,19 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
              modelList.add(buildContentFilterHelpCenterMenuItem(currentTab));
          }
  
 +        modelList.add(
 +                new MVCListAdapter.ListItem(
 +                        AppMenuHandler.AppMenuItemType.STANDARD,
-+                        buildModelForStandardMenuItem(
++                        AppMenuItemUtils.buildModelForStandardMenuItem(
++                                mContext,
++                                getAppMenuItemTheme(),
 +                                R.id.exit_id,
 +                                R.string.menu_exit,
 +                                shouldShowIconBeforeItem()
 +                                        ? R.drawable.ic_exit_to_app_white_24dp
-+                                        : 0)));
++                                        : 0,
++                                isMenuIconAtStart())));
 +
          // Default browser promo
          if (shouldShowDefaultBrowserPromo()) {
              RecordUserAction.record("MobileMenuDefaultBrowserPromoShown");
-@@ -763,6 +773,16 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
+@@ -763,6 +776,19 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
              modelList.add(buildContentFilterHelpCenterMenuItem(currentTab));
          }
  
 +        modelList.add(
 +                new MVCListAdapter.ListItem(
 +                        AppMenuHandler.AppMenuItemType.STANDARD,
-+                        buildModelForStandardMenuItem(
++                        AppMenuItemUtils.buildModelForStandardMenuItem(
++                                mContext,
++                                getAppMenuItemTheme(),
 +                                R.id.exit_id,
 +                                R.string.menu_exit,
 +                                shouldShowIconBeforeItem()
 +                                        ? R.drawable.ic_exit_to_app_white_24dp
-+                                        : 0)));
++                                        : 0,
++                                isMenuIconAtStart())));
 +
          // Default browser promo menu item (entry point).
          if (shouldShowDefaultBrowserPromo()) {

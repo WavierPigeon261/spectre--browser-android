@@ -11,8 +11,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  third_party/blink/public/platform/web_runtime_features.h  | 1 +
  .../renderer/modules/vibration/vibration_controller.cc    | 4 ++++
  .../renderer/platform/exported/web_runtime_features.cc    | 4 ++++
- .../renderer/platform/runtime_enabled_features.json5      | 4 ++++
- 8 files changed, 31 insertions(+)
+ .../renderer/platform/runtime_enabled_features.json5      | 5 +++++
+ 8 files changed, 32 insertions(+)
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Add-flag-to-disable-vibration.inc
  create mode 100644 cromite_flags/content/public/common/content_features_cc/Add-flag-to-disable-vibration.inc
  create mode 100644 cromite_flags/content/public/common/content_features_h/Add-flag-to-disable-vibration.inc
@@ -109,13 +109,14 @@ diff --git a/third_party/blink/renderer/platform/exported/web_runtime_features.c
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -1274,6 +1274,10 @@
+@@ -1274,6 +1274,11 @@
      {
        name: "CompositingDecisionAtAnimationPhaseBoundaries"
      },
 +    {
 +      name: "Vibration",
 +      status: "stable",
++      base_feature: "none",
 +    },
      {
        name: "CompositionForegroundMarkers",

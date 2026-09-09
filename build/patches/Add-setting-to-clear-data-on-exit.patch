@@ -950,7 +950,7 @@ diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.html b/
 diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/chrome/browser/resources/settings/privacy_page/privacy_page.ts
 --- a/chrome/browser/resources/settings/privacy_page/privacy_page.ts
 +++ b/chrome/browser/resources/settings/privacy_page/privacy_page.ts
-@@ -80,6 +80,7 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
+@@ -81,6 +81,7 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
        },
  
        showClearBrowsingDataDialog_: Boolean,
@@ -958,7 +958,7 @@ diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/ch
        showPrivacyGuideDialog_: Boolean,
  
        referersPolicyOptions_: {
-@@ -109,6 +110,7 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
+@@ -110,6 +111,7 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
  
    declare private historyExpireDaysThresholdOptions_: object[];
    declare private showClearBrowsingDataDialog_: boolean;
@@ -966,7 +966,7 @@ diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/ch
    declare private showPrivacyGuideDialog_: boolean;
    declare private referersPolicyOptions_: object[];
    declare private dbdDeletionConfirmationToastLabel_: string;
-@@ -122,6 +124,8 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
+@@ -123,6 +125,8 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
  
      this.showClearBrowsingDataDialog_ =
          Router.getInstance().getCurrentRoute() === routes.CLEAR_BROWSER_DATA;
@@ -975,7 +975,7 @@ diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/ch
      this.showPrivacyGuideDialog_ =
          Router.getInstance().getCurrentRoute() === routes.PRIVACY_GUIDE &&
          this.isPrivacyGuideAvailable;
-@@ -133,6 +137,12 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
+@@ -134,6 +138,12 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
      Router.getInstance().navigateTo(routes.CLEAR_BROWSER_DATA);
    }
  

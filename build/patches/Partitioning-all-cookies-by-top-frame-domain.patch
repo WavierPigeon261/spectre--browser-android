@@ -202,7 +202,7 @@ new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/components/content_settings/core/common/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 @@ -0,0 +1 @@
-+SET_CROMITE_FEATURE_DISABLED(kUserBypassUI);
++// empty file
 diff --git a/cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc b/cromite_flags/components/permissions/features_cc/Partitioning-all-cookies-by-top-frame-domain.inc
 new file mode 100644
 --- /dev/null
@@ -361,7 +361,7 @@ diff --git a/net/url_request/url_request_http_job.cc b/net/url_request/url_reque
  }
  
  bool URLRequestHttpJob::NeedsRetryWithStorageAccess() {
-+  return false;  // disable storage access headers
++  if ((true)) return false;  // disable storage access headers
 +
    // The request is retryable if the Origin header was provided and matches the
    // `Activate-Storage-Access` response header, the request may include cookies,

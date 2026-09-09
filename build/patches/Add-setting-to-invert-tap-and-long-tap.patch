@@ -139,7 +139,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/Chr
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
-@@ -648,6 +648,9 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
+@@ -647,6 +647,9 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
          }
          if (mParams.isAnchor()) {
              ModelList linkGroup = new ModelList();
@@ -149,7 +149,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/Chr
              if (areMandatoryFlowsCompleted(getProfile())
                      && !isEmptyUrl(mParams.getUrl())
                      && UrlUtilities.isAcceptedScheme(mParams.getUrl())) {
-@@ -1452,6 +1455,8 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
+@@ -1440,6 +1443,8 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
                  title = mParams.getLinkText();
              }
              mItemDelegate.onReadLater(mParams.getUrl(), title);

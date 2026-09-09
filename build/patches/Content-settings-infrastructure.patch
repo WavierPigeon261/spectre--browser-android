@@ -1395,7 +1395,7 @@ new file mode 100644
 +        android:paddingEnd="16dp"
 +        android:orientation="vertical" >
 +
-+        <org.chromium.ui.widget.ChromeImageView
++        <ImageView
 +            android:id="@android:id/icon"
 +            android:layout_width="wrap_content"
 +            android:layout_height="wrap_content"
@@ -1641,7 +1641,7 @@ new file mode 100644
 +        return mAllowException;
 +    }
 +
-+    public WebsitePermissionsFetcher.WebsitePermissionsType getPermissionsType() {
++    public @WebsitePermissionsFetcher.WebsitePermissionsType int getPermissionsType() {
 +        return WebsitePermissionsFetcher.WebsitePermissionsType.CONTENT_SETTING_EXCEPTION;
 +    }
 +
@@ -1895,11 +1895,11 @@ new file mode 100644
 +        return ContentSettingsType.DEFAULT; // Conversion unavailable.
 +    }
 +
-+    public static WebsitePermissionsFetcher.WebsitePermissionsType getPermissionsType(
++    public static @WebsitePermissionsFetcher.WebsitePermissionsType int getPermissionsType(
 +            @ContentSettingsType.EnumType int type) {
 +        BromiteCustomContentSetting cs = getContentSetting(type);
 +        if (cs != null) return cs.getPermissionsType();
-+        return null;
++        return WebsitePermissionsFetcher.WebsitePermissionsType.INVALID;
 +    }
 +
 +    public static ContentSettingsResources.ResourceItem getResourceItem(@ContentSettingsType.EnumType int type) {

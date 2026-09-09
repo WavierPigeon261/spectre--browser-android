@@ -46,9 +46,10 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../endpoint_fetcher/endpoint_fetcher.cc      | 127 ++++++--
  .../endpoint_fetcher/endpoint_fetcher.h       |  28 +-
  components/manta/base_provider.cc             |   4 +-
+ .../notebooks_network_service_impl.cc         |   2 +-
  .../Bromite-auto-updater.inc                  |   3 +
  .../Bromite-auto-updater.inc                  |   1 +
- 40 files changed, 1150 insertions(+), 104 deletions(-)
+ 41 files changed, 1151 insertions(+), 105 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/CromiteUpdateStatusProvider.java
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/omaha/inline/BromiteInlineUpdateController.java
  create mode 100644 chrome/browser/endpoint_fetcher/BUILD.gn
@@ -379,7 +380,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/omaha/UpdateMen
 +                mMenuUiState.itemState.titleColorId = R.color.default_text_color_blue_dark;
 +                mMenuUiState.itemState.summary =
 +                        resources.getString(R.string.menu_inline_update_ready_summary);
-+                mMenuUiState.itemState.icon = R.drawable.infobar_chrome;
++                mMenuUiState.itemState.icon = R.drawable.chrome_logo_blue;
 +                mMenuUiState.itemState.iconTintId = R.color.default_icon_color_blue_light;
 +                mMenuUiState.itemState.enabled = true;
 +                break;
@@ -2055,6 +2056,18 @@ diff --git a/components/manta/base_provider.cc b/components/manta/base_provider.
  }
  
  }  // namespace manta
+diff --git a/components/notebooks/internal/notebooks_network_service_impl.cc b/components/notebooks/internal/notebooks_network_service_impl.cc
+--- a/components/notebooks/internal/notebooks_network_service_impl.cc
++++ b/components/notebooks/internal/notebooks_network_service_impl.cc
+@@ -235,7 +235,7 @@ NotebooksNetworkServiceImpl::CreateEndpointFetcher(
+           .SetUrl(url)
+           .SetOAuthConsumerId(signin::OAuthConsumerId::kNotebooksService)
+           .SetPostData(post_data)
+-          .Build());
++          .Build(), annotation_tag);
+ }
+ 
+ GURL NotebooksNetworkServiceImpl::ConstructServiceURL(std::string_view path) {
 diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Bromite-auto-updater.inc
 new file mode 100644
 --- /dev/null

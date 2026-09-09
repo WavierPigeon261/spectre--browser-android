@@ -25,7 +25,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../feedback/ChromeFeedbackCollector.java     |   1 +
  .../feedback/SimplifiedNtpFeedbackSource.java |  38 +++
  .../identity_disc/IdentityDiscController.java |   2 +-
- .../native_page/NativePageFactory.java        |  16 +-
+ .../native_page/NativePageFactory.java        |  17 +-
  .../NativePageNavigationDelegateImpl.java     |   2 +-
  .../chrome/browser/ntp/NewTabPage.java        |   7 +-
  .../browser/ntp/NewTabPageCoordinator.java    |  49 ++-
@@ -52,7 +52,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Restore-Simplified-NTP-launch.inc         |  12 +
  .../Restore-Simplified-NTP-launch.inc         |   3 +
  .../Restore-Simplified-NTP-launch.inc         |   1 +
- 46 files changed, 654 insertions(+), 68 deletions(-)
+ 46 files changed, 655 insertions(+), 68 deletions(-)
  create mode 100644 chrome/android/java/res/drawable-hdpi/ic_most_visited_placeholder.png
  create mode 100644 chrome/android/java/res/drawable-mdpi/ic_most_visited_placeholder.png
  create mode 100644 chrome/android/java/res/drawable-xhdpi/ic_most_visited_placeholder.png
@@ -589,7 +589,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDelegateFactory.java b/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDelegateFactory.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDelegateFactory.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDelegateFactory.java
-@@ -14,6 +14,7 @@ import org.chromium.build.annotations.Nullable;
+@@ -12,6 +12,7 @@ import org.chromium.build.annotations.Nullable;
  import org.chromium.chrome.browser.app.ChromeActivity;
  import org.chromium.chrome.browser.app.tab_activity_glue.ActivityTabWebContentsDelegateAndroid;
  import org.chromium.chrome.browser.back_press.BackPressManager;
@@ -597,7 +597,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDe
  import org.chromium.chrome.browser.browser_controls.BrowserControlsStateProvider;
  import org.chromium.chrome.browser.compositor.CompositorViewHolder;
  import org.chromium.chrome.browser.contextmenu.ChromeContextMenuPopulator;
-@@ -57,6 +58,8 @@ import org.chromium.ui.modaldialog.ModalDialogManager;
+@@ -55,6 +56,8 @@ import org.chromium.ui.modaldialog.ModalDialogManager;
  import java.util.List;
  import java.util.function.Supplier;
  
@@ -606,7 +606,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDe
  /**
   * {@link TabDelegateFactory} class to be used in all {@link Tab} instances owned by a {@link
   * ChromeTabbedActivity}.
-@@ -94,6 +97,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
+@@ -92,6 +95,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
      private @Nullable NativePageFactory mNativePageFactory;
      private final BackPressManager mBackPressManager;
      private final RecentlyClosedEntriesManager mRecentlyClosedEntriesManager;
@@ -614,7 +614,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDe
      private final Supplier<Integer> mLeftSideUiWidthSupplier;
  
      public TabbedModeTabDelegateFactory(
-@@ -127,6 +131,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
+@@ -125,6 +129,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
              @Nullable ExclusiveAccessManager exclusiveAccessManager,
              BackPressManager backPressManager,
              RecentlyClosedEntriesManager recentlyClosedEntriesManager,
@@ -622,7 +622,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDe
              Supplier<Integer> leftSideUiWidthSupplier) {
          mActivity = activity;
          mAppBrowserControlsVisibilityDelegate = appBrowserControlsVisibilityDelegate;
-@@ -158,6 +163,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
+@@ -156,6 +161,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
          mExclusiveAccessManager = exclusiveAccessManager;
          mBackPressManager = backPressManager;
          mRecentlyClosedEntriesManager = recentlyClosedEntriesManager;
@@ -630,7 +630,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDe
          mLeftSideUiWidthSupplier = leftSideUiWidthSupplier;
      }
  
-@@ -234,7 +240,8 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
+@@ -232,7 +238,8 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
                              mSideUiStateProviderSupplier,
                              mStartupMetricsTracker,
                              mBackPressManager,
@@ -717,7 +717,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/native_page/Nat
  import org.chromium.chrome.browser.bricks.BricksPage;
  import org.chromium.chrome.browser.browser_controls.BrowserControlsMarginAdapter;
  import org.chromium.chrome.browser.browser_controls.BrowserControlsStateProvider;
-@@ -137,7 +138,8 @@ public class NativePageFactory {
+@@ -109,6 +110,7 @@ public class NativePageFactory {
+     private final OneshotSupplier<SideUiStateProvider> mSideUiStateProviderSupplier;
+     private final StartupMetricsTracker mStartupMetricsTracker;
+     private @Nullable NewTabPageCreationTracker mNewTabPageCreationTracker;
++    private final MonotonicObservableSupplier<BookmarkManagerOpener> mBookmarkManagerOpenerSupplier;
+ 
+     private @Nullable NativePageBuilder mNativePageBuilder;
+     private static @Nullable NativePage sTestPage;
+@@ -137,7 +139,8 @@ public class NativePageFactory {
              OneshotSupplier<SideUiStateProvider> sideUiStateProviderSupplier,
              StartupMetricsTracker startupMetricsTracker,
              BackPressManager backPressManager,
@@ -727,7 +735,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/native_page/Nat
          mActivity = activity;
          mBottomSheetController = sheetController;
          mBrowserControlsManager = browserControlsManager;
-@@ -159,6 +161,7 @@ public class NativePageFactory {
+@@ -159,6 +162,7 @@ public class NativePageFactory {
          mStartupMetricsTracker = startupMetricsTracker;
          mBackPressManager = backPressManager;
          mRecentlyClosedEntriesManager = recentlyClosedEntriesManager;
@@ -735,7 +743,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/native_page/Nat
      }
  
      private NativePageBuilder getBuilder() {
-@@ -186,7 +189,8 @@ public class NativePageFactory {
+@@ -186,7 +190,8 @@ public class NativePageFactory {
                              mSideUiStateProviderSupplier,
                              mStartupMetricsTracker,
                              mBackPressManager,
@@ -745,7 +753,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/native_page/Nat
          }
          return mNativePageBuilder;
      }
-@@ -224,6 +228,7 @@ public class NativePageFactory {
+@@ -224,6 +229,7 @@ public class NativePageFactory {
          private final StartupMetricsTracker mStartupMetricsTracker;
          private final BackPressManager mBackPressManager;
          private final RecentlyClosedEntriesManager mRecentlyClosedEntriesManager;
@@ -753,7 +761,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/native_page/Nat
  
          public NativePageBuilder(
                  ChromeActivity activity,
-@@ -247,7 +252,8 @@ public class NativePageFactory {
+@@ -247,7 +253,8 @@ public class NativePageFactory {
                  OneshotSupplier<SideUiStateProvider> sideUiStateProviderSupplier,
                  StartupMetricsTracker startupMetricsTracker,
                  BackPressManager backPressManager,
@@ -763,7 +771,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/native_page/Nat
              mActivity = activity;
              mNewTabPageCreationTracker = newTabPageCreationTracker;
              mBottomSheetController = sheetController;
-@@ -270,6 +276,7 @@ public class NativePageFactory {
+@@ -270,6 +277,7 @@ public class NativePageFactory {
              mStartupMetricsTracker = startupMetricsTracker;
              mBackPressManager = backPressManager;
              mRecentlyClosedEntriesManager = recentlyClosedEntriesManager;
@@ -771,7 +779,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/native_page/Nat
          }
  
          protected NativePage buildNewTabPage(Tab tab, String url) {
-@@ -310,7 +317,8 @@ public class NativePageFactory {
+@@ -310,7 +318,8 @@ public class NativePageFactory {
                      mTopInsetProvider,
                      mSideUiStateProviderSupplier,
                      mStartupMetricsTracker,

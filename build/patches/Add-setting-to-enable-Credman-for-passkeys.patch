@@ -34,7 +34,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
  import android.os.Bundle;
  import android.text.SpannableString;
  import android.text.style.ForegroundColorSpan;
-@@ -68,6 +69,10 @@ import org.chromium.chrome.browser.ui.messages.snackbar.INeedSnackbarManager;
+@@ -69,6 +70,10 @@ import org.chromium.chrome.browser.ui.messages.snackbar.INeedSnackbarManager;
  import org.chromium.chrome.browser.ui.messages.snackbar.Snackbar;
  import org.chromium.chrome.browser.lifetime.ApplicationLifetime;
  
@@ -45,7 +45,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
  /**
   * The "Passwords" screen in Settings, which allows the user to enable or disable password saving,
   * to view saved passwords (just the username and URL), and to delete saved passwords.
-@@ -334,6 +339,7 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
+@@ -338,6 +343,7 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
          createSavePasswordsSwitch();
          createAutoSignInCheckbox();
          createEnableAndroidAutofillSwitch();
@@ -53,7 +53,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/password_manage
  
          PasswordManagerHandlerProvider.getForProfile(getProfile())
                  .getPasswordManagerHandler()
-@@ -687,6 +693,27 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
+@@ -691,6 +697,27 @@ public class PasswordSettings extends ChromeBaseSettingsFragment
                  getPrefService().getBoolean(Pref.CREDENTIALS_ENABLE_AUTOSIGNIN));
      }
  

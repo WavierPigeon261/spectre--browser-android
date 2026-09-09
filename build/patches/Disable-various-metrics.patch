@@ -15,12 +15,13 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/chrome_content_browser_client.cc |  1 -
  ...ntent_browser_client_navigation_throttles.cc | 13 -------------
  .../chrome_metrics_services_manager_client.cc   |  4 ++++
+ .../ui/search/most_visited_metrics_logger.cc    |  6 +-----
  components/ntp_tiles/BUILD.gn                   |  3 ---
  .../ntp_tiles/custom_links_manager_impl.cc      |  1 -
  components/ntp_tiles/most_visited_sites.cc      |  4 ----
  .../site_data/leveldb_site_data_store.cc        |  2 +-
  services/metrics/public/cpp/ukm_recorder.cc     |  1 +
- 11 files changed, 8 insertions(+), 42 deletions(-)
+ 12 files changed, 9 insertions(+), 47 deletions(-)
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunActivityBase.java b/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunActivityBase.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/firstrun/FirstRunActivityBase.java
@@ -163,6 +164,36 @@ diff --git a/chrome/browser/metrics/chrome_metrics_services_manager_client.cc b/
  }  // namespace internal
  }  // namespace metrics
  
+diff --git a/chrome/browser/ui/search/most_visited_metrics_logger.cc b/chrome/browser/ui/search/most_visited_metrics_logger.cc
+--- a/chrome/browser/ui/search/most_visited_metrics_logger.cc
++++ b/chrome/browser/ui/search/most_visited_metrics_logger.cc
+@@ -42,18 +42,15 @@ void MostVisitedMetricsLogger::LogMostVisitedLoaded(
+     return;
+   }
+ 
+-  int tiles_count = 0;
++  [[maybe_unused]] int tiles_count = 0;
+   for (const std::optional<ntp_tiles::NTPTileImpression>& impression :
+        logged_impressions_) {
+     if (!impression.has_value()) {
+       break;
+     }
+-    ntp_tiles::metrics::RecordTileImpression(*impression, histogram_prefix_);
+     ++tiles_count;
+   }
+ 
+-  ntp_tiles::metrics::RecordPageImpression(tiles_count, histogram_prefix_);
+-
+   if (is_expanded.has_value()) {
+     base::UmaHistogramBoolean(
+         base::StrCat({histogram_prefix_, ".MostVisited.IsExpandedOnLoad"}),
+@@ -65,6 +62,5 @@ void MostVisitedMetricsLogger::LogMostVisitedLoaded(
+ 
+ void MostVisitedMetricsLogger::LogMostVisitedNavigation(
+     const ntp_tiles::NTPTileImpression& impression) {
+-  ntp_tiles::metrics::RecordTileClick(impression, histogram_prefix_);
+   base::RecordAction(base::UserMetricsAction("MostVisited_Clicked"));
+ }
 diff --git a/components/ntp_tiles/BUILD.gn b/components/ntp_tiles/BUILD.gn
 --- a/components/ntp_tiles/BUILD.gn
 +++ b/components/ntp_tiles/BUILD.gn

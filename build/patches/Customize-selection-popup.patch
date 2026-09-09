@@ -9,22 +9,24 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  .../SamsungSelectionActionMenuDelegate.java   |  7 +-
  .../browser/ChromeActionModeHandler.java      |  6 +-
- .../chrome/browser/ChromeTabbedActivity.java  | 19 ++++-
+ .../chrome/browser/ChromeTabbedActivity.java  | 19 +++-
  .../chrome/browser/WebSearchDelegate.java     |  8 +-
  ...ActivityTabWebContentsDelegateAndroid.java | 10 ++-
  .../compositor/layouts/LayoutManagerImpl.java |  9 +-
+ .../TextSelectionActionMenuDelegate.java      |  8 +-
  .../tab/TabContextMenuItemDelegate.java       |  7 +-
  .../chrome/browser/ui/RootUiCoordinator.java  |  1 +
- .../Customize-selection-popup.grdp            | 34 ++++++++
+ .../Customize-selection-popup.grdp            | 34 +++++++
  .../AutofillSelectionMenuItemHelper.java      |  4 +-
- .../res/xml/accessibility_preferences.xml     | 24 ++++++
- .../selection/SelectActionMenuHelper.java     | 28 +++----
- .../SelectionPopupControllerImpl.java         |  2 +-
+ .../res/xml/accessibility_preferences.xml     | 24 +++++
+ .../selection/SelectActionMenuHelper.java     | 28 +++---
+ .../SelectionPopupControllerImpl.java         |  4 +-
  .../selection/SmartSelectionClient.java       |  4 +
  .../browser/PendingSelectionMenu.java         |  8 +-
- .../browser/SelectionMenuItem.java            | 83 ++++++++++++-------
- .../SelectionActionMenuDelegate.java          | 19 ++++-
- 17 files changed, 202 insertions(+), 71 deletions(-)
+ .../browser/SelectionMenuItem.java            | 88 ++++++++++++-------
+ .../SelectionActionMenuDelegate.java          | 19 +++-
+ .../SelectionDropdownMenuDelegate.java        |  2 +-
+ 19 files changed, 212 insertions(+), 78 deletions(-)
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Customize-selection-popup.grdp
 
 diff --git a/android_webview/java/src/org/chromium/android_webview/selection/SamsungSelectionActionMenuDelegate.java b/android_webview/java/src/org/chromium/android_webview/selection/SamsungSelectionActionMenuDelegate.java
@@ -194,6 +196,39 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/layo
              tabCreated(
                      tabId,
                      getTabModelSelector().getCurrentTabId(),
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/selection/TextSelectionActionMenuDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/selection/TextSelectionActionMenuDelegate.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/selection/TextSelectionActionMenuDelegate.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/selection/TextSelectionActionMenuDelegate.java
+@@ -91,7 +91,7 @@ public class TextSelectionActionMenuDelegate implements SelectionActionMenuDeleg
+                             .setGroupId(R.id.select_action_menu_delegate_items)
+                             .setOrderAndCategory(
+                                     SelectionMenuItem.ItemOrder.OPEN_IN_READING_MODE,
+-                                    SelectionMenuItem.ItemGroupOffset.DEFAULT_ITEMS)
++                                    SelectionMenuItem.ItemGroupOffset.DEFAULT_ITEMS())
+                             .setShowAsActionFlags(
+                                     MenuItem.SHOW_AS_ACTION_NEVER
+                                             | MenuItem.SHOW_AS_ACTION_WITH_TEXT)
+@@ -123,7 +123,7 @@ public class TextSelectionActionMenuDelegate implements SelectionActionMenuDeleg
+                             .setGroupId(org.chromium.content.R.id.select_action_menu_delegate_items)
+                             .setOrderAndCategory(
+                                     SelectionMenuItem.ItemOrder.COPY_LINK_TO_HIGHLIGHT,
+-                                    ItemGroupOffset.DEFAULT_ITEMS)
++                                    ItemGroupOffset.DEFAULT_ITEMS())
+                             .build();
+ 
+             items.add(copyLinkItem);
+@@ -278,9 +278,9 @@ public class TextSelectionActionMenuDelegate implements SelectionActionMenuDeleg
+         // Defaults to the secondary assist section; the field trial can opt into the assist
+         // section instead.
+         if (ASK_GEMINI_POSITION_ASSIST.equals(position)) {
+-            builder.setOrderAndCategory(0, ItemGroupOffset.ASSIST_ITEMS);
++            builder.setOrderAndCategory(0, ItemGroupOffset.ASSIST_ITEMS());
+         } else {
+-            builder.setOrderAndCategory(0, ItemGroupOffset.SECONDARY_ASSIST_ITEMS);
++            builder.setOrderAndCategory(0, ItemGroupOffset.SECONDARY_ASSIST_ITEMS());
+         }
+     }
+ 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tab/TabContextMenuItemDelegate.java
@@ -430,6 +465,15 @@ diff --git a/content/public/android/java/src/org/chromium/content/browser/select
 diff --git a/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java b/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java
 --- a/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java
 +++ b/content/public/android/java/src/org/chromium/content/browser/selection/SelectionPopupControllerImpl.java
+@@ -865,7 +865,7 @@ public class SelectionPopupControllerImpl extends ActionModeCallbackHelper
+         if (hasOrder(item)) {
+             return item.model.get(ListMenuItemProperties.ORDER);
+         }
+-        return ItemGroupOffset.ALTERNATIVE_ITEMS;
++        return ItemGroupOffset.ALTERNATIVE_ITEMS();
+     }
+ 
+     // HideablePopup implementation
 @@ -1254,7 +1254,7 @@ public class SelectionPopupControllerImpl extends ActionModeCallbackHelper
  
      private boolean handleAssistMenuItemClick(int order) {
@@ -492,7 +536,7 @@ diff --git a/content/public/android/java/src/org/chromium/content_public/browser
  import org.chromium.build.annotations.NullMarked;
  import org.chromium.build.annotations.Nullable;
  
-@@ -34,19 +35,39 @@ public final class SelectionMenuItem implements Comparable<SelectionMenuItem> {
+@@ -34,26 +35,49 @@ public final class SelectionMenuItem implements Comparable<SelectionMenuItem> {
       * less than SECONDARY_ASSIST_ITEMS will appear in the default items section. Each section is
       * separated by a divider in dropdown menus.
       */
@@ -514,6 +558,7 @@ diff --git a/content/public/android/java/src/org/chromium/content_public/browser
 +        static int CHROMIUM_DEFAULT_ITEMS = 2;
 +        static int CHROMIUM_SECONDARY_ASSIST_ITEMS = 3;
 +        static int CHROMIUM_TEXT_PROCESSING_ITEMS = 4;
++        static int CHROMIUM_ALTERNATIVE_ITEMS = Menu.CATEGORY_ALTERNATIVE;
 +
 +        static int CROMITE_DEFAULT_ITEMS = 1;
 +        static int CROMITE_ASSIST_ITEMS = 2;
@@ -545,7 +590,17 @@ diff --git a/content/public/android/java/src/org/chromium/content_public/browser
  
          /**
           * Additional items providing alternative actions, such as custom actions added by
-@@ -240,28 +261,28 @@ public final class SelectionMenuItem implements Comparable<SelectionMenuItem> {
+          * embedders. Historically used as a fallback category when explicit orders are not
+          * provided.
+          */
+-        int ALTERNATIVE_ITEMS = Menu.CATEGORY_ALTERNATIVE;
++        public static int ALTERNATIVE_ITEMS() {
++            return CHROMIUM_ALTERNATIVE_ITEMS;
++        }
+     }
+ 
+     /** Relative order constants within ItemGroupOffset categories. */
+@@ -240,28 +264,28 @@ public final class SelectionMenuItem implements Comparable<SelectionMenuItem> {
           * @param order the order, must be >= 0.
           * @param category the section of the menu in which this item should appear.
           */
@@ -585,7 +640,7 @@ diff --git a/content/public/android/java/src/org/chromium/content_public/browser
 +                                order + category,
 +                                ItemGroupOffset.TEXT_PROCESSING_ITEMS() - 1);
 +            } else if (category == ItemGroupOffset.TEXT_PROCESSING_ITEMS()) {
-+                mOrder = Math.min(order + category, ItemGroupOffset.ALTERNATIVE_ITEMS - 1);
++                mOrder = Math.min(order + category, ItemGroupOffset.ALTERNATIVE_ITEMS() - 1);
 +            } else {
 +                mOrder = order + category;
 +            }
@@ -633,4 +688,16 @@ diff --git a/content/public/android/java/src/org/chromium/content_public/browser
          };
      }
  
+diff --git a/content/public/android/java/src/org/chromium/content_public/browser/selection/SelectionDropdownMenuDelegate.java b/content/public/android/java/src/org/chromium/content_public/browser/selection/SelectionDropdownMenuDelegate.java
+--- a/content/public/android/java/src/org/chromium/content_public/browser/selection/SelectionDropdownMenuDelegate.java
++++ b/content/public/android/java/src/org/chromium/content_public/browser/selection/SelectionDropdownMenuDelegate.java
+@@ -79,7 +79,7 @@ public interface SelectionDropdownMenuDelegate {
+                         PropertyModel.getFromModelOrDefault(
+                                 itemModel,
+                                 ListMenuItemProperties.ORDER,
+-                                ItemGroupOffset.ALTERNATIVE_ITEMS))
++                                ItemGroupOffset.ALTERNATIVE_ITEMS()))
+                 .setIntent(
+                         PropertyModel.getFromModelOrDefault(
+                                 itemModel, ListMenuItemProperties.INTENT, null))
 --

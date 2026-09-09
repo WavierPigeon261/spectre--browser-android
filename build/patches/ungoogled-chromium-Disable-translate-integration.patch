@@ -9,7 +9,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  chrome/browser/BUILD.gn                       |   1 +
  chrome/browser/accessibility/BUILD.gn         |   4 +
  .../accessibility/live_caption/BUILD.gn       |   8 +
- .../live_translate_controller_factory.cc      |   8 +-
+ .../live_translate_controller_factory.cc      |  13 --
  chrome/browser/global_features.h              |   2 +
  .../xml/languages_detailed_preferences.xml    |  41 -----
  .../java/res/xml/languages_preferences.xml    |   4 -
@@ -30,7 +30,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...n_device_speech_recognition_engine_impl.cc |   2 +
  ...on_device_speech_recognition_engine_impl.h |   2 +
  media/base/media_switches.cc                  |   1 +
- 24 files changed, 57 insertions(+), 229 deletions(-)
+ 24 files changed, 56 insertions(+), 235 deletions(-)
 
 diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 --- a/chrome/browser/BUILD.gn
@@ -85,10 +85,15 @@ diff --git a/chrome/browser/accessibility/live_caption/BUILD.gn b/chrome/browser
 diff --git a/chrome/browser/accessibility/live_caption/live_translate_controller_factory.cc b/chrome/browser/accessibility/live_caption/live_translate_controller_factory.cc
 --- a/chrome/browser/accessibility/live_caption/live_translate_controller_factory.cc
 +++ b/chrome/browser/accessibility/live_caption/live_translate_controller_factory.cc
-@@ -67,13 +67,7 @@ LiveTranslateControllerFactory::BuildServiceInstanceForBrowserContext(
-   if (base::FeatureList::IsEnabled(
-           live_caption::kLiveCaptionOnDeviceTranslation) &&
-       on_device_translation::OnDeviceTranslationInstaller::GetInstance()) {
+@@ -62,19 +62,6 @@ LiveTranslateControllerFactory::BuildServiceInstanceForBrowserContext(
+   std::unique_ptr<TranslationDispatcher> on_device_dispatcher;
+   std::unique_ptr<TranslationDispatcher> google_api_dispatcher;
+ 
+-  // Only set on_device_dispatcher if feature flag is set and installer is
+-  // available.
+-  if (base::FeatureList::IsEnabled(
+-          live_caption::kLiveCaptionOnDeviceTranslation) &&
+-      on_device_translation::OnDeviceTranslationInstaller::GetInstance()) {
 -    on_device_dispatcher = std::make_unique<TranslationDispatcherOnDevice>(
 -        std::make_unique<
 -            on_device_translation::OnDeviceTranslationServiceController>(
@@ -96,10 +101,10 @@ diff --git a/chrome/browser/accessibility/live_caption/live_translate_controller
 -            /*service_display_name_suffix=*/"",
 -            on_device_translation::OnDeviceTranslationInstaller::
 -                GetInstance()));
-+
-   }
+-  }
    google_api_dispatcher = std::make_unique<GoogleApiTranslationDispatcher>(
        google_apis::GetAPIKey(), context);
+ 
 diff --git a/chrome/browser/global_features.h b/chrome/browser/global_features.h
 --- a/chrome/browser/global_features.h
 +++ b/chrome/browser/global_features.h

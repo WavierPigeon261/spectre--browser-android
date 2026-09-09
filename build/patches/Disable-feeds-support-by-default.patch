@@ -4,10 +4,23 @@ Subject: Disable feeds support by default
 
 License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
- components/feed/core/shared_prefs/pref_names.cc | 2 +-
- components/feed/feed_feature_list.cc            | 3 +++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ .../src/org/chromium/chrome/browser/feed/FeedFeatures.java     | 2 +-
+ components/feed/core/shared_prefs/pref_names.cc                | 2 +-
+ components/feed/feed_feature_list.cc                           | 3 +++
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
+diff --git a/chrome/browser/feed/android/java/src/org/chromium/chrome/browser/feed/FeedFeatures.java b/chrome/browser/feed/android/java/src/org/chromium/chrome/browser/feed/FeedFeatures.java
+--- a/chrome/browser/feed/android/java/src/org/chromium/chrome/browser/feed/FeedFeatures.java
++++ b/chrome/browser/feed/android/java/src/org/chromium/chrome/browser/feed/FeedFeatures.java
+@@ -26,7 +26,7 @@ public final class FeedFeatures {
+      *     enterprise policy, or by flag. The value returned should not be cached as it may change.
+      */
+     public static boolean isFeedEnabled(Profile profile) {
+-        return !DeviceInfo.isDesktop()
++        return ((false))
+                 && FeedServiceBridge.isEnabled()
+                 && isFeedEnabledByDse(profile);
+     }
 diff --git a/components/feed/core/shared_prefs/pref_names.cc b/components/feed/core/shared_prefs/pref_names.cc
 --- a/components/feed/core/shared_prefs/pref_names.cc
 +++ b/components/feed/core/shared_prefs/pref_names.cc

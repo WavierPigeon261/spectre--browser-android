@@ -28,6 +28,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../layered_app_icon_background.png           | Bin 3519 -> 142032 bytes
  .../values/channel_constants.xml              |   8 +-
  .../ChromeContextMenuPopulator.java           |   2 +-
+ .../contextmenu/ContextMenuListView.java      |   3 +
  .../browser/fullscreen/FullscreenToast.java   |   2 +-
  .../inline/BromiteInlineUpdateController.java |  19 +++-
  .../tabbed_mode/TabbedRootUiCoordinator.java  |   6 +-
@@ -39,6 +40,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../theme/chromium/win/tiles/SmallLogo.png    | Bin 9784 -> 12363 bytes
  .../chromium/product_logo_32.png              | Bin 822 -> 2301 bytes
  chrome/browser/BUILD.gn                       |   1 +
+ chrome/browser/browser_process_impl.cc        |   2 +-
+ .../browser/chrome_content_browser_client.cc  |   2 +-
  .../external_registry_loader_win.cc           |   3 +-
  .../browser/hub/HubToolbarMediator.java       |   2 +-
  .../android/res/layout/hub_toolbar_layout.xml |  83 +++++++++-------
@@ -54,6 +57,8 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../toolbar/chrome_labs/chrome_labs_utils.cc  |   1 +
  chrome/common/url_constants.h                 |   4 +-
  .../install_static/chromium_install_modes.h   |   2 +-
+ .../chrome_content_renderer_client.cc         |   3 -
+ components/activity_reporter/buildflags.gni   |   2 +-
  .../strings/android/browser_ui_strings.grd    |   2 +-
  .../drawable-hdpi/fre_product_logo.png        | Bin 3912 -> 22295 bytes
  .../drawable-mdpi/fre_product_logo.png        | Bin 2490 -> 12171 bytes
@@ -71,9 +76,9 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../webui/version/resources/about_version.ts  |   2 +-
  .../resources/about_version_mobile.css        |  10 ++
  content/child/runtime_features.cc             |  23 +++--
- .../Cromite-Branding.inc                      |   1 +
+ .../Cromite-Branding.inc                      |   2 +
  tools/grit/grit/grd_reader.py                 |  35 +++++++
- 69 files changed, 267 insertions(+), 161 deletions(-)
+ 74 files changed, 274 insertions(+), 167 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Cromite-Branding.inc
 
 diff --git a/base/win/message_window.cc b/base/win/message_window.cc
@@ -9157,7 +9162,7 @@ diff --git a/chrome/android/java/res_chromium_base/values/channel_constants.xml 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
-@@ -660,8 +660,8 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
+@@ -659,8 +659,8 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
                              createManagedListItem(Item.OPEN_IN_NEW_TAB, isIncognitoForced);
                      ListItem openInNewTabInGroupItem =
                              createManagedListItem(Item.OPEN_IN_NEW_TAB_IN_GROUP, isIncognitoForced);
@@ -9167,6 +9172,19 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/Chr
                      if (!mItemDelegate.isIncognito()
                              && mItemDelegate.isIncognitoSupported()
                              && !shouldOpenIncognitoAsWindow()) {
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ContextMenuListView.java b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ContextMenuListView.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ContextMenuListView.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ContextMenuListView.java
+@@ -85,6 +85,9 @@ public class ContextMenuListView extends ListView {
+ 
+         int contentWidth = mCalculatedItemWidth + parentLateralPadding;
+         int maxAllowedWidth = mIsFlyout ? mFlyoutMaxWidth : mMaxWidth;
++        if (!mIsFlyout) {
++            contentWidth = windowWidthPx - 2 * mLateralMargin - parentLateralPadding;
++        }
+         int menuWidth =
+                 UiUtils.computeMenuWidth(
+                         contentWidth, mMinWidth, maxAllowedWidth, mLateralMargin, windowWidthPx);
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/fullscreen/FullscreenToast.java b/chrome/android/java/src/org/chromium/chrome/browser/fullscreen/FullscreenToast.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/fullscreen/FullscreenToast.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/fullscreen/FullscreenToast.java
@@ -13235,6 +13253,30 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
      "//cc",
      "//chrome:extra_resources",
      "//chrome:resources",
+diff --git a/chrome/browser/browser_process_impl.cc b/chrome/browser/browser_process_impl.cc
+--- a/chrome/browser/browser_process_impl.cc
++++ b/chrome/browser/browser_process_impl.cc
+@@ -1404,7 +1404,7 @@ activity_reporter::ActivityReporter* BrowserProcessImpl::activity_reporter() {
+             base::BindRepeating([](const GURL& url) { return false; })),
+         base::BindRepeating(&chrome::GetChannel), base::BindRepeating([] {
+           std::string brand;
+-          google_brand::GetBrand(&brand);
++          // google_brand::GetBrand(&brand);
+           return brand;
+         }),
+         base::BindRepeating(&updater::SetActive),
+diff --git a/chrome/browser/chrome_content_browser_client.cc b/chrome/browser/chrome_content_browser_client.cc
+--- a/chrome/browser/chrome_content_browser_client.cc
++++ b/chrome/browser/chrome_content_browser_client.cc
+@@ -7195,7 +7195,7 @@ bool ChromeContentBrowserClient::HandleExternalProtocol(
+     // are blocked in Blink (see TODO(deepakr) in FrameLoader). Receiving an
+     // un-blocked direct launch scheme from a renderer document indicates a
+     // compromised renderer.
+-    if (initiator_document) {
++    if ((true)) {
+       bad_message::ReceivedBadMessage(initiator_document->GetProcess(),
+                                       bad_message::CCBC_GOOGLE_CHROME_SCHEME);
+       return false;
 diff --git a/chrome/browser/extensions/external_registry_loader_win.cc b/chrome/browser/extensions/external_registry_loader_win.cc
 --- a/chrome/browser/extensions/external_registry_loader_win.cc
 +++ b/chrome/browser/extensions/external_registry_loader_win.cc
@@ -13576,6 +13618,35 @@ diff --git a/chrome/install_static/chromium_install_modes.h b/chrome/install_sta
  
  // The brand-specific safe browsing client name.
  inline constexpr char kSafeBrowsingName[] = "chromium";
+diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer/chrome_content_renderer_client.cc
+--- a/chrome/renderer/chrome_content_renderer_client.cc
++++ b/chrome/renderer/chrome_content_renderer_client.cc
+@@ -572,13 +572,10 @@ void ChromeContentRendererClient::RenderThreadStarted() {
+ #if BUILDFLAG(IS_CHROMEOS) || BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_MAC) || \
+     BUILDFLAG(IS_WIN)
+   if (base::FeatureList::IsEnabled(features::kGoogleChromeScheme)) {
+-#if BUILDFLAG(GOOGLE_CHROME_BRANDING)
+     WebSecurityPolicy::RegisterURLSchemeAsDirectLaunch(
+         WebString::FromAscii("google-chrome"));
+-#else
+     WebSecurityPolicy::RegisterURLSchemeAsDirectLaunch(
+         WebString::FromAscii("chromium"));
+-#endif
+   }
+ #endif
+ 
+diff --git a/components/activity_reporter/buildflags.gni b/components/activity_reporter/buildflags.gni
+--- a/components/activity_reporter/buildflags.gni
++++ b/components/activity_reporter/buildflags.gni
+@@ -8,7 +8,7 @@ declare_args() {
+   # By default, only branded builds report active use. This affects reporting
+   # only through //components/activity_reporter; legacy reporting through
+   # ChromiumUpdater is not enabled/disabled by this flag.
+-  report_activity = is_chrome_branded
++  report_activity = false
+ 
+   # Starting in November 2025, there was an effort to redefine what it meant
+   # for the browser to be "actively used", in order to exclude certain types of
 diff --git a/components/browser_ui/strings/android/browser_ui_strings.grd b/components/browser_ui/strings/android/browser_ui_strings.grd
 --- a/components/browser_ui/strings/android/browser_ui_strings.grd
 +++ b/components/browser_ui/strings/android/browser_ui_strings.grd
@@ -19317,8 +19388,9 @@ diff --git a/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/C
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Cromite-Branding.inc
-@@ -0,0 +1 @@
+@@ -0,0 +1,2 @@
 +SET_CROMITE_FEATURE_DISABLED(kShowTabListAnimations);
++SET_CROMITE_FEATURE_ENABLED(kAndroidStartupImprovements);
 diff --git a/tools/grit/grit/grd_reader.py b/tools/grit/grit/grd_reader.py
 --- a/tools/grit/grit/grd_reader.py
 +++ b/tools/grit/grit/grd_reader.py

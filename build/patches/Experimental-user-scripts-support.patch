@@ -58,7 +58,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../user_scripts/FragmentWindowAndroid.java   |  96 ++
  .../user_scripts/IUserScriptsUtils.java       |  22 +
  .../components/user_scripts/ScriptInfo.java   |  37 +
- .../user_scripts/ScriptListBaseAdapter.java   | 163 ++++
+ .../user_scripts/ScriptListBaseAdapter.java   | 162 ++++
  .../user_scripts/ScriptListPreference.java    | 171 ++++
  .../user_scripts/UserScriptsBridge.java       | 212 +++++
  .../user_scripts/UserScriptsPreferences.java  | 122 +++
@@ -114,7 +114,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../user_scripts_renderer_resources.grd       |  14 +
  .../user_scripts/renderer/script_context.cc   | 190 ++++
  .../user_scripts/renderer/script_context.h    |  67 ++
- .../user_scripts/renderer/script_injection.cc | 295 +++++++
+ .../user_scripts/renderer/script_injection.cc | 296 +++++++
  .../user_scripts/renderer/script_injection.h  | 155 ++++
  .../renderer/script_injection_manager.cc      | 413 +++++++++
  .../renderer/script_injection_manager.h       | 100 +++
@@ -1126,7 +1126,7 @@ new file mode 100644
 +        android:layout_height="wrap_content"
 +        style="@style/ListItemContainer">
 +
-+        <org.chromium.ui.widget.ChromeImageView
++        <ImageView
 +                android:id="@+id/icon"
 +                android:layout_width="40dp"
 +                android:layout_height="wrap_content"
@@ -1529,7 +1529,7 @@ diff --git a/components/user_scripts/android/java/src/org/chromium/components/us
 new file mode 100644
 --- /dev/null
 +++ b/components/user_scripts/android/java/src/org/chromium/components/user_scripts/ScriptListBaseAdapter.java
-@@ -0,0 +1,163 @@
+@@ -0,0 +1,162 @@
 +/*
 +    This file is part of Bromite.
 +
@@ -1571,7 +1571,6 @@ new file mode 100644
 +import org.chromium.components.browser_ui.widget.dragreorder.DragStateDelegate;
 +import org.chromium.ui.listmenu.ListMenuButton;
 +import org.chromium.ui.listmenu.ListMenuDelegate;
-+import org.chromium.ui.widget.ChromeImageView;
 +
 +import java.util.ArrayList;
 +import java.util.List;
@@ -1591,7 +1590,7 @@ new file mode 100644
 +        private TextView mUrl;
 +        private TextView mError;
 +        private Switch mSwitch;
-+        private ChromeImageView mIcon;
++        private ImageView mIcon;
 +        private LinearLayout mErrorLayout;
 +        private LinearLayout mUrlContainer;
 +
@@ -9013,7 +9012,7 @@ diff --git a/components/user_scripts/renderer/script_injection.cc b/components/u
 new file mode 100755
 --- /dev/null
 +++ b/components/user_scripts/renderer/script_injection.cc
-@@ -0,0 +1,295 @@
+@@ -0,0 +1,296 @@
 +// Copyright 2014 The Chromium Authors. All rights reserved.
 +// Use of this source code is governed by a BSD-style license that can be
 +// found in the LICENSE file.
@@ -9266,7 +9265,8 @@ new file mode 100755
 +      base::BindOnce(&ScriptInjection::OnJsInjectionCompleted,
 +                     weak_ptr_factory_.GetWeakPtr()),
 +      blink::BackForwardCacheAware::kPossiblyDisallow,
-+      blink::mojom::WantResultOption::kNoResult, blink::mojom::PromiseResultOption::kDoNotWait);
++      blink::mojom::WantResultOption::kNoResult, blink::mojom::PromiseResultOption::kDoNotWait,
++      /*is_injected_extension_script=*/false);
 +  }
 +
 +void ScriptInjection::OnJsInjectionCompleted(

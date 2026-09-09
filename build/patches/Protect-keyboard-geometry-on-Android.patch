@@ -31,7 +31,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../sAndroidProtectedKeyboardGeometry.java    |   35 +
  ...otectedKeyboardGeometryContentSetting.java |   94 ++
  .../protected_keyboard_geometry.grdp          |   27 +
- .../protected_keyboard_geometry.inc           |   21 +
+ .../protected_keyboard_geometry.inc           |   25 +
  .../protected_keyboard_geometry.inc           |    1 +
  .../android/overscroll_controller_android.cc  |   40 +
  .../android/overscroll_controller_android.h   |   11 +
@@ -65,7 +65,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ui/android/overscroll_refresh.h               |    5 +
  ui/android/overscroll_refresh_handler.cc      |   24 +
  ui/android/overscroll_refresh_handler.h       |    5 +
- 44 files changed, 2429 insertions(+), 30 deletions(-)
+ 44 files changed, 2433 insertions(+), 30 deletions(-)
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/compositor/ProtectedViewportScrollView.java
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sAndroidProtectedKeyboardGeometry.java
  create mode 100644 components/browser_ui/site_settings/android/java/src/org/chromium/components/browser_ui/site_settings/impl/CromiteProtectedKeyboardGeometryContentSetting.java
@@ -84,7 +84,7 @@ diff --git a/chrome/android/chrome_java_sources.gni b/chrome/android/chrome_java
    "java/src/org/chromium/chrome/browser/compositor/CompositorSurfaceManagerImpl.java",
    "java/src/org/chromium/chrome/browser/compositor/CompositorView.java",
    "java/src/org/chromium/chrome/browser/compositor/CompositorViewHolder.java",
-+  "java/src/org/chromium/chrome/browser/compositor/ProtectedViewportScrollView.java"
++  "java/src/org/chromium/chrome/browser/compositor/ProtectedViewportScrollView.java",
    "java/src/org/chromium/chrome/browser/compositor/CompositorViewHolderSupplier.java",
    "java/src/org/chromium/chrome/browser/compositor/LayerTitleCache.java",
    "java/src/org/chromium/chrome/browser/compositor/layouts/Layout.java",
@@ -496,7 +496,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/Comp
 +                Log.i("ProtectedViewport",
 +                        "--updateWebContentsSize caller=%s viewport=%dx%d view=%dx%d"
 +                                + " controlsResize=%b controlsHeight=%d controlsMinHeight=%d"
-+                                + " controlsInset=%d keyboardInset=%d verticalInset=%d"
++                                + " controlsInset=%d webContentsHeightInset=%d verticalInset=%d"
 +                                + " target=%dx%d",
 +                        sizingCaller, width, height, view.getWidth(), view.getHeight(),
 +                        mControlsResizeView,
@@ -508,7 +508,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/compositor/Comp
 +                                ? mBrowserControlsManager.getTopControlsMinHeight()
 +                                        + mBrowserControlsManager.getBottomControlsMinHeight()
 +                                : 0,
-+                        controlsInsets, keyboardInset, verticalViewportInsets,
++                        controlsInsets, webContentsHeightInset, verticalViewportInsets,
 +                        width - horizontalViewportInsets, height - verticalViewportInsets);
 +            }
 +        }
@@ -2338,7 +2338,9 @@ diff --git a/components/content_settings/core/browser/bromite_content_settings/p
 new file mode 100644
 --- /dev/null
 +++ b/components/content_settings/core/browser/bromite_content_settings/protected_keyboard_geometry.inc
-@@ -0,0 +1,21 @@
+@@ -0,0 +1,25 @@
++#if BUILDFLAG(IS_ANDROID)
++
 +  Register(ContentSettingsType::PROTECTED_KEYBOARD_GEOMETRY, "keyboard_size_protection", CONTENT_SETTING_ALLOW,
 +           WebsiteSettingsInfo::SYNCABLE,
 +           /*allowlisted_schemes=*/{},
@@ -2360,6 +2362,8 @@ new file mode 100644
 +    .set_allowed_exceptions_ui(IDS_SETTINGS_SITE_SETTINGS_PROTECTED_KEYBOARD_GEOMETRY_ALLOWED_EXCEPTIONS)
 +    .set_blocked_exceptions_ui(IDS_SETTINGS_SITE_SETTINGS_PROTECTED_KEYBOARD_GEOMETRY_BLOCKED_EXCEPTIONS)
 +    .set_mid_sentence_ui(IDS_SITE_SETTINGS_TYPE_PROTECTED_KEYBOARD_GEOMETRY_MID_SENTENCE);
++
++#endif
 diff --git a/components/content_settings/core/common/bromite_content_settings/protected_keyboard_geometry.inc b/components/content_settings/core/common/bromite_content_settings/protected_keyboard_geometry.inc
 new file mode 100644
 --- /dev/null

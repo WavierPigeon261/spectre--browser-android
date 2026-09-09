@@ -2614,7 +2614,7 @@ diff --git a/components/adblock/content/browser/adblock_content_browser_client.h
    void WillCreateURLLoaderFactory(
        content::BrowserContext* browser_context,
        content::RenderFrameHost* frame,
-@@ -109,7 +140,8 @@ class AdblockContentBrowserClient : public ContentBrowserClientBase {
+@@ -110,7 +141,8 @@ class AdblockContentBrowserClient : public ContentBrowserClientBase {
        mojo::BinderMapWithContext<content::RenderFrameHost*>* map) override;
  
   protected:
@@ -2624,7 +2624,7 @@ diff --git a/components/adblock/content/browser/adblock_content_browser_client.h
  
    // current_browser_context is the BrowserContext relevant for the currently
    // processed request. It might be an off-the-record browser context. This
-@@ -118,6 +150,8 @@ class AdblockContentBrowserClient : public ContentBrowserClientBase {
+@@ -119,6 +151,8 @@ class AdblockContentBrowserClient : public ContentBrowserClientBase {
    // "original" BrowserContext, depending on platform.
    virtual content::BrowserContext* GetBrowserContextForEyeoFactories(
        content::BrowserContext* current_browser_context) = 0;
@@ -2633,7 +2633,7 @@ diff --git a/components/adblock/content/browser/adblock_content_browser_client.h
  
   private:
    content::BrowserContext* GetBrowserContext(content::RenderFrameHost* frame) {
-@@ -127,9 +161,11 @@ class AdblockContentBrowserClient : public ContentBrowserClientBase {
+@@ -128,9 +162,11 @@ class AdblockContentBrowserClient : public ContentBrowserClientBase {
    }
  
    void OnWebSocketFilterCheckCompleted(
@@ -2645,7 +2645,7 @@ diff --git a/components/adblock/content/browser/adblock_content_browser_client.h
        const net::SiteForCookies& site_for_cookies,
        const absl::optional<std::string>& user_agent,
        mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
-@@ -137,6 +173,16 @@ class AdblockContentBrowserClient : public ContentBrowserClientBase {
+@@ -138,6 +174,16 @@ class AdblockContentBrowserClient : public ContentBrowserClientBase {
        content::ContentBrowserClient::WebSocketOptions options,
        adblock::FilterMatchResult result);
  
@@ -2662,7 +2662,7 @@ diff --git a/components/adblock/content/browser/adblock_content_browser_client.h
    base::WeakPtrFactory<AdblockContentBrowserClient<ContentBrowserClientBase>>
        weak_factory_{this};
  
-@@ -161,42 +207,47 @@ void AdblockContentBrowserClient<
+@@ -162,42 +208,47 @@ void AdblockContentBrowserClient<
  
  template <class ContentBrowserClientBase>
  bool AdblockContentBrowserClient<ContentBrowserClientBase>::
@@ -2720,7 +2720,7 @@ diff --git a/components/adblock/content/browser/adblock_content_browser_client.h
                                                site_for_cookies, user_agent,
                                                std::move(handshake_client),
                                                std::move(options));
-@@ -215,6 +266,97 @@ void AdblockContentBrowserClient<ContentBrowserClientBase>::
+@@ -216,6 +267,97 @@ void AdblockContentBrowserClient<ContentBrowserClientBase>::
        adblock::AdblockInternalsUI>(map);
  }
  
@@ -2818,7 +2818,7 @@ diff --git a/components/adblock/content/browser/adblock_content_browser_client.h
  template <class ContentBrowserClientBase>
  void AdblockContentBrowserClient<ContentBrowserClientBase>::
      WillCreateURLLoaderFactory(
-@@ -254,29 +396,8 @@ void AdblockContentBrowserClient<ContentBrowserClientBase>::
+@@ -256,29 +398,8 @@ void AdblockContentBrowserClient<ContentBrowserClientBase>::
    auto* eyeo_browser_context =
        GetBrowserContextForEyeoFactories(browser_context);
    bool use_adblock_proxy =
@@ -2850,7 +2850,7 @@ diff --git a/components/adblock/content/browser/adblock_content_browser_client.h
  
    if (use_adblock_proxy) {
      auto [proxied_receiver, target_factory_remote] = factory_builder.Append();
-@@ -286,16 +407,18 @@ void AdblockContentBrowserClient<ContentBrowserClientBase>::
+@@ -288,16 +409,18 @@ void AdblockContentBrowserClient<ContentBrowserClientBase>::
      AdblockContextData::StartProxying(
          eyeo_browser_context, initiator, std::move(proxied_receiver),
          std::move(target_factory_remote),
@@ -2870,7 +2870,7 @@ diff --git a/components/adblock/content/browser/adblock_content_browser_client.h
          const net::SiteForCookies& site_for_cookies,
          const absl::optional<std::string>& user_agent,
          mojo::PendingRemote<network::mojom::WebSocketHandshakeClient>
-@@ -310,9 +433,9 @@ void AdblockContentBrowserClient<ContentBrowserClientBase>::
+@@ -312,9 +435,9 @@ void AdblockContentBrowserClient<ContentBrowserClientBase>::
        result == adblock::FilterMatchResult::kBlockRule;
    if (!has_blocking_filter) {
      VLOG(1) << "[eyeo] Web socket allowed for " << url;
@@ -2883,7 +2883,7 @@ diff --git a/components/adblock/content/browser/adblock_content_browser_client.h
                                                  std::move(handshake_client), std::move(options));
        return;
      }
-@@ -329,16 +452,42 @@ void AdblockContentBrowserClient<ContentBrowserClientBase>::
+@@ -331,16 +454,42 @@ void AdblockContentBrowserClient<ContentBrowserClientBase>::
    VLOG(1) << "[eyeo] Web socket blocked for " << url;
  }
  
@@ -2962,7 +2962,7 @@ diff --git a/components/adblock/content/browser/adblock_internals_page_handler.c
 diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/components/adblock/content/browser/adblock_url_loader_factory.cc
 --- a/components/adblock/content/browser/adblock_url_loader_factory.cc
 +++ b/components/adblock/content/browser/adblock_url_loader_factory.cc
-@@ -115,9 +115,10 @@ ContentType ToAdblockResourceType(const network::ResourceRequest& request) {
+@@ -114,9 +114,10 @@ ContentType ToAdblockResourceType(const network::ResourceRequest& request) {
      case network::mojom::RequestDestination::kReport:
      case network::mojom::RequestDestination::kSpeculationRules:
      case network::mojom::RequestDestination::kWebIdentity:
@@ -2974,7 +2974,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
  }
  
  bool IsPopup(const RequestInitiator& initiator) {
-@@ -145,8 +146,7 @@ bool IsPopup(const RequestInitiator& initiator) {
+@@ -144,8 +145,7 @@ bool IsPopup(const RequestInitiator& initiator) {
  // to allow any port to make this code working with our browser tests which run
  // a custom http(s)s server.
  bool AcceptableAdsBlockthroughFiltersHitDetected(const GURL& request_url) {
@@ -2984,7 +2984,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
  }
  
  }  // namespace
-@@ -218,8 +218,13 @@ class AdblockURLLoaderFactory::InProgressRequest
+@@ -217,8 +217,13 @@ class AdblockURLLoaderFactory::InProgressRequest
    void OnRequestError(int error_code);
    void CheckFilterMatch(CheckFilterMatchCallback callback);
    void ProcessResponseHeaders(
@@ -2998,7 +2998,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
    void CheckRewriteFilterMatch(CheckRewriteFilterMatchCallback callback);
    void OnRequestUrlClassified(CheckFilterMatchCallback callback,
                                FilterMatchResult result);
-@@ -244,6 +249,7 @@ class AdblockURLLoaderFactory::InProgressRequest
+@@ -243,6 +248,7 @@ class AdblockURLLoaderFactory::InProgressRequest
    GURL request_url_;
    int request_id_;
    bool is_document_request_;
@@ -3006,7 +3006,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
    ContentType adblock_resource_type_;
    const raw_ptr<AdblockURLLoaderFactory> factory_;
    // There are the mojo pipe endpoints between this proxy and the renderer.
-@@ -273,6 +279,7 @@ AdblockURLLoaderFactory::InProgressRequest::InProgressRequest(
+@@ -272,6 +278,7 @@ AdblockURLLoaderFactory::InProgressRequest::InProgressRequest(
      : request_url_(request.url),
        request_id_(request_id),
        is_document_request_(IsDocumentRequest(request)),
@@ -3014,7 +3014,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
        adblock_resource_type_(ToAdblockResourceType(request)),
        factory_(factory),
        target_client_(std::move(client)),
-@@ -353,7 +360,9 @@ void AdblockURLLoaderFactory::InProgressRequest::OnReceiveResponse(
+@@ -352,7 +359,9 @@ void AdblockURLLoaderFactory::InProgressRequest::OnReceiveResponse(
    VLOG(1) << "[eyeo] Sending headers for processing: " << request_url_;
    client_receiver_.Pause();
    const scoped_refptr<net::HttpResponseHeaders>& headers = head->headers;
@@ -3024,7 +3024,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
        headers, base::BindOnce(&InProgressRequest::OnProcessHeadersResult,
                                weak_factory_.GetWeakPtr(), std::move(head),
                                std::move(body), std::move(cached_metadata)));
-@@ -400,6 +409,7 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
+@@ -399,6 +408,7 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
    auto subscription_service = factory_->config_.subscription_service;
    if (is_document_request_) {
      if (IsPopup(initiator)) {
@@ -3032,7 +3032,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
        auto* host = initiator.GetRenderFrameHost();
        factory_->config_.resource_classifier->CheckPopupFilterMatch(
            subscription_service->GetCurrentSnapshot(), request_url_, *host,
-@@ -410,13 +420,12 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
+@@ -409,13 +419,12 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
                base::BindOnce(&AdblockURLLoaderFactory::InProgressRequest::
                                   PostFilterMatchCallbackToUI,
                               weak_factory_.GetWeakPtr(), std::move(callback))));
@@ -3050,7 +3050,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
          adblock_resource_type_, initiator,
          base::BindOnce(
              &AdblockURLLoaderFactory::InProgressRequest::OnRequestUrlClassified,
-@@ -424,10 +433,10 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
+@@ -423,10 +432,10 @@ void AdblockURLLoaderFactory::InProgressRequest::CheckFilterMatch(
              base::BindOnce(&AdblockURLLoaderFactory::InProgressRequest::
                                 PostFilterMatchCallbackToUI,
                             weak_factory_.GetWeakPtr(), std::move(callback))));
@@ -3062,7 +3062,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
      const scoped_refptr<net::HttpResponseHeaders>& headers,
      ProcessResponseHeadersCallback callback) {
    if (IsRequestInitiatorDestroyed()) {
-@@ -436,6 +445,37 @@ void AdblockURLLoaderFactory::InProgressRequest::ProcessResponseHeaders(
+@@ -435,6 +444,37 @@ void AdblockURLLoaderFactory::InProgressRequest::ProcessResponseHeaders(
      return;
    }
  
@@ -3100,7 +3100,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
    auto subscription_service = factory_->config_.subscription_service;
    factory_->config_.resource_classifier->CheckResponseFilterMatch(
        subscription_service->GetCurrentSnapshot(), request_url_,
-@@ -614,6 +654,7 @@ void AdblockURLLoaderFactory::InProgressRequest::Start(
+@@ -613,6 +653,7 @@ void AdblockURLLoaderFactory::InProgressRequest::Start(
              ? net::RedirectInfo::FirstPartyURLPolicy::UPDATE_URL_ON_REDIRECT
              : net::RedirectInfo::FirstPartyURLPolicy::NEVER_CHANGE_URL,
          request.referrer_policy, request.referrer.spec(),
@@ -3108,7 +3108,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
          kInternalRedirectStatusCode, rewrite.value(),
          absl::nullopt /* referrer_policy_header */,
          false /* insecure_scheme_was_upgraded */, false /* copy_fragment */,
-@@ -656,6 +697,10 @@ void AdblockURLLoaderFactory::InProgressRequest::Start(
+@@ -655,6 +696,10 @@ void AdblockURLLoaderFactory::InProgressRequest::Start(
    VLOG(1) << "[eyeo] Checking filter match for: " << request.url << " ("
            << request.resource_type << ")";
  
@@ -3119,7 +3119,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
    CheckFilterMatch(base::BindOnce(
        &InProgressRequest::OnRequestFilterMatchResult,
        weak_factory_.GetWeakPtr(), std::move(target_loader), options, request,
-@@ -724,10 +769,12 @@ void AdblockURLLoaderFactory::InProgressRequest::ApplyPostBlockingBehavior()
+@@ -723,10 +768,12 @@ void AdblockURLLoaderFactory::InProgressRequest::ApplyPostBlockingBehavior()
    // some cleanup to preserve good user experience.
    if (frame) {
      if (is_document_request_) {

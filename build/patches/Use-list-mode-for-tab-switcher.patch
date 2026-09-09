@@ -17,24 +17,26 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../TabGridDialogProperties.java              |   3 +
  .../tab_management/TabGridDialogView.java     |  13 +
  .../TabGridDialogViewBinder.java              |   8 +
+ .../tasks/tab_management/TabListConfig.java   |   8 +-
  .../TabListContainerViewBinder.java           |  34 +-
- .../tab_management/TabListCoordinator.java    |  25 +-
+ .../tab_management/TabListCoordinator.java    |  27 +-
  .../TabListEditorCoordinator.java             |   2 +-
  .../tab_management/TabListItemAnimator.java   |   2 +-
- .../tasks/tab_management/TabListMediator.java |  21 ++
+ .../tasks/tab_management/TabListMediator.java |  22 ++
  .../tasks/tab_management/TabListView.java     | 123 ++++++
  .../tab_management/TabListViewBinder.java     | 355 ++++++++++++++++++
  .../tab_management/TabSwitcherPaneBase.java   |   4 +-
  .../TabSwitcherPaneCoordinatorFactory.java    |   5 +-
  .../tab_management/TabUiFeatureUtilities.java |   7 +
  .../PinnedTabStripCoordinator.java            |  10 +-
+ .../VerticalTabListCoordinator.java           |   2 +-
  .../tab_ui/tab_management_java_sources.gni    |   2 +
  .../java/res/xml/privacy_preferences.xml      |   6 +
  .../chrome/browser/app/ChromeActivity.java    |   5 +-
  chrome/browser/android/favicon_helper.cc      | 190 +++++++++-
  chrome/browser/android/favicon_helper.h       |  21 ++
  .../flags/cromite/sTabSwitcherListMode.java   |  33 ++
- .../tab_ui/TabListFaviconProvider.java        | 109 ++++++
+ .../tab_ui/TabListFaviconProvider.java        | 116 +++++-
  .../chrome/browser/tab_ui/TabListMode.java    |   4 +-
  .../browser/ui/favicon/FaviconHelper.java     |  57 ++-
  .../Use-list-mode-for-tab-switcher.grdp       |   9 +
@@ -43,7 +45,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../java/res/drawable/ic_warning_red_16dp.xml |  26 ++
  .../layout/title_and_description_layout.xml   |  32 +-
  .../tab-switcher-list-mode.inc                |   3 +
- 36 files changed, 1155 insertions(+), 40 deletions(-)
+ 38 files changed, 1170 insertions(+), 45 deletions(-)
  create mode 100644 chrome/android/features/tab_ui/java/res/drawable/selected_tab_background.xml
  create mode 100644 chrome/android/features/tab_ui/java/res/drawable/selected_tab_background_incognito.xml
  create mode 100644 chrome/android/features/tab_ui/java/res/layout/tab_list_card_item.xml
@@ -300,6 +302,53 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          } else if (FORCE_ANIMATION_TO_FINISH == propertyKey) {
              if (model.get(FORCE_ANIMATION_TO_FINISH)) {
                  viewHolder.dialogView.forceAnimationToFinish();
+diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListConfig.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListConfig.java
+--- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListConfig.java
++++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListConfig.java
+@@ -12,6 +12,7 @@ import org.chromium.chrome.browser.tasks.tab_management.TabListMediator.TabListL
+ import org.chromium.chrome.browser.tasks.tab_management.TabProperties.UiType;
+ import org.chromium.chrome.browser.tasks.tab_management.vertical_tabs.VerticalTabHoverCardController.TabHoverCardListener;
+ import org.chromium.chrome.browser.tasks.tab_management.vertical_tabs.VerticalTabListProperties.RailCollapseState;
++import org.chromium.chrome.browser.tab_ui.TabListMode;
+ 
+ /**
+  * Configuration policies and visual capabilities for the TabList. The returned values are immutable
+@@ -22,6 +23,8 @@ public class TabListConfig {
+     /** The layout organization type for the TabList. */
+     public final @TabListLayoutType int layoutType;
+ 
++    public final @TabListMode int mode;
++
+     /**
+      * The base card UI type for tabs in the list (e.g. {@link UiType#TAB} or {@link UiType#STRIP}).
+      */
+@@ -56,6 +59,7 @@ public class TabListConfig {
+ 
+     private TabListConfig(Builder builder) {
+         layoutType = builder.mLayoutType;
++        mode = builder.mMode;
+         tabUiType = builder.mTabUiType;
+         supportsMessageCards = builder.mSupportsMessageCards;
+         supportsModifierMultiSelect = builder.mSupportsModifierMultiSelect;
+@@ -69,6 +73,7 @@ public class TabListConfig {
+     /** Builder to construct {@link TabListConfig}. */
+     public static class Builder {
+         private final @TabListLayoutType int mLayoutType;
++        private final @TabListMode int mMode;
+         private @UiType int mTabUiType;
+         private boolean mSupportsMessageCards;
+         private boolean mSupportsModifierMultiSelect;
+@@ -82,8 +87,9 @@ public class TabListConfig {
+         /**
+          * @param layoutType The {@link TabListLayoutType} for the tab list.
+          */
+-        public Builder(@TabListLayoutType int layoutType) {
++        public Builder(@TabListLayoutType int layoutType, @TabListMode int mode) {
+             mLayoutType = layoutType;
++            mMode = mode;
+         }
+ 
+         /**
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListContainerViewBinder.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListContainerViewBinder.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListContainerViewBinder.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListContainerViewBinder.java
@@ -385,6 +434,15 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          } else {
              throw new IllegalArgumentException(
                      "Attempting to create a tab list UI with invalid mode");
+@@ -437,7 +454,7 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
+         @UiType int tabUiType = mMode == TabListMode.BOTTOM_STRIP ? UiType.STRIP : UiType.TAB;
+         boolean isGridMode = mMode == TabListMode.GRID;
+         TabListConfig tabListConfig =
+-                new TabListConfig.Builder(layoutType)
++                new TabListConfig.Builder(layoutType, mMode)
+                         .setTabUiType(tabUiType)
+                         .setSupportsMessageCards(isGridMode)
+                         .setSupportsShrinkCloseAnimation(isGridMode)
 @@ -482,7 +499,7 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
                  parentView.addView(mRecyclerView);
              }
@@ -448,7 +506,15 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListMediator.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListMediator.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListMediator.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListMediator.java
-@@ -2365,6 +2365,8 @@ public class TabListMediator implements TabListNotificationHandler {
+@@ -83,6 +83,7 @@ import org.chromium.chrome.browser.tab_group_sync.TabGroupSyncFeatures;
+ import org.chromium.chrome.browser.tab_group_sync.TabGroupSyncServiceFactory;
+ import org.chromium.chrome.browser.tab_ui.TabListFaviconProvider;
+ import org.chromium.chrome.browser.tab_ui.TabListFaviconProvider.TabFaviconFetcher;
++import org.chromium.chrome.browser.tab_ui.TabListMode;
+ import org.chromium.chrome.browser.tab_ui.ThumbnailProvider;
+ import org.chromium.chrome.browser.tab_ui.ThumbnailProvider.MultiThumbnailMetadata;
+ import org.chromium.chrome.browser.tabmodel.TabClosingSource;
+@@ -2365,6 +2366,8 @@ public class TabListMediator implements TabListNotificationHandler {
                  getLatestTitleForTabOrGroup(tab, groupInfo, /* useDefault= */ true));
          groupInfo.set(TabProperties.IS_COLLAPSED, isCollapsed);
          groupInfo.set(TabProperties.FAVICON_FETCHER, null);
@@ -457,12 +523,12 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
  
          bindTabActionStateProperties(mTabActionState, tab, groupInfo);
  
-@@ -2767,6 +2769,25 @@ public class TabListMediator implements TabListNotificationHandler {
+@@ -2767,6 +2770,25 @@ public class TabListMediator implements TabListNotificationHandler {
  
      void updateFaviconForTab(
              PropertyModel model, Tab tab, @Nullable Bitmap icon, @Nullable GURL iconUrl) {
 +        List<Tab> relatedTabList = getRelatedTabsForId(tab.getId());
-+        if (mMode == TabListMode.LIST
++        if (mTabListConfig.mode == TabListMode.LIST
 +                && TabProperties.isTabGroupHeader(model)
 +                && relatedTabList.size() > 1) {
 +            // The order of the url list matches the multi-thumbnail.
@@ -1075,6 +1141,18 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 +        if (mMediator != null) mMediator.destroy();
      }
  }
+diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/vertical_tabs/VerticalTabListCoordinator.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/vertical_tabs/VerticalTabListCoordinator.java
+--- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/vertical_tabs/VerticalTabListCoordinator.java
++++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/vertical_tabs/VerticalTabListCoordinator.java
+@@ -485,7 +485,7 @@ public class VerticalTabListCoordinator {
+         recyclerView.addItemDecoration(mSpineDecoration);
+ 
+         TabListConfig tabListConfig =
+-                new TabListConfig.Builder(TabListLayoutType.NESTED)
++                new TabListConfig.Builder(TabListLayoutType.NESTED, TabListMode.VERTICAL)
+                         .setSupportsModifierMultiSelect(VerticalTabUtils.isMultiSelectEnabled())
+                         .setSupportsTabLoadingState(/* supportsTabLoadingState= */ true)
+                         .setRailCollapseStateSupplier(
 diff --git a/chrome/android/features/tab_ui/tab_management_java_sources.gni b/chrome/android/features/tab_ui/tab_management_java_sources.gni
 --- a/chrome/android/features/tab_ui/tab_management_java_sources.gni
 +++ b/chrome/android/features/tab_ui/tab_management_java_sources.gni
@@ -1435,7 +1513,14 @@ new file mode 100644
 diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/tab_ui/TabListFaviconProvider.java b/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/tab_ui/TabListFaviconProvider.java
 --- a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/tab_ui/TabListFaviconProvider.java
 +++ b/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/tab_ui/TabListFaviconProvider.java
-@@ -37,6 +37,8 @@ import org.chromium.url.GURL;
+@@ -31,12 +31,15 @@ import org.chromium.chrome.browser.profiles.Profile;
+ import org.chromium.chrome.browser.tab.Tab;
+ import org.chromium.chrome.browser.ui.favicon.FaviconHelper;
+ import org.chromium.chrome.browser.ui.favicon.FaviconHelper.FaviconImageCallback;
++import org.chromium.chrome.browser.ui.favicon.FaviconUtils;
+ import org.chromium.components.embedder_support.util.UrlUtilities;
+ import org.chromium.ui.base.ViewUtils;
+ import org.chromium.url.GURL;
  
  import java.lang.annotation.Retention;
  import java.lang.annotation.RetentionPolicy;
@@ -1444,7 +1529,7 @@ diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/
  import java.util.Objects;
  
  /** Provider for processed favicons in Tab list. */
-@@ -134,6 +136,28 @@ public class TabListFaviconProvider {
+@@ -134,6 +137,28 @@ public class TabListFaviconProvider {
          }
      }
  
@@ -1473,7 +1558,7 @@ diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/
      @IntDef({
          StaticTabFaviconType.UNKNOWN,
          StaticTabFaviconType.ROUNDED_GLOBE,
-@@ -262,6 +286,8 @@ public class TabListFaviconProvider {
+@@ -262,6 +287,8 @@ public class TabListFaviconProvider {
      private static LazyTabFaviconResolver sRoundedGlobeFavicon;
      private static LazyTabFaviconResolver sRoundedGlobeFaviconForStrip;
      private static LazyTabFaviconResolver sRoundedGlobeFaviconIncognito;
@@ -1482,7 +1567,17 @@ diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/
  
      /** These icons may fail to load. See crbug.com/324996488. */
      private static LazyTabFaviconResolver sRoundedChromeFavicon;
-@@ -443,6 +469,51 @@ public class TabListFaviconProvider {
+@@ -340,7 +367,8 @@ public class TabListFaviconProvider {
+                 mStripFaviconSize,
+                 mVerticalFaviconSize,
+                 mFaviconCornerRadius,
+-                mFaviconInset);
++                mFaviconInset,
++                FaviconUtils.getDefaultFaviconSize(context));
+     }
+ 
+     /** Destroys the native part of {@link FaviconHelper}. */
+@@ -443,6 +471,51 @@ public class TabListFaviconProvider {
          };
      }
  
@@ -1534,7 +1629,17 @@ diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/
      /** Returns the rounded Chrome favicon to use for native or internal pages. */
      public TabFavicon getRoundedChromeFavicon(boolean isIncognito) {
          TabFavicon favicon;
-@@ -830,6 +901,44 @@ public class TabListFaviconProvider {
+@@ -755,7 +828,8 @@ public class TabListFaviconProvider {
+             int stripFaviconSize,
+             int verticalFaviconSize,
+             int cornerRadius,
+-            int inset) {
++            int inset,
++            int defaultFaviconSize) {
+         if (sRoundedGlobeFavicon == null) {
+             sRoundedGlobeFavicon =
+                     new LazyTabFaviconResolver(
+@@ -830,6 +904,44 @@ public class TabListFaviconProvider {
                                          StaticTabFaviconType.ROUNDED_CHROME_INCOGNITO);
                              });
          }

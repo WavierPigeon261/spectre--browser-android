@@ -16,7 +16,7 @@ Based on Chromium 133.0.6943.49
  components/adblock/README.md                  |   80 +
  components/adblock/content/BUILD.gn           |   22 +
  components/adblock/content/browser/BUILD.gn   |  226 +++
- .../browser/adblock_content_browser_client.h  |  348 ++++
+ .../browser/adblock_content_browser_client.h  |  350 ++++
  .../content/browser/adblock_context_data.cc   |   87 +
  .../content/browser/adblock_context_data.h    |   63 +
  .../content/browser/adblock_filter_match.h    |   30 +
@@ -24,7 +24,7 @@ Based on Chromium 133.0.6943.49
  .../browser/adblock_internals_page_handler.h  |   61 +
  .../content/browser/adblock_internals_ui.cc   |   67 +
  .../content/browser/adblock_internals_ui.h    |   49 +
- .../browser/adblock_url_loader_factory.cc     |  808 ++++++++++
+ .../browser/adblock_url_loader_factory.cc     |  807 ++++++++++
  .../browser/adblock_url_loader_factory.h      |  100 ++
  .../adblock_url_loader_factory_for_test.cc    |  466 ++++++
  .../adblock_url_loader_factory_for_test.h     |   78 +
@@ -365,7 +365,7 @@ Based on Chromium 133.0.6943.49
  tools/eyeo/update_git_grafts.py               |  138 ++
  tools/gritsettings/resource_ids.spec          |   12 +
  .../histograms/metadata/extensions/enums.xml  |    8 +-
- 361 files changed, 48831 insertions(+), 9 deletions(-)
+ 361 files changed, 48832 insertions(+), 9 deletions(-)
  create mode 100644 components/adblock/BUILD.gn
  create mode 100644 components/adblock/CHANGELOG.md
  create mode 100644 components/adblock/LICENSE
@@ -2647,7 +2647,7 @@ diff --git a/components/adblock/content/browser/adblock_content_browser_client.h
 new file mode 100644
 --- /dev/null
 +++ b/components/adblock/content/browser/adblock_content_browser_client.h
-@@ -0,0 +1,348 @@
+@@ -0,0 +1,350 @@
 +/*
 + * This file is part of eyeo Chromium SDK,
 + * Copyright (C) 2006-present eyeo GmbH
@@ -2751,7 +2751,8 @@ new file mode 100644
 +      bool* bypass_redirect_checks,
 +      bool* disable_secure_dns,
 +      network::mojom::URLLoaderFactoryOverridePtr* factory_override,
-+      scoped_refptr<base::SequencedTaskRunner> navigation_response_task_runner)
++      scoped_refptr<base::SequencedTaskRunner> navigation_response_task_runner,
++      bool is_for_network_service)
 +      override;
 +
 +  void RegisterBrowserInterfaceBindersForFrame(
@@ -2883,14 +2884,15 @@ new file mode 100644
 +        bool* disable_secure_dns,
 +        network::mojom::URLLoaderFactoryOverridePtr* factory_override,
 +        scoped_refptr<base::SequencedTaskRunner>
-+            navigation_response_task_runner) {
++            navigation_response_task_runner,
++        bool is_for_network_service) {
 +  // Create Chromium proxy first as WebRequestProxyingURLLoaderFactory logic
 +  // depends on being first proxy
 +  ContentBrowserClientBase::WillCreateURLLoaderFactory(
 +      browser_context, frame, render_process_id, type, request_initiator,
 +      isolation_info, navigation_id, ukm_source_id, factory_builder,
 +      header_client, bypass_redirect_checks, disable_secure_dns,
-+      factory_override, navigation_response_task_runner);
++      factory_override, navigation_response_task_runner, is_for_network_service);
 +
 +#if BUILDFLAG(ENABLE_EXTENSIONS)
 +  if (!force_adblock_proxy_for_testing_ &&
@@ -3563,7 +3565,7 @@ diff --git a/components/adblock/content/browser/adblock_url_loader_factory.cc b/
 new file mode 100644
 --- /dev/null
 +++ b/components/adblock/content/browser/adblock_url_loader_factory.cc
-@@ -0,0 +1,808 @@
+@@ -0,0 +1,807 @@
 +/*
 + * This file is part of eyeo Chromium SDK,
 + * Copyright (C) 2006-present eyeo GmbH
@@ -3652,7 +3654,6 @@ new file mode 100644
 +    case network::mojom::RequestDestination::kWorker:
 +    case network::mojom::RequestDestination::kSharedWorker:
 +    case network::mojom::RequestDestination::kServiceWorker:
-+    case network::mojom::RequestDestination::kSharedStorageWorklet:
 +      return ContentType::Script;
 +    case network::mojom::RequestDestination::kImage:
 +      return ContentType::Image;
@@ -3674,7 +3675,7 @@ new file mode 100644
 +    case network::mojom::RequestDestination::kWebBundle:
 +      return ContentType::WebBundle;
 +    case network::mojom::RequestDestination::kAudioWorklet:
-+    case network::mojom::RequestDestination::kDictionary:
++    case network::mojom::RequestDestination::kCompressionDictionary:
 +    case network::mojom::RequestDestination::kJson:
 +    case network::mojom::RequestDestination::kManifest:
 +    case network::mojom::RequestDestination::kPaintWorklet:

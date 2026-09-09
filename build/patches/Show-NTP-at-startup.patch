@@ -382,7 +382,7 @@ diff --git a/chrome/browser/sessions/session_restore.cc b/chrome/browser/session
 +      if (is_selected_tab && !startup_tabs_.empty()) {
 +        is_selected_tab = false;
 +        if (browser != browser_) {
-+          browser->set_is_session_restore(false);
++          BrowserInitState::From(browser)->set_is_session_restore(false);
 +          did_show_browser = true;
 +        }
 +      }

@@ -6,10 +6,11 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
  chrome/browser/glic/BUILD.gn                        | 5 +++++
  chrome/browser/renderer_context_menu/BUILD.gn       | 6 +++---
+ chrome/browser/ui/webui/settings/BUILD.gn           | 7 +++++++
  chrome/browser/ui/webui/settings/settings_ui.cc     | 4 ++--
  components/compose/core/browser/compose_features.cc | 3 +++
  components/compose/features.gni                     | 2 +-
- 5 files changed, 14 insertions(+), 6 deletions(-)
+ 6 files changed, 21 insertions(+), 6 deletions(-)
 
 diff --git a/chrome/browser/glic/BUILD.gn b/chrome/browser/glic/BUILD.gn
 --- a/chrome/browser/glic/BUILD.gn
@@ -56,6 +57,30 @@ diff --git a/chrome/browser/renderer_context_menu/BUILD.gn b/chrome/browser/rend
        "//chrome/browser/context_hub",
        "//chrome/browser/devtools",
        "//chrome/browser/enterprise/data_controls:test_support",
+diff --git a/chrome/browser/ui/webui/settings/BUILD.gn b/chrome/browser/ui/webui/settings/BUILD.gn
+--- a/chrome/browser/ui/webui/settings/BUILD.gn
++++ b/chrome/browser/ui/webui/settings/BUILD.gn
+@@ -5,6 +5,7 @@
+ import("//build/config/ozone.gni")
+ import("//build/config/ui.gni")
+ import("//components/signin/features.gni")
++import("//components/compose/features.gni")
+ 
+ assert(is_win || is_mac || is_linux || is_chromeos)
+ 
+@@ -320,6 +321,12 @@ source_set("impl") {
+     "//v8:v8_version",
+   ]
+ 
++  if (!enable_compose) {
++    deps -= [
++      "//chrome/browser/compose",
++    ]
++  }
++
+   if (is_win || is_mac || is_linux) {
+     sources += [
+       "settings_default_browser_handler.cc",
 diff --git a/chrome/browser/ui/webui/settings/settings_ui.cc b/chrome/browser/ui/webui/settings/settings_ui.cc
 --- a/chrome/browser/ui/webui/settings/settings_ui.cc
 +++ b/chrome/browser/ui/webui/settings/settings_ui.cc

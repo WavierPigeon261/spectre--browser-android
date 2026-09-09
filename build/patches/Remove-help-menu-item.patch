@@ -12,6 +12,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../customtabs/BaseCustomTabActivity.java        |  1 -
  .../privacy/settings/PrivacySettings.java        |  1 +
  .../browser/settings/SettingsActivity.java       |  2 ++
+ .../browser/settings/SettingsMenuHelper.java     |  1 +
  .../sync/settings/GoogleServicesSettings.java    |  1 +
  .../sync/settings/ManageSyncSettings.java        |  1 +
  .../TabbedAppMenuPropertiesDelegate.java         |  2 +-
@@ -20,7 +21,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../PreloadPagesSettingsFragmentBase.java        |  1 +
  .../SafeBrowsingSettingsFragmentBase.java        |  1 +
  chrome/browser/ui/chrome_pages.cc                |  9 +++++++++
- 16 files changed, 19 insertions(+), 33 deletions(-)
+ 17 files changed, 20 insertions(+), 33 deletions(-)
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/KeyboardShortcuts.java b/chrome/android/java/src/org/chromium/chrome/browser/KeyboardShortcuts.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/KeyboardShortcuts.java
@@ -148,6 +149,17 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/Settin
          return super.onCreateOptionsMenu(menu);
      }
  
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsMenuHelper.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsMenuHelper.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsMenuHelper.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsMenuHelper.java
+@@ -77,6 +77,7 @@ public class SettingsMenuHelper {
+         help.setIcon(
+                 TraceEventVectorDrawableCompat.create(
+                         activity.getResources(), R.drawable.ic_help_24dp, activity.getTheme()));
++        help.setVisible(false);
+     }
+ 
+     /**
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/GoogleServicesSettings.java b/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/GoogleServicesSettings.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/GoogleServicesSettings.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/sync/settings/GoogleServicesSettings.java

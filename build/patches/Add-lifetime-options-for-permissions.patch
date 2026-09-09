@@ -57,6 +57,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../one_time_permissions_tracker.h            |  5 +-
  .../one_time_permissions_tracker_factory.cc   |  2 +-
  .../views/permissions/chip/chip_controller.cc |  2 +-
+ .../permissions/embedded_permission_prompt.cc |  2 +-
  ...exclusive_access_permission_prompt_view.cc |  2 +-
  .../permission_prompt_bubble_base_view.cc     |  2 +-
  .../site_settings/SingleWebsiteSettings.java  | 11 +++
@@ -72,7 +73,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/page_info/page_info.h              |  1 +
  .../permissions/PermissionDialogDelegate.java | 13 +++
  .../PermissionDialogModelFactory.java         | 83 ++++++++++++++++++-
- .../embedded_permission_prompt_android.cc     |  2 +-
+ .../embedded_permission_prompt_android.cc     |  4 +-
  .../embedded_permission_prompt_android.h      |  2 +-
  .../permission_dialog_delegate.cc             | 24 +++++-
  .../permission_dialog_delegate.h              |  1 +
@@ -88,7 +89,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/permissions/permission_request.h   | 17 +++-
  .../permissions/permission_request_manager.cc | 53 +++++++-----
  .../permissions/permission_request_manager.h  | 10 ++-
- 36 files changed, 533 insertions(+), 74 deletions(-)
+ 37 files changed, 535 insertions(+), 76 deletions(-)
 
 diff --git a/chrome/browser/permissions/last_tab_standing_tracker.cc b/chrome/browser/permissions/last_tab_standing_tracker.cc
 --- a/chrome/browser/permissions/last_tab_standing_tracker.cc
@@ -241,6 +242,18 @@ diff --git a/chrome/browser/ui/views/permissions/chip/chip_controller.cc b/chrom
        break;
      case permissions::PermissionAction::DENIED:
        active_chip_permission_request_manager_.value()->Deny(
+diff --git a/chrome/browser/ui/views/permissions/embedded_permission_prompt.cc b/chrome/browser/ui/views/permissions/embedded_permission_prompt.cc
+--- a/chrome/browser/ui/views/permissions/embedded_permission_prompt.cc
++++ b/chrome/browser/ui/views/permissions/embedded_permission_prompt.cc
+@@ -175,7 +175,7 @@ void EmbeddedPermissionPrompt::AllowThisTime() {
+   CHECK_NE(delegate()->Requests()[0]->GetContentSettingsType(),
+            ContentSettingsType::GEOLOCATION_WITH_OPTIONS);
+ 
+-  delegate()->AcceptThisTime(/*prompt_options=*/std::monostate());
++  delegate()->AcceptThisTime(/*prompt_options=*/std::monostate(), content_settings::mojom::LifetimeMode::ONLY_THIS_TIME);
+ }
+ 
+ void EmbeddedPermissionPrompt::Dismiss() {
 diff --git a/chrome/browser/ui/views/permissions/exclusive_access_permission_prompt_view.cc b/chrome/browser/ui/views/permissions/exclusive_access_permission_prompt_view.cc
 --- a/chrome/browser/ui/views/permissions/exclusive_access_permission_prompt_view.cc
 +++ b/chrome/browser/ui/views/permissions/exclusive_access_permission_prompt_view.cc
@@ -685,7 +698,7 @@ diff --git a/components/permissions/android/java/src/org/chromium/components/per
 diff --git a/components/permissions/android/permission_prompt/embedded_permission_prompt_android.cc b/components/permissions/android/permission_prompt/embedded_permission_prompt_android.cc
 --- a/components/permissions/android/permission_prompt/embedded_permission_prompt_android.cc
 +++ b/components/permissions/android/permission_prompt/embedded_permission_prompt_android.cc
-@@ -112,7 +112,7 @@ void EmbeddedPermissionPromptAndroid::Acknowledge(
+@@ -112,11 +112,11 @@ void EmbeddedPermissionPromptAndroid::Acknowledge(
  }
  
  void EmbeddedPermissionPromptAndroid::AcceptThisTime(
@@ -694,6 +707,11 @@ diff --git a/components/permissions/android/permission_prompt/embedded_permissio
    prompt_model_->PrecalculateVariantsForMetrics();
    prompt_model_->RecordPermissionActionUKM(
        permissions::ElementAnchoredBubbleAction::kGrantedOnce);
+-  delegate()->AcceptThisTime(prompt_options);
++  delegate()->AcceptThisTime(prompt_options, lifetimeOption);
+ }
+ 
+ void EmbeddedPermissionPromptAndroid::Deny(
 diff --git a/components/permissions/android/permission_prompt/embedded_permission_prompt_android.h b/components/permissions/android/permission_prompt/embedded_permission_prompt_android.h
 --- a/components/permissions/android/permission_prompt/embedded_permission_prompt_android.h
 +++ b/components/permissions/android/permission_prompt/embedded_permission_prompt_android.h

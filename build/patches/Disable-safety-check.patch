@@ -10,7 +10,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../PasswordCheckupLauncher.java              | 25 -------------
  .../settings/FragmentDependencyProvider.java  | 35 -------------------
  .../chrome/browser/settings/MainSettings.java |  2 +-
- .../settings/SettingsNavigationImpl.java      |  3 +-
+ .../settings/SettingsFragmentRegistry.java    |  2 --
+ .../settings/SettingsNavigationImpl.java      |  5 +--
  .../search/SearchIndexProviderRegistry.java   |  2 --
  chrome/browser/android/BUILD.gn               |  1 -
  .../privacy_page/privacy_page_index.ts        |  2 +-
@@ -18,7 +19,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../safety_check/SafetyCheckBridge.java       |  4 +--
  .../suggestions/action/OmniboxPedal.java      |  3 --
  .../Disable-safety-check.inc                  |  1 +
- 14 files changed, 7 insertions(+), 81 deletions(-)
+ 15 files changed, 7 insertions(+), 85 deletions(-)
  create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-safety-check.inc
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
@@ -200,26 +201,48 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/MainSe
      }
  
      private static boolean shouldShowNotificationPref(Context context, Intent intent) {
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsFragmentRegistry.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsFragmentRegistry.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsFragmentRegistry.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsFragmentRegistry.java
+@@ -39,7 +39,6 @@ import org.chromium.chrome.browser.privacy.settings.PrivacySettings;
+ import org.chromium.chrome.browser.safe_browsing.settings.EnhancedProtectionSettingsFragment;
+ import org.chromium.chrome.browser.safe_browsing.settings.SafeBrowsingSettingsFragment;
+ import org.chromium.chrome.browser.safe_browsing.settings.StandardProtectionSettingsFragment;
+-import org.chromium.chrome.browser.safety_check.SafetyCheckSettingsFragment;
+ import org.chromium.chrome.browser.safety_hub.SafetyHubFragment;
+ import org.chromium.chrome.browser.search_engines.settings.SearchEngineSettings;
+ import org.chromium.chrome.browser.search_engines.settings.SiteSearchSettings;
+@@ -126,7 +125,6 @@ public class SettingsFragmentRegistry {
+ 
+         // Safety Check / Safety Hub
+         registerMapping("/safetyCheck", SafetyHubFragment.class);
+-        registerMapping("/notifications", SafetyCheckSettingsFragment.class);
+ 
+         // Autofill & Passwords
+         // TODO(mwoj): There are some missing here, but it's not obvious which.
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsNavigationImpl.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsNavigationImpl.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsNavigationImpl.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/SettingsNavigationImpl.java
-@@ -53,7 +53,6 @@ import org.chromium.chrome.browser.safe_browsing.settings.EnhancedProtectionSett
+@@ -52,8 +52,6 @@ import org.chromium.chrome.browser.privacy.settings.PrivacySettings;
+ import org.chromium.chrome.browser.safe_browsing.settings.EnhancedProtectionSettingsFragment;
  import org.chromium.chrome.browser.safe_browsing.settings.SafeBrowsingSettingsFragment;
  import org.chromium.chrome.browser.safe_browsing.settings.StandardProtectionSettingsFragment;
- import org.chromium.chrome.browser.safety_check.SafetyCheckSettingsFragment;
+-import org.chromium.chrome.browser.safety_check.SafetyCheckSettingsFragment;
 -import org.chromium.chrome.browser.safety_hub.SafetyHubFragment;
  import org.chromium.chrome.browser.search_engines.settings.SearchEngineSettings;
  import org.chromium.chrome.browser.search_engines.settings.SiteSearchSettings;
  import org.chromium.chrome.browser.settings.search.SearchResultsPreferenceFragment;
-@@ -378,7 +377,7 @@ public class SettingsNavigationImpl implements SettingsNavigation {
+@@ -378,9 +376,8 @@ public class SettingsNavigationImpl implements SettingsNavigation {
              case SettingsFragment.SAFE_BROWSING_STANDARD:
                  return StandardProtectionSettingsFragment.class;
              case SettingsFragment.SAFETY_CHECK:
 -                return SafetyHubFragment.class;
-+                return null;
              case SettingsFragment.SAFETY_CHECK_SETTINGS:
-                 return SafetyCheckSettingsFragment.class;
+-                return SafetyCheckSettingsFragment.class;
++                return null;
              case SettingsFragment.SEARCH_ENGINE:
+                 return SearchEngineSettings.class;
+             case SettingsFragment.SEARCH_RESULTS:
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/settings/search/SearchIndexProviderRegistry.java b/chrome/android/java/src/org/chromium/chrome/browser/settings/search/SearchIndexProviderRegistry.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/settings/search/SearchIndexProviderRegistry.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/settings/search/SearchIndexProviderRegistry.java

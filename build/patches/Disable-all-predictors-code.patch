@@ -10,6 +10,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../chrome_autocomplete_provider_client.cc    |   4 +-
  chrome/browser/autofill/BUILD.gn              |   4 +-
  ...ld_classification_model_service_factory.cc |  19 +--
+ .../ai_embeddings_component_installer.cc      |  37 +-----
  .../background_download_service_factory.cc    |   2 +-
  .../history_embeddings_utils.cc               |   5 +
  .../preloading_model_keyed_service.cc         |   2 +
@@ -78,7 +79,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/optimization_guide/features.gni    |   2 +-
  .../page_category_classifier_bridge_impl.cc   |   4 +
  .../page_category_classifier_bridge_impl.h    |   3 +
- .../core/page_content_annotations_features.cc |   8 ++
+ .../core/page_content_annotations_features.cc |   6 +
  .../page_content_annotations_model_manager.cc |   1 +
  .../core/page_content_annotations_service.cc  |   6 +
  .../core/page_content_annotations_service.h   |   9 +-
@@ -92,7 +93,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  content/browser/gpu/gpu_process_host.cc       |   6 +-
  .../service_worker_main_resource_loader.cc    |   1 +
  content/utility/services.cc                   |  16 +--
- content/utility/webnn/webnn_sandbox_init.cc   |   2 +-
+ content/utility/webnn/webnn_sandbox_init.cc   |   7 ++
  .../Disable-all-predictors-code.inc           |   2 +
  .../Disable-all-predictors-code.inc           |   1 +
  .../Disable-all-predictors-code.inc           |   2 +
@@ -103,7 +104,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Disable-all-predictors-code.inc           |   2 +
  media/webrtc/BUILD.gn                         |   1 +
  media/webrtc/helpers.cc                       |   1 +
- services/on_device_model/BUILD.gn             |   6 +-
+ services/on_device_model/BUILD.gn             |   8 +-
+ services/on_device_model/android/BUILD.gn     |  10 +-
  services/on_device_model/fake/BUILD.gn        |  10 +-
  .../fake/fake_chrome_ml_api.cc                |   4 +
  .../fake/on_device_model_fake.cc              |   4 +-
@@ -126,7 +128,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../core/html/parser/html_document_parser.cc  |   1 +
  .../document_speculation_rules.cc             |   1 +
  .../platform/runtime_enabled_features.json5   |   2 +-
- 121 files changed, 380 insertions(+), 403 deletions(-)
+ 123 files changed, 393 insertions(+), 442 deletions(-)
  create mode 100644 cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/browser/flags/android/chrome_feature_list_cc/Disable-all-predictors-code.inc
  create mode 100644 cromite_flags/chrome/common/chrome_features_cc/Disable-all-predictors-code.inc
@@ -234,6 +236,67 @@ diff --git a/chrome/browser/autofill/autofill_field_classification_model_service
  }
  
  }  // namespace autofill
+diff --git a/chrome/browser/component_updater/ai_embeddings_component_installer.cc b/chrome/browser/component_updater/ai_embeddings_component_installer.cc
+--- a/chrome/browser/component_updater/ai_embeddings_component_installer.cc
++++ b/chrome/browser/component_updater/ai_embeddings_component_installer.cc
+@@ -106,28 +106,6 @@ class AIEmbeddingsComponentInstallerPolicy
+   void ComponentReady(const base::Version& version,
+                       const base::FilePath& install_dir,
+                       base::DictValue manifest) override {
+-    optimization_guide::proto::PassageEmbeddingsModelMetadata metadata;
+-    metadata.set_input_window_size(2048);
+-    metadata.set_output_size(768);
+-
+-    std::optional<optimization_guide::proto::Any> any_metadata =
+-        optimization_guide::AnyWrapProto(metadata);
+-
+-    uint64_t version_num = 0;
+-    for (uint32_t component : version.components()) {
+-      version_num = (version_num << 16) + component;
+-    }
+-
+-    optimization_guide::ModelInfo model_info{
+-        .model_file_path = GetInstalledModelPath(install_dir),
+-        .additional_files = {GetInstalledSpModelPath(install_dir)},
+-        .version = static_cast<int64_t>(version_num),
+-        .model_metadata = any_metadata,
+-    };
+-
+-    AISemanticEmbedderServiceLauncher::Get()
+-        ->controller()
+-        ->MaybeUpdateModelInfo(&model_info);
+   }
+ 
+   base::FilePath GetRelativeInstallDir() const override {
+@@ -173,10 +151,7 @@ void RegisterAIEmbeddingsComponent(
+     return;
+   }
+ 
+-  if (optimization_guide::
+-          GetGenAILocalFoundationalModelEnterprisePolicySettings(local_state) ==
+-      optimization_guide::model_execution::prefs::
+-          GenAILocalFoundationalModelEnterprisePolicySettings::kDisallowed) {
++  if ((true)) {
+     base::SequencedTaskRunner::GetCurrentDefault()->PostTask(
+         FROM_HERE, base::BindOnce(std::move(callback), false));
+     return;
+@@ -189,15 +164,7 @@ void RegisterAIEmbeddingsComponent(
+ 
+ void ManageAIEmbeddingsComponentRegistration(ComponentUpdateService* cus,
+                                              PrefService* local_state) {
+-  if (!local_state->GetBoolean(
+-          optimization_guide::model_execution::prefs::localstate::
+-              kOnDeviceAiUserSettingsEnabled) ||
+-      optimization_guide::
+-              GetGenAILocalFoundationalModelEnterprisePolicySettings(
+-                  local_state) ==
+-          optimization_guide::model_execution::prefs::
+-              GenAILocalFoundationalModelEnterprisePolicySettings::
+-                  kDisallowed) {
++  if ((true)) {
+     local_state->SetBoolean(optimization_guide::model_execution::prefs::
+                                 localstate::kEmbeddingApiModelDownloadEligible,
+                             false);
 diff --git a/chrome/browser/download/background_download_service_factory.cc b/chrome/browser/download/background_download_service_factory.cc
 --- a/chrome/browser/download/background_download_service_factory.cc
 +++ b/chrome/browser/download/background_download_service_factory.cc
@@ -1197,7 +1260,7 @@ diff --git a/chrome/browser/ui/autofill/chrome_autofill_client.cc b/chrome/brows
 diff --git a/chrome/browser/ui/tab_helpers.cc b/chrome/browser/ui/tab_helpers.cc
 --- a/chrome/browser/ui/tab_helpers.cc
 +++ b/chrome/browser/ui/tab_helpers.cc
-@@ -497,7 +497,6 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents,
+@@ -495,7 +495,6 @@ void TabHelpers::AttachTabHelpers(WebContents* web_contents,
    }
    MixedContentSettingsTabHelper::CreateForWebContents(web_contents);
    NavigationMetricsRecorder::CreateForWebContents(web_contents);
@@ -2278,13 +2341,11 @@ diff --git a/components/page_content_annotations/core/page_content_annotations_f
    if (!base::FeatureList::IsEnabled(feature)) {
      return false;
    }
-@@ -339,4 +344,7 @@ bool IsSupportedCountryForFeature(const std::string& country_code,
+@@ -339,4 +344,5 @@ bool IsSupportedCountryForFeature(const std::string& country_code,
    return IsSupportedCountry(country_code, value);
  }
  
-+SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotations);
 +SET_CROMITE_FEATURE_DISABLED(kPageContentAnnotationsValidation);
-+SET_CROMITE_FEATURE_DISABLED(kRemotePageMetadata);
  }  // namespace page_content_annotations::features
 diff --git a/components/page_content_annotations/core/page_content_annotations_model_manager.cc b/components/page_content_annotations/core/page_content_annotations_model_manager.cc
 --- a/components/page_content_annotations/core/page_content_annotations_model_manager.cc
@@ -2638,15 +2699,20 @@ diff --git a/content/utility/services.cc b/content/utility/services.cc
 diff --git a/content/utility/webnn/webnn_sandbox_init.cc b/content/utility/webnn/webnn_sandbox_init.cc
 --- a/content/utility/webnn/webnn_sandbox_init.cc
 +++ b/content/utility/webnn/webnn_sandbox_init.cc
-@@ -58,7 +58,7 @@ bool PreSandboxInit() {
+@@ -23,6 +23,13 @@ namespace webnn {
  
-   auto env_result = ort::Environment::InitializeForCompilerProcess(
-       library_path, *device_info);
--  if (!env_result.has_value()) {
-+  if (true) {
-     LOG(ERROR) << "[WebNN] Failed to initialize ORT Environment before "
-                   "sandbox lockdown: "
-                << env_result.error();
+ #if BUILDFLAG(IS_WIN)
+ 
++bool PreSandboxInit() {
++  LOG(ERROR) << "[WebNN] ORT Environment is removed.";
++  return false;
++}
++
++#elif ((false))
++
+ bool PreSandboxInit() {
+   // Stage 2 of the WebNN compiler sandbox: load and one-time-initialize
+   // the third-party execution-provider preload helper. This runs after
 diff --git a/cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc b/cromite_flags/chrome/browser/browser_features_cc/Disable-all-predictors-code.inc
 new file mode 100644
 --- /dev/null
@@ -2727,16 +2793,16 @@ diff --git a/media/webrtc/helpers.cc b/media/webrtc/helpers.cc
 diff --git a/services/on_device_model/BUILD.gn b/services/on_device_model/BUILD.gn
 --- a/services/on_device_model/BUILD.gn
 +++ b/services/on_device_model/BUILD.gn
-@@ -28,7 +28,7 @@ if (use_blink || (is_ios && build_with_internal_optimization_guide)) {
+@@ -25,6 +25,8 @@ component("backend_interfaces") {
+ 
+ if (use_blink || (is_ios && build_with_internal_optimization_guide)) {
+   component("on_device_model_service") {
++  }
++  component("on_device_model_service_notused") {
      sources = [
        "on_device_model_mojom_impl.cc",
        "on_device_model_mojom_impl.h",
--      "on_device_model_service.cc",
-+      # "on_device_model_service.cc",
-       "on_device_model_service.h",
-     ]
-     deps = [
-@@ -37,7 +37,7 @@ if (use_blink || (is_ios && build_with_internal_optimization_guide)) {
+@@ -37,7 +39,7 @@ if (use_blink || (is_ios && build_with_internal_optimization_guide)) {
        "//build:chromecast_buildflags",
        "//components/optimization_guide/core:features",
        "//services/on_device_model/fake",
@@ -2745,7 +2811,16 @@ diff --git a/services/on_device_model/BUILD.gn b/services/on_device_model/BUILD.
  
        # TODO(crbug.com/41492700): Remove this once possible. This is a hack due
        # to an implicit dependency via //third_party/utf via language_detection
-@@ -90,7 +90,7 @@ if (use_blink || (is_ios && build_with_internal_optimization_guide)) {
+@@ -46,7 +48,7 @@ if (use_blink || (is_ios && build_with_internal_optimization_guide)) {
+       "//third_party/utf",
+     ]
+     if (!is_fuchsia) {
+-      deps += [ "//services/on_device_model/safety:safety_model_holder" ]
++      #deps += [ "//services/on_device_model/safety:safety_model_holder" ]
+     }
+     public_deps = [
+       "//base",
+@@ -90,7 +92,7 @@ if (use_blink || (is_ios && build_with_internal_optimization_guide)) {
        "//base/test:test_support",
        "//mojo/public/cpp/test_support:test_utils",
        "//services/on_device_model/fake",
@@ -2754,6 +2829,39 @@ diff --git a/services/on_device_model/BUILD.gn b/services/on_device_model/BUILD.
        "//services/on_device_model/public/cpp/test_support",
        "//services/on_device_model/public/mojom",
        "//testing/gmock",
+diff --git a/services/on_device_model/android/BUILD.gn b/services/on_device_model/android/BUILD.gn
+--- a/services/on_device_model/android/BUILD.gn
++++ b/services/on_device_model/android/BUILD.gn
+@@ -72,15 +72,15 @@ android_library("java") {
+     "java/src/org/chromium/on_device_model/AiCoreFactory.java",
+     "java/src/org/chromium/on_device_model/AiCoreModelDownloaderBackend.java",
+     "java/src/org/chromium/on_device_model/AiCoreModelDownloaderBackendUpstreamImpl.java",
+-    "java/src/org/chromium/on_device_model/AiCoreModelDownloaderWrapper.java",
++    # "java/src/org/chromium/on_device_model/AiCoreModelDownloaderWrapper.java",
+     "java/src/org/chromium/on_device_model/AiCoreSessionBackend.java",
+     "java/src/org/chromium/on_device_model/AiCoreSessionBackendUpstreamImpl.java",
+-    "java/src/org/chromium/on_device_model/AiCoreSessionWrapper.java",
++    # "java/src/org/chromium/on_device_model/AiCoreSessionWrapper.java",
+     "java/src/org/chromium/on_device_model/DownloaderResponder.java",
+     "java/src/org/chromium/on_device_model/GenerateOptionsHelper.java",
+     "java/src/org/chromium/on_device_model/InputPieceHelper.java",
+     "java/src/org/chromium/on_device_model/JniSafeCallback.java",
+-    "java/src/org/chromium/on_device_model/OnDeviceModelBridge.java",
++    # "java/src/org/chromium/on_device_model/OnDeviceModelBridge.java",
+     "java/src/org/chromium/on_device_model/SessionResponder.java",
+   ]
+ 
+@@ -139,8 +139,8 @@ android_library("native_java_unittests_java") {
+ 
+ generate_jni("jni_headers") {
+   sources = [
+-    "java/src/org/chromium/on_device_model/AiCoreModelDownloaderWrapper.java",
+-    "java/src/org/chromium/on_device_model/AiCoreSessionWrapper.java",
++    # "java/src/org/chromium/on_device_model/AiCoreModelDownloaderWrapper.java",
++    # "java/src/org/chromium/on_device_model/AiCoreSessionWrapper.java",
+     "java/src/org/chromium/on_device_model/GenerateOptionsHelper.java",
+     "java/src/org/chromium/on_device_model/InputPieceHelper.java",
+     "java/src/org/chromium/on_device_model/OnDeviceModelBridge.java",
 diff --git a/services/on_device_model/fake/BUILD.gn b/services/on_device_model/fake/BUILD.gn
 --- a/services/on_device_model/fake/BUILD.gn
 +++ b/services/on_device_model/fake/BUILD.gn
@@ -3209,7 +3317,7 @@ diff --git a/third_party/blink/renderer/core/speculation_rules/document_speculat
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -4812,7 +4812,7 @@
+@@ -4813,7 +4813,7 @@
        //
        // It also has some feature params defined throughout the codebase.
        name: "Prerender2",

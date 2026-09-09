@@ -24,9 +24,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../chromium/chrome/browser/tab/TabUtils.java |   8 +-
  .../browser/android/content/content_utils.cc  |  29 +++
  .../preferences/browser_prefs_android.cc      |   7 +
- .../privacy_preferences_manager_impl.cc       | 111 ++++++++++
- ...ktop_site_web_contents_observer_android.cc |  11 +
- ...sktop_site_web_contents_observer_android.h |   2 +
+ .../privacy_preferences_manager_impl.cc       | 110 ++++++++++
+ ...ktop_site_web_contents_observer_android.cc |  12 ++
  .../preferences/ChromePreferenceKeys.java     |   2 -
  .../settings/PrivacyPreferencesManager.java   |   8 +
  .../org/chromium/chrome/browser/tab/Tab.java  |   2 +
@@ -44,7 +43,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/web_contents/web_contents_impl.cc |   6 +-
  .../framehost/NavigationControllerImpl.java   |   3 +-
  content/renderer/render_thread_impl.cc        |   1 -
- 34 files changed, 778 insertions(+), 17 deletions(-)
+ 33 files changed, 776 insertions(+), 17 deletions(-)
  create mode 100644 chrome/android/java/res/layout/custom_useragent_preferences.xml
  create mode 100644 chrome/android/java/res/xml/useragent_preferences.xml
  create mode 100644 chrome/android/java/src/org/chromium/chrome/browser/settings/UserAgentPreferences.java
@@ -732,7 +731,7 @@ diff --git a/chrome/browser/android/preferences/browser_prefs_android.cc b/chrom
 diff --git a/chrome/browser/android/preferences/privacy_preferences_manager_impl.cc b/chrome/browser/android/preferences/privacy_preferences_manager_impl.cc
 --- a/chrome/browser/android/preferences/privacy_preferences_manager_impl.cc
 +++ b/chrome/browser/android/preferences/privacy_preferences_manager_impl.cc
-@@ -12,6 +12,24 @@
+@@ -12,6 +12,23 @@
  #include "components/metrics/metrics_reporting_choice_service.h"
  #include "components/policy/core/common/features.h"
  #include "components/prefs/pref_service.h"
@@ -744,7 +743,6 @@ diff --git a/chrome/browser/android/preferences/privacy_preferences_manager_impl
 +#include "base/command_line.h"
 +#include "base/base_switches.h"
 +#include "chrome/common/chrome_switches.h"
-+#include "content/browser/attribution_reporting/attribution_manager.h"
 +#include "content/browser/cpu_performance/cpu_performance.h"
 +#include "content/browser/renderer_host/render_process_host_impl.h"
 +#include "content/common/renderer.mojom.h"
@@ -757,7 +755,7 @@ diff --git a/chrome/browser/android/preferences/privacy_preferences_manager_impl
  
  // Must come after all headers that specialize FromJniType() / ToJniType().
  #include "chrome/android/chrome_jni_headers/PrivacyPreferencesManagerImpl_jni.h"
-@@ -41,4 +59,97 @@ JNI_PrivacyPreferencesManagerImpl_ShouldUseMetricsChoiceRestructure() {
+@@ -41,4 +58,97 @@ JNI_PrivacyPreferencesManagerImpl_ShouldUseMetricsChoiceRestructure() {
        ShouldUseMetricsConsentRestructure();
  }
  
@@ -858,7 +856,12 @@ diff --git a/chrome/browser/android/preferences/privacy_preferences_manager_impl
 diff --git a/chrome/browser/content_settings/request_desktop_site_web_contents_observer_android.cc b/chrome/browser/content_settings/request_desktop_site_web_contents_observer_android.cc
 --- a/chrome/browser/content_settings/request_desktop_site_web_contents_observer_android.cc
 +++ b/chrome/browser/content_settings/request_desktop_site_web_contents_observer_android.cc
-@@ -18,6 +18,7 @@
+@@ -14,10 +14,12 @@
+ #include "base/metrics/histogram_functions.h"
+ #include "base/strings/string_split.h"
+ #include "base/strings/string_util.h"
++#include "chrome/browser/android/tab_android.h"
+ #include "chrome/browser/content_settings/host_content_settings_map_factory.h"
  #include "chrome/browser/flags/android/chrome_feature_list.h"
  #include "chrome/browser/preferences/android/chrome_shared_preferences.h"
  #include "chrome/browser/profiles/profile.h"
@@ -866,22 +869,15 @@ diff --git a/chrome/browser/content_settings/request_desktop_site_web_contents_o
  #include "chrome/common/chrome_switches.h"
  #include "components/content_settings/core/common/content_settings_utils.h"
  #include "components/content_settings/core/common/pref_names.h"
-@@ -47,6 +48,7 @@ RequestDesktopSiteWebContentsObserverAndroid::
-   host_content_settings_map_ =
-       HostContentSettingsMapFactory::GetForProfile(profile);
-   pref_service_ = profile->GetPrefs();
-+  tab_android_ = TabAndroid::FromWebContents(contents);
- }
- 
- RequestDesktopSiteWebContentsObserverAndroid::
-@@ -62,6 +64,15 @@ void RequestDesktopSiteWebContentsObserverAndroid::DidStartNavigation(
+@@ -62,6 +64,16 @@ void RequestDesktopSiteWebContentsObserverAndroid::DidStartNavigation(
      return;
    }
  
 +  // Stop UA override if there is a tab level setting.
++  auto* tab_android = TabAndroid::FromWebContents(web_contents());
 +  TabModel::TabUserAgent tabSetting =
-+      tab_android_
-+          ? static_cast<TabModel::TabUserAgent>(tab_android_->GetUserAgent())
++      tab_android
++          ? static_cast<TabModel::TabUserAgent>(tab_android->GetUserAgent())
 +          : TabModel::TabUserAgent::DEFAULT;
 +  if (tabSetting != TabModel::TabUserAgent::DEFAULT) {
 +    return;
@@ -890,25 +886,6 @@ diff --git a/chrome/browser/content_settings/request_desktop_site_web_contents_o
    const GURL& url = navigation_handle->GetParentFrameOrOuterDocument()
                          ? navigation_handle->GetParentFrameOrOuterDocument()
                                ->GetOutermostMainFrame()
-diff --git a/chrome/browser/content_settings/request_desktop_site_web_contents_observer_android.h b/chrome/browser/content_settings/request_desktop_site_web_contents_observer_android.h
---- a/chrome/browser/content_settings/request_desktop_site_web_contents_observer_android.h
-+++ b/chrome/browser/content_settings/request_desktop_site_web_contents_observer_android.h
-@@ -5,6 +5,7 @@
- #ifndef CHROME_BROWSER_CONTENT_SETTINGS_REQUEST_DESKTOP_SITE_WEB_CONTENTS_OBSERVER_ANDROID_H_
- #define CHROME_BROWSER_CONTENT_SETTINGS_REQUEST_DESKTOP_SITE_WEB_CONTENTS_OBSERVER_ANDROID_H_
- 
-+#include "chrome/browser/android/tab_android.h"
- #include "components/content_settings/core/browser/host_content_settings_map.h"
- #include "content/public/browser/web_contents_observer.h"
- #include "content/public/browser/web_contents_user_data.h"
-@@ -40,6 +41,7 @@ class RequestDesktopSiteWebContentsObserverAndroid
-   bool ShouldAllowOnExternalDisplay(bool is_global_setting);
-   raw_ptr<HostContentSettingsMap> host_content_settings_map_;
-   raw_ptr<PrefService> pref_service_;
-+  raw_ptr<TabAndroid> tab_android_ = nullptr;
- 
-   // The display size threshold in inches for enabling desktop user agent on
-   // connected displays.
 diff --git a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
 --- a/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java
 +++ b/chrome/browser/preferences/android/java/src/org/chromium/chrome/browser/preferences/ChromePreferenceKeys.java

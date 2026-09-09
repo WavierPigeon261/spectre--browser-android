@@ -6,7 +6,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/android/java/res/values/ids.xml        |  1 +
  .../chrome/browser/ChromeTabbedActivity.java  | 41 ++++++++++++++++++
- .../TabbedAppMenuPropertiesDelegate.java      | 21 ++++++++++
+ .../TabbedAppMenuPropertiesDelegate.java      | 27 ++++++++++++
  .../bookmarks/android/bookmark_bridge.cc      | 42 +++++++++++++++++++
  .../bookmarks/android/bookmark_bridge.h       |  8 ++++
  .../browser/bookmarks/BookmarkBridge.java     | 41 ++++++++++++++++++
@@ -32,7 +32,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/bookmarks/browser/model_loader.cc  |  9 +++-
  .../bookmarks/bookmark_event_translator.cc    |  1 +
  .../bookmark_specifics_conversions.cc         |  1 +
- 28 files changed, 257 insertions(+), 14 deletions(-)
+ 28 files changed, 263 insertions(+), 14 deletions(-)
 
 diff --git a/chrome/android/java/res/values/ids.xml b/chrome/android/java/res/values/ids.xml
 --- a/chrome/android/java/res/values/ids.xml
@@ -120,7 +120,7 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedAppMenuPropertiesDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedAppMenuPropertiesDelegate.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedAppMenuPropertiesDelegate.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/TabbedAppMenuPropertiesDelegate.java
-@@ -438,6 +438,17 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
+@@ -438,6 +438,20 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
          // Bookmarks
          modelList.add(mBookmarksItemBuilder.buildBookmarksItem(shouldShowIconBeforeItem));
  
@@ -128,17 +128,20 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
 +        modelList.add(
 +                new MVCListAdapter.ListItem(
 +                        AppMenuHandler.AppMenuItemType.STANDARD,
-+                        buildModelForStandardMenuItem(
++                        AppMenuItemUtils.buildModelForStandardMenuItem(
++                                mContext,
++                                getAppMenuItemTheme(),
 +                                R.id.bookmark_all_tabs_menu_id,
 +                                R.string.menu_bookmark_all_tabs,
 +                                shouldShowIconBeforeItem
 +                                        ? R.drawable.ic_folder_blue_24dp
-+                                        : 0)));
++                                        : 0,
++                                isMenuIconAtStart())));
 +
          // Recent Tabs
          if (mHistoryItemBuilder.shouldShowRecentTabsItem()) {
              modelList.add(mHistoryItemBuilder.buildRecentTabsItem(shouldShowIconBeforeItem));
-@@ -834,6 +845,16 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
+@@ -840,6 +854,19 @@ public class TabbedAppMenuPropertiesDelegate extends AppMenuPropertiesDelegateIm
          modelList.add(mTabGroupItemBuilder.buildNewTabGroupItemWithoutTab());
          modelList.add(buildCloseAllTabsItem());
          if (shouldShowSelectTabsItem()) modelList.add(buildSelectTabsItem());
@@ -146,12 +149,15 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/tabbed_mode/Tab
 +        modelList.add(
 +                new MVCListAdapter.ListItem(
 +                        AppMenuHandler.AppMenuItemType.STANDARD,
-+                        buildModelForStandardMenuItem(
++                        AppMenuItemUtils.buildModelForStandardMenuItem(
++                                mContext,
++                                getAppMenuItemTheme(),
 +                                R.id.bookmark_all_tabs_menu_id,
 +                                R.string.menu_bookmark_all_tabs,
 +                                shouldShowIconBeforeItem()
 +                                        ? R.drawable.ic_folder_blue_24dp
-+                                        : 0)));
++                                        : 0,
++                                isMenuIconAtStart())));
          if (shouldShowQuickDeleteItem()) modelList.add(buildQuickDeleteItem());
          modelList.add(buildSettingsItem());
      }

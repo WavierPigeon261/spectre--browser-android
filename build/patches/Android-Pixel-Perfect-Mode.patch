@@ -94,7 +94,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  third_party/blink/renderer/core/page/page.cc  |  4 ++
  .../core/page/viewport_description.cc         |  2 +-
  .../canvas2d/base_rendering_context_2d.cc     |  5 +-
- .../platform/runtime_enabled_features.json5   |  4 ++
+ .../platform/runtime_enabled_features.json5   |  5 ++
  .../widget/input/input_handler_proxy.cc       | 48 +++++++++++++------
  .../renderer/platform/widget/widget_base.cc   | 26 +++++-----
  .../renderer/platform/widget/widget_base.h    |  2 +-
@@ -109,7 +109,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  ui/display/mojom/screen_info_mojom_traits.h   |  4 ++
  ui/display/screen_info.h                      |  1 +
  ui/events/blink/blink_event_util.cc           |  2 +-
- 99 files changed, 528 insertions(+), 136 deletions(-)
+ 99 files changed, 529 insertions(+), 136 deletions(-)
  create mode 100644 chrome/browser/flags/android/java/src/org/chromium/chrome/browser/flags/cromite/sPixelPerfect.java
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Pixel-perfect-mode.grdp
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Pixel-perfect-mode.inc
@@ -2017,13 +2017,14 @@ diff --git a/third_party/blink/renderer/modules/canvas/canvas2d/base_rendering_c
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -7458,5 +7458,9 @@
+@@ -7445,5 +7445,10 @@
        // crbug.com/435623334.
        name: "XSLTSpecialTrial",
      },
 +    {
 +      name: "PixelPerfect",
 +      public: true,
++      base_feature: "none",
 +    },
    ],
  }

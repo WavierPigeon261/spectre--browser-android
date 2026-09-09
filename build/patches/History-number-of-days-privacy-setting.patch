@@ -16,7 +16,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../history/history_service_factory.cc        |  2 +
  chrome/browser/profiles/profile_impl.cc       |  1 +
  .../settings/privacy_page/privacy_page.html   |  9 +++
- .../settings/privacy_page/privacy_page.ts     | 19 ++++++
+ .../settings/privacy_page/privacy_page.ts     | 20 ++++++
  .../strings/android_chrome_strings.grd        | 12 ++++
  .../settings_localized_strings_provider.cc    |  5 ++
  .../preference_spinner_single_line.xml        | 26 ++++++--
@@ -36,7 +36,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../history_embeddings/core/sql_database.cc   |  2 +-
  .../omnibox/browser/shortcuts_backend.cc      |  4 +-
  .../utility/safari_data_importer.cc           |  2 +-
- 26 files changed, 265 insertions(+), 17 deletions(-)
+ 26 files changed, 266 insertions(+), 17 deletions(-)
  create mode 100644 components/cromite_components_strings_grd/History-number-of-days-privacy-setting.grdp
 
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
@@ -230,7 +230,15 @@ diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/ch
  import 'chrome://resources/cr_elements/icons.html.js';
  import 'chrome://resources/cr_elements/cr_link_row/cr_link_row.js';
  import 'chrome://resources/cr_elements/cr_shared_style.css.js';
-@@ -61,6 +62,23 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
+@@ -25,6 +26,7 @@ import {I18nMixin} from 'chrome://resources/cr_elements/i18n_mixin.js';
+ import {assert, assertNotReached} from 'chrome://resources/js/assert.js';
+ import {focusWithoutInk} from 'chrome://resources/js/focus_without_ink.js';
+ import {afterNextRender, PolymerElement} from 'chrome://resources/polymer/v3_0/polymer/polymer_bundled.min.js';
++import {loadTimeData} from 'chrome://resources/js/load_time_data.js';
+ 
+ import type {MetricsBrowserProxy} from '../metrics_browser_proxy.js';
+ import {MetricsBrowserProxyImpl, PrivacyGuideInteractions} from '../metrics_browser_proxy.js';
+@@ -61,6 +63,23 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
  
    static get properties() {
      return {
@@ -254,7 +262,7 @@ diff --git a/chrome/browser/resources/settings/privacy_page/privacy_page.ts b/ch
        showClearBrowsingDataDialog_: Boolean,
        showPrivacyGuideDialog_: Boolean,
  
-@@ -78,6 +96,7 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
+@@ -78,6 +97,7 @@ export class SettingsPrivacyPageElement extends SettingsPrivacyPageElementBase {
      };
    }
  

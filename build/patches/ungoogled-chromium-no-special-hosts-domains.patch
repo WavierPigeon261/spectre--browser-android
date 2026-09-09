@@ -39,6 +39,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../updater_status_and_value_provider.cc      |  22 +-
  chrome/browser/profile_resetter/BUILD.gn      |   5 +-
  .../profile_resetter/profile_resetter.cc      |   3 +-
+ .../settings/autofill_page/autofill_page.html |  16 -
  .../privacy_page/security/security_page.html  |   6 -
  chrome/browser/safe_browsing/BUILD.gn         |   1 -
  chrome/browser/search_engines/BUILD.gn        |   1 -
@@ -53,6 +54,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../omnibox/geo/GeolocationHeader.java        |   1 +
  .../ui/webui/new_tab_page/new_tab_page_ui.cc  |   8 -
  chrome/browser/ui/webui/ntp/new_tab_ui.cc     |   3 +-
+ chrome/browser/ui/webui/settings/BUILD.gn     |   2 -
  chrome/browser/upgrade_detector/BUILD.gn      |   2 -
  .../upgrade_detector/upgrade_detector_impl.cc |   6 -
  chrome/common/BUILD.gn                        |   2 -
@@ -68,6 +70,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  components/domain_reliability/uploader.cc     |   2 +-
  components/google/core/common/google_util.cc  | 332 +-----------------
  components/google/core/common/google_util.h   |  15 +-
+ .../omnibox/OmniboxCapabilities.java          |   2 +-
  .../browser/page_load_metrics_util.cc         |   3 +-
  .../google/browser/google_url_util.cc         |   1 +
  .../search_engines/search_engine_utils.cc     |   1 +
@@ -80,7 +83,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  ...gled-chromium-no-special-hosts-domains.inc |   1 +
  net/base/url_util.cc                          |  25 +-
  services/network/network_context.cc           |   2 +-
- 73 files changed, 74 insertions(+), 922 deletions(-)
+ 76 files changed, 75 insertions(+), 941 deletions(-)
  create mode 100644 cromite_flags/content/public/common/content_features_cc/ungoogled-chromium-no-special-hosts-domains.inc
 
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/WebSearchDelegate.java b/chrome/android/java/src/org/chromium/chrome/browser/WebSearchDelegate.java
@@ -895,6 +898,29 @@ diff --git a/chrome/browser/profile_resetter/profile_resetter.cc b/chrome/browse
      return;
    }
    config_fetcher_ = std::make_unique<BrandcodeConfigFetcher>(
+diff --git a/chrome/browser/resources/settings/autofill_page/autofill_page.html b/chrome/browser/resources/settings/autofill_page/autofill_page.html
+--- a/chrome/browser/resources/settings/autofill_page/autofill_page.html
++++ b/chrome/browser/resources/settings/autofill_page/autofill_page.html
+@@ -125,19 +125,3 @@
+   </collapsible-autofill-settings-card>
+ </settings-section>
+ 
+-<settings-section page-title="$i18n{yourSavedInfoRelatedServicesTitle}">
+-  <div route-path="default">
+-    <cr-link-row id="passwordManagerButton" label="$i18n{localPasswordManager}"
+-        on-click="onPasswordManagerRelatedServiceClick_"
+-        start-icon="cr20:password-manager" external>
+-    </cr-link-row>
+-    <cr-link-row id="googleWalletButton" label="$i18n{googleWalletTitle}"
+-        on-click="onGoogleWalletRelatedServiceClick_"
+-        start-icon="settings20:wallet" external>
+-    </cr-link-row>
+-    <cr-link-row id="googleAccountButton" label="$i18n{googleAccount}"
+-        on-click="onGoogleAccountRelatedServiceClick_"
+-        start-icon="settings20:google" external>
+-    </cr-link-row>
+-  </div>
+-</settings-section>
 diff --git a/chrome/browser/resources/settings/privacy_page/security/security_page.html b/chrome/browser/resources/settings/privacy_page/security/security_page.html
 --- a/chrome/browser/resources/settings/privacy_page/security/security_page.html
 +++ b/chrome/browser/resources/settings/privacy_page/security/security_page.html
@@ -1173,6 +1199,25 @@ diff --git a/chrome/browser/ui/webui/ntp/new_tab_ui.cc b/chrome/browser/ui/webui
    } else if (directive == network::mojom::CSPDirectiveName::StyleSrc) {
      return "style-src 'self' chrome://resources 'unsafe-inline' "
             "chrome://theme;";
+diff --git a/chrome/browser/ui/webui/settings/BUILD.gn b/chrome/browser/ui/webui/settings/BUILD.gn
+--- a/chrome/browser/ui/webui/settings/BUILD.gn
++++ b/chrome/browser/ui/webui/settings/BUILD.gn
+@@ -209,7 +209,6 @@ source_set("impl") {
+     "//chrome/browser/file_system_access",
+     "//chrome/browser/glic",
+     "//chrome/browser/glic/actor",
+-    "//chrome/browser/google",
+     "//chrome/browser/gpu",
+     "//chrome/browser/hid",
+     "//chrome/browser/history",
+@@ -536,7 +535,6 @@ if (!is_android) {
+       "//chrome/browser/extensions:test_support",
+       "//chrome/browser/file_system_access",
+       "//chrome/browser/first_run",
+-      "//chrome/browser/google",
+       "//chrome/browser/hid",
+       "//chrome/browser/history",
+       "//chrome/browser/infobars",
 diff --git a/chrome/browser/upgrade_detector/BUILD.gn b/chrome/browser/upgrade_detector/BUILD.gn
 --- a/chrome/browser/upgrade_detector/BUILD.gn
 +++ b/chrome/browser/upgrade_detector/BUILD.gn
@@ -1916,6 +1961,18 @@ diff --git a/components/google/core/common/google_util.h b/components/google/cor
  }  // namespace google_util
  
  #endif  // COMPONENTS_GOOGLE_CORE_COMMON_GOOGLE_UTIL_H_
+diff --git a/components/omnibox/common/android/java/src/org/chromium/components/omnibox/OmniboxCapabilities.java b/components/omnibox/common/android/java/src/org/chromium/components/omnibox/OmniboxCapabilities.java
+--- a/components/omnibox/common/android/java/src/org/chromium/components/omnibox/OmniboxCapabilities.java
++++ b/components/omnibox/common/android/java/src/org/chromium/components/omnibox/OmniboxCapabilities.java
+@@ -62,7 +62,7 @@ public class OmniboxCapabilities {
+ 
+     /** Returns whether the device type is supported for Fusebox. */
+     public static boolean isFuseboxSupportedDeviceType() {
+-        return !DeviceInfo.isAutomotive() && !DeviceInfo.isXr() && !DeviceInfo.isTV();
++        return ((false)) && !DeviceInfo.isAutomotive() && !DeviceInfo.isXr() && !DeviceInfo.isTV();
+     }
+ 
+     /**
 diff --git a/components/page_load_metrics/browser/page_load_metrics_util.cc b/components/page_load_metrics/browser/page_load_metrics_util.cc
 --- a/components/page_load_metrics/browser/page_load_metrics_util.cc
 +++ b/components/page_load_metrics/browser/page_load_metrics_util.cc

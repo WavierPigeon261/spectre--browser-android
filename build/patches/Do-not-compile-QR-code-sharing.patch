@@ -6,6 +6,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
 ---
  chrome/android/BUILD.gn                       |  1 -
  .../chrome/browser/ChromeTabbedActivity.java  |  4 ----
+ .../ChromeContextMenuPopulator.java           | 12 ----------
  .../chrome/browser/ui/RootUiCoordinator.java  |  5 ----
  chrome/browser/prefs/browser_prefs.cc         |  2 +-
  chrome/browser/share/BUILD.gn                 |  1 -
@@ -15,7 +16,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../browser/ui/browser_command_controller.cc  |  6 ++---
  chrome/browser/ui/browser_commands.cc         |  1 +
  .../qrcode_generator_bubble_controller.cc     |  1 +
- 11 files changed, 7 insertions(+), 50 deletions(-)
+ 12 files changed, 7 insertions(+), 62 deletions(-)
 
 diff --git a/chrome/android/BUILD.gn b/chrome/android/BUILD.gn
 --- a/chrome/android/BUILD.gn
@@ -49,6 +50,35 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedAct
              RecordUserAction.record("MobileMenuQRCode");
              return true;
          } else if (id == R.id.name_window_menu_id) {
+diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
+--- a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
++++ b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
+@@ -78,7 +78,6 @@ import org.chromium.chrome.browser.share.ShareDelegate.ShareOrigin;
+ import org.chromium.chrome.browser.share.ShareHelper;
+ import org.chromium.chrome.browser.share.ShareUtils;
+ import org.chromium.chrome.browser.share.link_to_text.LinkToTextHelper;
+-import org.chromium.chrome.browser.share.qrcode.QrCodeCoordinator;
+ import org.chromium.chrome.browser.share.send_tab_to_self.SendTabToSelfAndroidBridge;
+ import org.chromium.chrome.browser.tab.Tab;
+ import org.chromium.chrome.browser.tab.TabContextMenuItemDelegate;
+@@ -1261,17 +1260,6 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
+             if (tab != null) {
+                 TranslateBridge.translateTabWhenReady(tab);
+             }
+-        } else if (itemId == R.id.contextmenu_create_qr_code) {
+-            recordContextMenuSelection(ContextMenuUma.Action.CREATE_QR_CODE);
+-            WindowAndroid window = getWindow();
+-            if (window != null) {
+-                Activity activity = window.getActivity().get();
+-                if (activity != null) {
+-                    QrCodeCoordinator qrCodeCoordinator =
+-                            new QrCodeCoordinator(activity, mParams.getPageUrl().getSpec(), window);
+-                    qrCodeCoordinator.show();
+-                }
+-            }
+         } else if (itemId == R.id.contextmenu_share_link) {
+             recordContextMenuSelection(ContextMenuUma.Action.SHARE_LINK);
+             // TODO(crbug.com/40549331): Migrate ShareParams to GURL.
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ui/RootUiCoordinator.java

@@ -477,7 +477,7 @@ diff --git a/chrome/renderer/chrome_content_renderer_client.cc b/chrome/renderer
  #include "chrome/renderer/google_accounts_private_api_extension.h"
  #include "chrome/renderer/loadtimes_bindings.h"
  #include "chrome/renderer/media/flash_embed_rewrite.h"
-@@ -687,6 +688,7 @@ void ChromeContentRendererClient::RenderFrameCreated(
+@@ -684,6 +685,7 @@ void ChromeContentRendererClient::RenderFrameCreated(
    }
  #endif
    GoogleAccountsPrivateApiExtension::Create(render_frame);

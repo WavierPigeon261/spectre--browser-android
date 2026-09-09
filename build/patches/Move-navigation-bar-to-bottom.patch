@@ -76,14 +76,14 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../android/res/layout/hub_layout.xml         |   9 +-
  .../android/res/layout/hub_toolbar_layout.xml |   4 +-
  chrome/browser/prefs/browser_prefs.cc         |   2 +-
- .../chrome/browser/ui/appmenu/AppMenu.java    |  28 +++-
+ .../chrome/browser/ui/appmenu/AppMenu.java    |  24 +++-
  .../ui/appmenu/AppMenuHandlerImpl.java        |  10 ++
  .../EdgeToEdgeControllerImpl.java             |   1 +
  .../ui/edge_to_edge/EdgeToEdgeUtils.java      |   2 +
  ...rredIMEWindowInsetApplicationCallback.java |   7 +
  .../omnibox/LocationBarCoordinator.java       |   1 +
  .../omnibox/LocationBarFocusScrimHandler.java |   4 +
- ...mniboxSuggestionsDropdownEmbedderImpl.java |  33 +++++
+ ...mniboxSuggestionsDropdownEmbedderImpl.java |  35 +++++
  .../suggestions/AutocompleteMediator.java     |   6 +-
  .../OmniboxSuggestionsContainer.java          |   7 +
  .../OmniboxSuggestionsDropdown.java           |   7 +
@@ -93,7 +93,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../theme/BottomUiThemeColorProvider.java     |   3 +-
  chrome/browser/ui/android/toolbar/BUILD.gn    |   1 +
  .../toolbar/ToolbarLongPressMenuHandler.java  |   8 --
- .../bottom/BottomControlsContentDelegate.java |   4 +-
+ .../bottom/BottomControlsContentDelegate.java |   8 +-
  .../bottom/BottomControlsCoordinator.java     |   7 +-
  .../bottom/BottomControlsMediator.java        |  23 +++
  .../bottom/BottomControlsProperties.java      |   4 +
@@ -108,11 +108,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../res/xml/accessibility_preferences.xml     |   8 ++
  .../accessibility/AccessibilitySettings.java  |  27 ++++
  .../AccessibilitySettingsDelegate.java        |   7 +
+ .../components/page_info/PageInfoDialog.java  | 120 ++++++++++++++++
  components/viz/common/features.cc             |   1 +
  .../render_widget_host_view_android.cc        |   3 +
  .../Move-navigation-bar-to-bottom.inc         |  17 +++
  .../renderer/core/frame/viewport_data.cc      |   1 +
- 99 files changed, 1047 insertions(+), 95 deletions(-)
+ 100 files changed, 1171 insertions(+), 93 deletions(-)
  create mode 100644 chrome/browser/hub/internal/android/java/src/org/chromium/chrome/browser/hub/ReversedLinearLayout.java
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Move-navigation-bar-to-bottom.inc
 
@@ -728,15 +729,22 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabSwitcherPaneBase.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabSwitcherPaneBase.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabSwitcherPaneBase.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabSwitcherPaneBase.java
-@@ -45,6 +45,8 @@ import org.chromium.build.BuildConfig;
+@@ -45,6 +45,7 @@ import org.chromium.build.BuildConfig;
  import org.chromium.build.annotations.NullMarked;
  import org.chromium.build.annotations.Nullable;
  import org.chromium.chrome.browser.compositor.CompositorViewHolder;
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
-+import org.chromium.chrome.browser.flags.ChromeFeatureList;
  import org.chromium.chrome.browser.hub.FadeHubLayoutAnimationFactory;
  import org.chromium.chrome.browser.hub.HubContainerView;
  import org.chromium.chrome.browser.hub.HubLayoutAnimationListener;
+@@ -154,6 +155,7 @@ public abstract class TabSwitcherPaneBase extends PaneBase
+     private @Nullable PaneHubController mPaneHubController;
+     private @Nullable Long mWaitForTabStateInitializedStartTimeMs;
+     private boolean mNativeInitialized;
++    private boolean isFirstRequest = true;
+ 
+     /**
+      * @param context The activity context.
 @@ -499,6 +501,13 @@ public abstract class TabSwitcherPaneBase extends PaneBase
                          Log.d(TAG, "Geometry not ready using fallback animation.");
                          useFallbackAnimation = true;
@@ -1412,8 +1420,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/messages/Messag
  import org.chromium.ui.base.ViewUtils;
  
 +import android.view.Gravity;
++import android.widget.FrameLayout;
 +import org.chromium.chrome.browser.flags.ChromeFeatureList;
-+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 +
  /**
   * Coordinator of {@link MessageContainer}, which can adjust margins of the message container and
@@ -1425,8 +1433,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/messages/Messag
 -        ViewGroup.MarginLayoutParams params =
 -                (ViewGroup.MarginLayoutParams) mContainer.getLayoutParams();
 -        params.topMargin = getContainerTopOffset();
-+        CoordinatorLayout.LayoutParams params =
-+                (CoordinatorLayout.LayoutParams) mContainer.getLayoutParams();
++        FrameLayout.LayoutParams params =
++                (FrameLayout.LayoutParams) mContainer.getLayoutParams();
 +        if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
 +            params.gravity = Gravity.START | Gravity.BOTTOM;
 +            params.bottomMargin = getContainerTopOffset();
@@ -2239,9 +2247,9 @@ diff --git a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/br
  import org.chromium.chrome.browser.hub.HubColorMixer.ColorBlendProgress;
  import org.chromium.chrome.browser.hub.HubPaneHostView.PaneViewProvider;
  import org.chromium.chrome.browser.profiles.Profile;
-@@ -185,6 +187,13 @@ public class HubCoordinator implements PaneHubController, BackPressHandler, Pane
+@@ -186,6 +188,13 @@ public class HubCoordinator implements PaneHubController, BackPressHandler, Pane
                          /* defaultPaneId= */ defaultPaneId,
-                         this);
+                         this, alwaysIncognito);
  
 +        if (!ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
 +            LinearLayout mainContainer = mContainerView.findViewById(R.id.hub_pane_host_container);
@@ -2272,7 +2280,7 @@ diff --git a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/br
  import org.chromium.chrome.browser.tab.Tab;
  import org.chromium.chrome.browser.toolbar.menu_button.MenuButtonCoordinator;
  import org.chromium.chrome.browser.ui.bottombar.BottomBarConfigUtils;
-@@ -201,7 +203,11 @@ public class HubManagerImpl implements HubManager, HubController {
+@@ -204,7 +206,11 @@ public class HubManagerImpl implements HubManager, HubController {
          LayoutParams params = (LayoutParams) mHubContainerView.getLayoutParams();
          assert params != null : "HubContainerView should always have layout params.";
          boolean isVerticalTabsOn = VerticalTabUtils.isVerticalTabsEnabled(mActivity);
@@ -2285,7 +2293,7 @@ diff --git a/chrome/browser/hub/internal/android/java/src/org/chromium/chrome/br
          mHubContainerView.setLayoutParams(params);
          mHubContainerView.setPadding(0, isVerticalTabsOn ? mAppHeaderHeight : 0, 0, 0);
      }
-@@ -360,7 +366,9 @@ public class HubManagerImpl implements HubManager, HubController {
+@@ -364,7 +370,9 @@ public class HubManagerImpl implements HubManager, HubController {
          mHasSnackbarOverride = true;
          mSnackbarManager.pushParentViewOverride(
                  ParentOverrideSlot.HUB,
@@ -2447,23 +2455,19 @@ diff --git a/chrome/browser/ui/android/appmenu/internal/java/src/org/chromium/ch
  
          int[] popupPosition =
                  getPopupPosition(
-@@ -722,8 +732,14 @@ class AppMenu implements OnKeyListener {
-         } else {
+@@ -723,6 +733,12 @@ class AppMenu implements OnKeyListener {
              if (positionBelowAnchor) {
                  offsets[1] = anchorView.getHeight() - padding.top;
--            } else {
--                offsets[1] = -negativeSoftwareVerticalOffset;
-+        } else {
-+            if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
-+                anchorViewY -= popupHeight;
-+                if (anchorViewY <= negativeSoftwareVerticalOffset) {
-+                    anchorViewY = negativeSoftwareVerticalOffset;
+             } else {
++                if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
++                    anchorViewY -= popupHeight;
++                    if (anchorViewY <= negativeSoftwareVerticalOffset) {
++                        anchorViewY = negativeSoftwareVerticalOffset;
++                    }
 +                }
-+            }
-+            offsets[1] = -negativeSoftwareVerticalOffset;
+                 offsets[1] = -negativeSoftwareVerticalOffset;
              }
              if (viewLayoutDirection != View.LAYOUT_DIRECTION_RTL) {
-                 offsets[0] = anchorView.getWidth() - popupWidth;
 @@ -864,7 +880,13 @@ class AppMenu implements OnKeyListener {
                          - mMenuSpec.footerHeight
                          - mMenuSpec.headerHeight
@@ -2633,20 +2637,19 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
          mBottomWindowPaddingSupplier = bottomWindowPaddingSupplier;
          mContext = mAnchorView.getContext();
          mContext.registerComponentCallbacks(this);
-@@ -156,6 +160,12 @@ class OmniboxSuggestionsDropdownEmbedderImpl
+@@ -156,6 +160,11 @@ class OmniboxSuggestionsDropdownEmbedderImpl
          mOmniboxAlignmentSupplier.removeObserver(obs);
      }
  
 +    @Override
 +    public View getAnchorView() {
-+        // The bottom-toolbar layout uses this view to align keyboard and dropdown geometry.
 +        return mAnchorView;
 +    }
 +
      @Override
      public OmniboxAlignment getCurrentAlignment() {
          return assertNonNull(mOmniboxAlignmentSupplier.get());
-@@ -186,6 +196,10 @@ class OmniboxSuggestionsDropdownEmbedderImpl
+@@ -186,6 +195,10 @@ class OmniboxSuggestionsDropdownEmbedderImpl
  
      @Override
      public void onDetachedFromWindow() {
@@ -2657,7 +2660,17 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
          mAnchorView.removeOnLayoutChangeListener(this);
          mAlignmentView.removeOnLayoutChangeListener(this);
          mAnchorView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-@@ -425,6 +439,17 @@ class OmniboxSuggestionsDropdownEmbedderImpl
+@@ -294,6 +307,9 @@ class OmniboxSuggestionsDropdownEmbedderImpl
+         } else {
+             ViewUtils.getRelativeLayoutPosition(contentView, mAnchorView, mPositionArray);
+             top = mPositionArray[1] + mAnchorView.getMeasuredHeight() - contentView.getPaddingTop();
++            if (ChromeFeatureList.sMoveTopToolbarToBottom.isEnabled()) {
++                top -= mPositionArray[1];
++            }
+         }
+ 
+         if (isPhoneStyleWindow()) {
+@@ -425,6 +441,17 @@ class OmniboxSuggestionsDropdownEmbedderImpl
              height = Math.min(windowSpace, contentSpace) - top;
          }
  
@@ -2675,7 +2688,7 @@ diff --git a/chrome/browser/ui/android/omnibox/java/src/org/chromium/chrome/brow
          // TODO(pnoland@, https://crbug.com/40257117): avoid pushing changes that are identical to
          // the previous alignment value.
          OmniboxAlignment omniboxAlignment =
-@@ -467,6 +492,14 @@ class OmniboxSuggestionsDropdownEmbedderImpl
+@@ -467,6 +494,14 @@ class OmniboxSuggestionsDropdownEmbedderImpl
          return result;
      }
  
@@ -2893,7 +2906,18 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
 diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/bottom/BottomControlsContentDelegate.java b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/bottom/BottomControlsContentDelegate.java
 --- a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/bottom/BottomControlsContentDelegate.java
 +++ b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/bottom/BottomControlsContentDelegate.java
-@@ -27,7 +27,9 @@ public interface BottomControlsContentDelegate extends BackPressHandler {
+@@ -12,6 +12,10 @@ import org.chromium.build.annotations.Nullable;
+ import org.chromium.chrome.browser.browser_controls.BottomControlsStacker.LayerScrollBehavior;
+ import org.chromium.components.browser_ui.widget.gesture.BackPressHandler;
+ 
++import org.chromium.base.supplier.NullableObservableSupplier;
++import org.chromium.chrome.browser.theme.ToolbarThemeColorProvider;
++import org.chromium.chrome.browser.tab.Tab;
++
+ /**
+  * Interface for the bottom controls content UI. This UI delegates various operations to the
+  * implementation. This UI manages its own visibility through {@link
+@@ -27,7 +31,9 @@ public interface BottomControlsContentDelegate extends BackPressHandler {
       */
      void initializeWithNative(
              BottomControlsCoordinator.BottomControlsVisibilityController visibilityController,
@@ -3342,6 +3366,143 @@ diff --git a/components/browser_ui/accessibility/android/java/src/org/chromium/c
      /**
       * @return The BrowserContextHandle that should be used to read and update settings.
       */
+diff --git a/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoDialog.java b/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoDialog.java
+--- a/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoDialog.java
++++ b/components/page_info/android/java/src/org/chromium/components/page_info/PageInfoDialog.java
+@@ -34,6 +34,9 @@ import org.chromium.ui.modaldialog.ModalDialogProperties;
+ import org.chromium.ui.modaldialog.ModalDialogProperties.Controller;
+ import org.chromium.ui.modelutil.PropertyModel;
+ 
++import android.content.DialogInterface;
++import android.view.MotionEvent;
++
+ /** Represents the dialog containing the page info view. */
+ @NullMarked
+ public class PageInfoDialog {
+@@ -147,6 +150,123 @@ public class PageInfoDialog {
+     private Dialog createSheetDialog(Context context, View container) {
+         Dialog sheetDialog =
+                 new Dialog(context) {
++                    private float initialY = 0f;
++                    private float initialTouchY = 0f;
++                    private boolean isDragging = false;
++                    private boolean stopDragging = false;
++
++                    @Override
++                    public boolean dispatchTouchEvent(MotionEvent event) {
++                        if (mDialogPosition == Gravity.TOP) {
++                            return super.dispatchTouchEvent(event);
++                        }
++
++                        final View rootView = findViewById(android.R.id.content);
++
++                        if (rootView != null) {
++                            switch (event.getAction()) {
++                                case MotionEvent.ACTION_DOWN:
++                                    initialY = rootView.getTranslationY();
++                                    initialTouchY = event.getRawY();
++                                    isDragging = false;
++                                    stopDragging = false;
++                                    break;
++
++                                case MotionEvent.ACTION_MOVE:
++                                    if (stopDragging) break;
++                                    float deltaY = event.getRawY() - initialTouchY;
++
++                                    if (!isDragging) {
++                                        View currentTarget = findScrollableViewAt(rootView, event.getRawX(), event.getRawY());
++
++                                        if (currentTarget != null) {
++                                            if (deltaY > 0 && !currentTarget.canScrollVertically(-1)) {
++                                                isDragging = true;
++                                            } else if (deltaY < 0 && !currentTarget.canScrollVertically(1)) {
++                                                isDragging = true;
++                                            } else {
++                                                stopDragging = true;
++                                                break;
++                                            }
++                                        } else if (deltaY > 20) {
++                                            isDragging = true;
++                                        }
++
++                                        if (isDragging) {
++                                            cancelSubViewsTouch(event);
++                                        }
++                                    }
++
++                                    if (isDragging && deltaY > 0) {
++                                        rootView.setTranslationY(initialY + deltaY);
++                                        return true;
++                                    }
++                                    break;
++
++
++                                case MotionEvent.ACTION_UP:
++                                case MotionEvent.ACTION_CANCEL:
++                                    if (!isDragging || stopDragging) {
++                                        break;
++                                    }
++                                    isDragging = false;
++
++                                    float totalDeltaY = event.getRawY() - initialTouchY;
++
++                                    if (totalDeltaY > rootView.getHeight() / 4) {
++                                        dismiss();
++                                    } else {
++                                        rootView.animate()
++                                            .translationY(0f)
++                                            .setDuration(200)
++                                            .start();
++                                    }
++                                    return true;
++                            }
++                        }
++                        return super.dispatchTouchEvent(event);
++                    }
++
++                    private void cancelSubViewsTouch(MotionEvent event) {
++                        MotionEvent cancelEvent = MotionEvent.obtain(event);
++                        cancelEvent.setAction(MotionEvent.ACTION_CANCEL);
++                        super.dispatchTouchEvent(cancelEvent);
++                        cancelEvent.recycle();
++                    }
++
++                    private View findScrollableViewAt(View view, float rawX, float rawY) {
++                        if (view == null || view.getVisibility() != View.VISIBLE) {
++                            return null;
++                        }
++
++                        int[] location = new int[2];
++                        view.getLocationOnScreen(location);
++                        int left = location[0];
++                        int top = location[1];
++                        int right = left + view.getWidth();
++                        int bottom = top + view.getHeight();
++
++                        if (rawX >= left && rawX <= right && rawY >= top && rawY <= bottom) {
++                            if (view instanceof androidx.recyclerview.widget.RecyclerView ||
++                                view instanceof androidx.core.widget.NestedScrollView ||
++                                view instanceof android.widget.ScrollView ||
++                                view instanceof android.widget.ListView) {
++                                return view;
++                            }
++
++                            if (view instanceof android.view.ViewGroup) {
++                                android.view.ViewGroup group = (android.view.ViewGroup) view;
++                                for (int i = 0; i < group.getChildCount(); i++) {
++                                    View childResult = findScrollableViewAt(group.getChildAt(i), rawX, rawY);
++                                    if (childResult != null) {
++                                        return childResult;
++                                    }
++                                }
++                            }
++                        }
++                        return null;
++                    }
++
+                     private void superDismiss() {
+                         super.dismiss();
+                     }
 diff --git a/components/viz/common/features.cc b/components/viz/common/features.cc
 --- a/components/viz/common/features.cc
 +++ b/components/viz/common/features.cc

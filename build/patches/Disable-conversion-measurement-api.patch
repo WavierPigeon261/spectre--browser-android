@@ -22,12 +22,12 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../origin_trials/features.cc                 |  1 +
  .../renderer_host/render_frame_host_impl.cc   | 11 +++++++++
  content/public/android/BUILD.gn               |  2 --
+ .../Disable-conversion-measurement-api.inc    |  1 +
  .../Disable-conversion-measurement-api.inc    |  2 ++
- .../Disable-conversion-measurement-api.inc    |  8 +++++++
  services/network/network_context.cc           | 24 ++++---------------
  .../platform/runtime_enabled_features.json5   | 16 ++++++-------
  ui/events/android/motion_event_android.cc     |  8 +++++--
- 16 files changed, 46 insertions(+), 50 deletions(-)
+ 16 files changed, 39 insertions(+), 50 deletions(-)
  create mode 100644 cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
  create mode 100644 cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 
@@ -193,22 +193,15 @@ diff --git a/cromite_flags/services/network/public/cpp/features_cc/Disable-conve
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/services/network/public/cpp/features_cc/Disable-conversion-measurement-api.inc
-@@ -0,0 +1,2 @@
+@@ -0,0 +1 @@
 +SET_CROMITE_FEATURE_DISABLED(kBrowsingTopics);
-+SET_CROMITE_FEATURE_DISABLED(kInterestGroupStorage);
 diff --git a/cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc b/cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
 new file mode 100644
 --- /dev/null
 +++ b/cromite_flags/third_party/blink/common/features_cc/Disable-conversion-measurement-api.inc
-@@ -0,0 +1,8 @@
-+SET_CROMITE_FEATURE_DISABLED(kAdAuctionSignals);
-+SET_CROMITE_FEATURE_DISABLED(kBrowsingTopicsDocumentAPI);
-+SET_CROMITE_FEATURE_DISABLED(kBrowsingTopicsParameters);
+@@ -0,0 +1,2 @@
 +SET_CROMITE_FEATURE_DISABLED(kFledge);
-+SET_CROMITE_FEATURE_DISABLED(kFledgeBiddingAndAuctionServer);
-+SET_CROMITE_FEATURE_DISABLED(kPrivateAggregationApi);
 +SET_CROMITE_FEATURE_DISABLED(kAllowURNsInIframes);
-+SET_CROMITE_FEATURE_DISABLED(kFledgeSampleDebugReports);
 diff --git a/services/network/network_context.cc b/services/network/network_context.cc
 --- a/services/network/network_context.cc
 +++ b/services/network/network_context.cc
@@ -275,7 +268,7 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
        base_feature: "none",
        public: true,
      },
-@@ -4862,8 +4862,8 @@
+@@ -4863,8 +4863,8 @@
        base_feature: "none",
      },
      {
@@ -286,7 +279,7 @@ diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 
        base_feature: "none",
        public: true,
      },
-@@ -6369,10 +6369,10 @@
+@@ -6370,10 +6370,10 @@
        status: "experimental",
      },
      {

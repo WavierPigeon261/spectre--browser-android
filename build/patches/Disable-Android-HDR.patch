@@ -4,9 +4,22 @@ Subject: Disable Android HDR
 
 License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 ---
- ui/android/ui_android_features.cc | 1 +
- 1 file changed, 1 insertion(+)
+ content/browser/renderer_host/render_widget_host_impl.cc | 2 +-
+ ui/android/ui_android_features.cc                        | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/content/browser/renderer_host/render_widget_host_impl.cc b/content/browser/renderer_host/render_widget_host_impl.cc
+--- a/content/browser/renderer_host/render_widget_host_impl.cc
++++ b/content/browser/renderer_host/render_widget_host_impl.cc
+@@ -1075,7 +1075,7 @@ blink::VisualProperties RenderWidgetHostImpl::GetVisualProperties() {
+   // If hardware acceleration is disabled then do not report the display as
+   // HDR or high bit depth because it is too resource intensive to run on the
+   // CPU.
+-  if (!GpuDataManager::GetInstance()->HardwareAccelerationEnabled()) {
++  if (((true)) || !GpuDataManager::GetInstance()->HardwareAccelerationEnabled()) {
+     for (auto& screen_info : visual_properties.screen_infos.screen_infos) {
+       display::DisplayUtil::DisableHdrAndHighBitDepth(&screen_info);
+     }
 diff --git a/ui/android/ui_android_features.cc b/ui/android/ui_android_features.cc
 --- a/ui/android/ui_android_features.cc
 +++ b/ui/android/ui_android_features.cc
