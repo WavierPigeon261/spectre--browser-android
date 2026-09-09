@@ -17,24 +17,26 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../TabGridDialogProperties.java              |   3 +
  .../tab_management/TabGridDialogView.java     |  13 +
  .../TabGridDialogViewBinder.java              |   8 +
+ .../tasks/tab_management/TabListConfig.java   |   8 +-
  .../TabListContainerViewBinder.java           |  34 +-
- .../tab_management/TabListCoordinator.java    |  25 +-
+ .../tab_management/TabListCoordinator.java    |  27 +-
  .../TabListEditorCoordinator.java             |   2 +-
  .../tab_management/TabListItemAnimator.java   |   2 +-
- .../tasks/tab_management/TabListMediator.java |  19 +
+ .../tasks/tab_management/TabListMediator.java |  22 ++
  .../tasks/tab_management/TabListView.java     | 123 ++++++
  .../tab_management/TabListViewBinder.java     | 355 ++++++++++++++++++
  .../tab_management/TabSwitcherPaneBase.java   |   4 +-
  .../TabSwitcherPaneCoordinatorFactory.java    |   5 +-
  .../tab_management/TabUiFeatureUtilities.java |   7 +
  .../PinnedTabStripCoordinator.java            |  10 +-
+ .../VerticalTabListCoordinator.java           |   2 +-
  .../tab_ui/tab_management_java_sources.gni    |   2 +
  .../java/res/xml/privacy_preferences.xml      |   6 +
  .../chrome/browser/app/ChromeActivity.java    |   5 +-
  chrome/browser/android/favicon_helper.cc      | 190 +++++++++-
  chrome/browser/android/favicon_helper.h       |  21 ++
  .../flags/cromite/sTabSwitcherListMode.java   |  33 ++
- .../tab_ui/TabListFaviconProvider.java        | 109 ++++++
+ .../tab_ui/TabListFaviconProvider.java        | 116 +++++-
  .../chrome/browser/tab_ui/TabListMode.java    |   4 +-
  .../browser/ui/favicon/FaviconHelper.java     |  57 ++-
  .../Use-list-mode-for-tab-switcher.grdp       |   9 +
@@ -43,7 +45,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../java/res/drawable/ic_warning_red_16dp.xml |  26 ++
  .../layout/title_and_description_layout.xml   |  32 +-
  .../tab-switcher-list-mode.inc                |   3 +
- 36 files changed, 1153 insertions(+), 40 deletions(-)
+ 38 files changed, 1170 insertions(+), 45 deletions(-)
  create mode 100644 chrome/android/features/tab_ui/java/res/drawable/selected_tab_background.xml
  create mode 100644 chrome/android/features/tab_ui/java/res/drawable/selected_tab_background_incognito.xml
  create mode 100644 chrome/android/features/tab_ui/java/res/layout/tab_list_card_item.xml
@@ -57,7 +59,7 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
 diff --git a/chrome/android/features/tab_ui/BUILD.gn b/chrome/android/features/tab_ui/BUILD.gn
 --- a/chrome/android/features/tab_ui/BUILD.gn
 +++ b/chrome/android/features/tab_ui/BUILD.gn
-@@ -52,6 +52,8 @@ android_resources("java_resources") {
+@@ -55,6 +55,8 @@ android_resources("java_resources") {
      "java/res/drawable/pinned_tab_strip_item_background.xml",
      "java/res/drawable/price_card_background.xml",
      "java/res/drawable/price_card_scrim.xml",
@@ -66,7 +68,7 @@ diff --git a/chrome/android/features/tab_ui/BUILD.gn b/chrome/android/features/t
      "java/res/drawable/tab_grid_card_background.xml",
      "java/res/drawable/tab_grid_card_highlight.xml",
      "java/res/drawable/tab_grid_dialog_background.xml",
-@@ -119,6 +121,8 @@ android_resources("java_resources") {
+@@ -125,6 +127,8 @@ android_resources("java_resources") {
      "java/res/layout/tab_group_visual_data_dialog.xml",
      "java/res/layout/tab_group_visual_data_text_input_layout.xml",
      "java/res/layout/tab_hover_card_holder.xml",
@@ -144,10 +146,10 @@ new file mode 100644
 diff --git a/chrome/android/features/tab_ui/java/res/values/dimens.xml b/chrome/android/features/tab_ui/java/res/values/dimens.xml
 --- a/chrome/android/features/tab_ui/java/res/values/dimens.xml
 +++ b/chrome/android/features/tab_ui/java/res/values/dimens.xml
-@@ -6,8 +6,10 @@ found in the LICENSE file.
+@@ -5,8 +5,10 @@ Use of this source code is governed by a BSD-style license that can be
+ found in the LICENSE file.
  -->
  <resources xmlns:tools="http://schemas.android.com/tools">
-     <dimen name="tab_list_selected_inset">7dp</dimen>
 +    <dimen name="tab_list_selected_inset_low_end">6dp</dimen>
      <dimen name="tab_list_selected_margin">7dp</dimen>
      <dimen name="tab_grid_price_card_radius">4dp</dimen>
@@ -155,7 +157,7 @@ diff --git a/chrome/android/features/tab_ui/java/res/values/dimens.xml b/chrome/
      <dimen name="tab_list_mini_card_radius">4dp</dimen>
      <dimen name="tab_list_mini_card_frame_size">1dp</dimen>
      <dimen name="tab_grid_close_button_size">18dp</dimen>
-@@ -43,6 +45,8 @@ found in the LICENSE file.
+@@ -42,6 +44,8 @@ found in the LICENSE file.
      <dimen name="swipe_to_dismiss_threshold">144dp</dimen>
      <dimen name="long_press_cancel_threshold">20dp</dimen>
      <dimen name="selection_tab_grid_toggle_button_inset">14dp</dimen>
@@ -218,7 +220,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
  import org.chromium.chrome.browser.tabmodel.TabClosingSource;
  import org.chromium.chrome.browser.tabmodel.TabClosureParamsUtils;
  import org.chromium.chrome.browser.tabmodel.TabCreatorUtil;
-@@ -897,6 +898,13 @@ public class TabGridDialogMediator
+@@ -894,6 +895,13 @@ public class TabGridDialogMediator
                  TabGridDialogProperties.DIALOG_UNGROUP_BAR_HOVERED_TEXT_COLOR,
                  ungroupBarHoveredTextColor);
          mModel.set(TabGridDialogProperties.IS_INCOGNITO, isIncognito);
@@ -286,7 +288,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
  import static org.chromium.chrome.browser.tasks.tab_management.TabGridDialogProperties.ANIMATION_SOURCE_VIEW;
  import static org.chromium.chrome.browser.tasks.tab_management.TabGridDialogProperties.APP_HEADER_HEIGHT;
  import static org.chromium.chrome.browser.tasks.tab_management.TabGridDialogProperties.BROWSER_CONTROLS_STATE_PROVIDER;
-@@ -227,6 +228,13 @@ class TabGridDialogViewBinder {
+@@ -228,6 +229,13 @@ class TabGridDialogViewBinder {
          } else if (COLOR_ICON_CLICK_LISTENER == propertyKey) {
              viewHolder.toolbarView.setColorIconOnClickListener(
                      model.get(COLOR_ICON_CLICK_LISTENER));
@@ -300,10 +302,57 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          } else if (FORCE_ANIMATION_TO_FINISH == propertyKey) {
              if (model.get(FORCE_ANIMATION_TO_FINISH)) {
                  viewHolder.dialogView.forceAnimationToFinish();
+diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListConfig.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListConfig.java
+--- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListConfig.java
++++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListConfig.java
+@@ -12,6 +12,7 @@ import org.chromium.chrome.browser.tasks.tab_management.TabListMediator.TabListL
+ import org.chromium.chrome.browser.tasks.tab_management.TabProperties.UiType;
+ import org.chromium.chrome.browser.tasks.tab_management.vertical_tabs.VerticalTabHoverCardController.TabHoverCardListener;
+ import org.chromium.chrome.browser.tasks.tab_management.vertical_tabs.VerticalTabListProperties.RailCollapseState;
++import org.chromium.chrome.browser.tab_ui.TabListMode;
+ 
+ /**
+  * Configuration policies and visual capabilities for the TabList. The returned values are immutable
+@@ -22,6 +23,8 @@ public class TabListConfig {
+     /** The layout organization type for the TabList. */
+     public final @TabListLayoutType int layoutType;
+ 
++    public final @TabListMode int mode;
++
+     /**
+      * The base card UI type for tabs in the list (e.g. {@link UiType#TAB} or {@link UiType#STRIP}).
+      */
+@@ -56,6 +59,7 @@ public class TabListConfig {
+ 
+     private TabListConfig(Builder builder) {
+         layoutType = builder.mLayoutType;
++        mode = builder.mMode;
+         tabUiType = builder.mTabUiType;
+         supportsMessageCards = builder.mSupportsMessageCards;
+         supportsModifierMultiSelect = builder.mSupportsModifierMultiSelect;
+@@ -69,6 +73,7 @@ public class TabListConfig {
+     /** Builder to construct {@link TabListConfig}. */
+     public static class Builder {
+         private final @TabListLayoutType int mLayoutType;
++        private final @TabListMode int mMode;
+         private @UiType int mTabUiType;
+         private boolean mSupportsMessageCards;
+         private boolean mSupportsModifierMultiSelect;
+@@ -82,8 +87,9 @@ public class TabListConfig {
+         /**
+          * @param layoutType The {@link TabListLayoutType} for the tab list.
+          */
+-        public Builder(@TabListLayoutType int layoutType) {
++        public Builder(@TabListLayoutType int layoutType, @TabListMode int mode) {
+             mLayoutType = layoutType;
++            mMode = mode;
+         }
+ 
+         /**
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListContainerViewBinder.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListContainerViewBinder.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListContainerViewBinder.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListContainerViewBinder.java
-@@ -93,10 +93,7 @@ class TabListContainerViewBinder {
+@@ -92,10 +92,7 @@ class TabListContainerViewBinder {
              mTabListRecyclerView = tabListRecyclerView;
              mPaneHairline = paneHairline;
              mSupplementaryContainer = supplementaryContainer;
@@ -315,7 +364,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          }
      }
  
-@@ -323,14 +320,27 @@ class TabListContainerViewBinder {
+@@ -320,14 +317,27 @@ class TabListContainerViewBinder {
          }
          if (width <= 0 || height <= 0) return 0;
  
@@ -354,7 +403,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListCoordinator.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListCoordinator.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListCoordinator.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListCoordinator.java
-@@ -343,6 +343,8 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
+@@ -339,6 +339,8 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
                          assumeNonNull(model);
                          if (mMode == TabListMode.GRID) {
                              TabGridViewBinder.onViewRecycled(model, viewHolder.itemView);
@@ -363,9 +412,9 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
                          } else if (mMode == TabListMode.BOTTOM_STRIP) {
                              TabStripViewBinder.onViewRecycled(model, viewHolder.itemView);
                          }
-@@ -415,6 +417,21 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
-                                         .inflate(R.layout.tab_strip_item, parentView, false);
-                     },
+@@ -410,6 +412,21 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
+                                     LayoutInflater.from(activity)
+                                             .inflate(R.layout.tab_strip_item, parentView, false),
                      TabStripViewBinder::bind);
 +        } else if (mMode == TabListMode.LIST) {
 +            mAdapter.registerType(
@@ -385,7 +434,16 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          } else {
              throw new IllegalArgumentException(
                      "Attempting to create a tab list UI with invalid mode");
-@@ -492,7 +509,7 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
+@@ -437,7 +454,7 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
+         @UiType int tabUiType = mMode == TabListMode.BOTTOM_STRIP ? UiType.STRIP : UiType.TAB;
+         boolean isGridMode = mMode == TabListMode.GRID;
+         TabListConfig tabListConfig =
+-                new TabListConfig.Builder(layoutType)
++                new TabListConfig.Builder(layoutType, mMode)
+                         .setTabUiType(tabUiType)
+                         .setSupportsMessageCards(isGridMode)
+                         .setSupportsShrinkCloseAnimation(isGridMode)
+@@ -482,7 +499,7 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
                  parentView.addView(mRecyclerView);
              }
  
@@ -394,7 +452,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
              boolean hasFixedSize =
                      mMode != TabListMode.BOTTOM_STRIP
                              || !TabUiUtils.isDataSharingFunctionalityEnabled();
-@@ -668,7 +685,7 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
+@@ -658,7 +675,7 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
      public void addTabListItemSizeChangedObserver(TabListItemSizeChangedObserver observer) {
          mTabListItemSizeChangedObserverList.addObserver(observer);
          Size size = mMediator.getDefaultGridCardSize();
@@ -403,7 +461,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          observer.onSizeChanged(mMediator.getCurrentSpanCount(), size);
      }
  
-@@ -703,7 +720,7 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
+@@ -682,7 +699,7 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
  
      Size getThumbnailSize() {
          Size size = mMediator.getDefaultGridCardSize();
@@ -412,7 +470,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
          return TabUtils.deriveThumbnailSize(size, mActivity);
      }
  
-@@ -757,7 +774,7 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
+@@ -736,7 +753,7 @@ public class TabListCoordinator implements PriceWelcomeMessageProvider, DestroyO
      }
  
      private void configureRecyclerViewTouchHelpers() {
@@ -448,7 +506,15 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListMediator.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListMediator.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListMediator.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListMediator.java
-@@ -2951,6 +2951,8 @@ public class TabListMediator implements TabListNotificationHandler {
+@@ -83,6 +83,7 @@ import org.chromium.chrome.browser.tab_group_sync.TabGroupSyncFeatures;
+ import org.chromium.chrome.browser.tab_group_sync.TabGroupSyncServiceFactory;
+ import org.chromium.chrome.browser.tab_ui.TabListFaviconProvider;
+ import org.chromium.chrome.browser.tab_ui.TabListFaviconProvider.TabFaviconFetcher;
++import org.chromium.chrome.browser.tab_ui.TabListMode;
+ import org.chromium.chrome.browser.tab_ui.ThumbnailProvider;
+ import org.chromium.chrome.browser.tab_ui.ThumbnailProvider.MultiThumbnailMetadata;
+ import org.chromium.chrome.browser.tabmodel.TabClosingSource;
+@@ -2365,6 +2366,8 @@ public class TabListMediator implements TabListNotificationHandler {
                  getLatestTitleForTabOrGroup(tab, groupInfo, /* useDefault= */ true));
          groupInfo.set(TabProperties.IS_COLLAPSED, isCollapsed);
          groupInfo.set(TabProperties.FAVICON_FETCHER, null);
@@ -457,12 +523,14 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
  
          bindTabActionStateProperties(mTabActionState, tab, groupInfo);
  
-@@ -3381,6 +3383,23 @@ public class TabListMediator implements TabListNotificationHandler {
+@@ -2767,6 +2770,25 @@ public class TabListMediator implements TabListNotificationHandler {
  
      void updateFaviconForTab(
              PropertyModel model, Tab tab, @Nullable Bitmap icon, @Nullable GURL iconUrl) {
 +        List<Tab> relatedTabList = getRelatedTabsForId(tab.getId());
-+        if (mMode == TabListMode.LIST && isTabGroupHeader(model) && relatedTabList.size() > 1) {
++        if (mTabListConfig.mode == TabListMode.LIST
++                && TabProperties.isTabGroupHeader(model)
++                && relatedTabList.size() > 1) {
 +            // The order of the url list matches the multi-thumbnail.
 +            List<GURL> urls = new ArrayList<>();
 +            urls.add(tab.getUrl());
@@ -478,7 +546,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 +                            urls, tab.isIncognito()));
 +            return;
 +        }
-         if (isTabGroupHeader(model)) {
+         if (TabProperties.isTabGroupHeader(model)) {
              model.set(TabProperties.FAVICON_FETCHER, null);
              return;
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListView.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListView.java
@@ -972,7 +1040,7 @@ new file mode 100644
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabSwitcherPaneBase.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabSwitcherPaneBase.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabSwitcherPaneBase.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabSwitcherPaneBase.java
-@@ -305,7 +305,7 @@ public abstract class TabSwitcherPaneBase extends PaneBase
+@@ -322,7 +322,7 @@ public abstract class TabSwitcherPaneBase extends PaneBase
                  || isFullSpaceModeOnAndroidXr;
  
          @Nullable Tab tab = getCurrentTab();
@@ -981,7 +1049,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
              return FadeHubLayoutAnimationFactory.createFadeInAnimatorProvider(
                      hubContainerView, HUB_LAYOUT_FADE_DURATION_MS, mOnToolbarAlphaChange);
          } else if (isFullSpaceModeOnAndroidXr && getTabListMode() == TabListMode.GRID) {
-@@ -335,7 +335,7 @@ public abstract class TabSwitcherPaneBase extends PaneBase
+@@ -352,7 +352,7 @@ public abstract class TabSwitcherPaneBase extends PaneBase
              HubContainerView hubContainerView) {
          assert !DeviceFormFactor.isNonMultiDisplayContextOnTablet(hubContainerView.getContext());
          Tab tab = getCurrentTab();
@@ -993,7 +1061,7 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabSwitcherPaneCoordinatorFactory.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabSwitcherPaneCoordinatorFactory.java
 --- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabSwitcherPaneCoordinatorFactory.java
 +++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabSwitcherPaneCoordinatorFactory.java
-@@ -149,7 +149,10 @@ public class TabSwitcherPaneCoordinatorFactory {
+@@ -148,7 +148,10 @@ public class TabSwitcherPaneCoordinatorFactory {
          mModalDialogManager = modalDialogManager;
          mBottomSheetController = bottomSheetController;
          mDataSharingTabManager = dataSharingTabManager;
@@ -1073,10 +1141,22 @@ diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser
 +        if (mMediator != null) mMediator.destroy();
      }
  }
+diff --git a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/vertical_tabs/VerticalTabListCoordinator.java b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/vertical_tabs/VerticalTabListCoordinator.java
+--- a/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/vertical_tabs/VerticalTabListCoordinator.java
++++ b/chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/vertical_tabs/VerticalTabListCoordinator.java
+@@ -485,7 +485,7 @@ public class VerticalTabListCoordinator {
+         recyclerView.addItemDecoration(mSpineDecoration);
+ 
+         TabListConfig tabListConfig =
+-                new TabListConfig.Builder(TabListLayoutType.NESTED)
++                new TabListConfig.Builder(TabListLayoutType.NESTED, TabListMode.VERTICAL)
+                         .setSupportsModifierMultiSelect(VerticalTabUtils.isMultiSelectEnabled())
+                         .setSupportsTabLoadingState(/* supportsTabLoadingState= */ true)
+                         .setRailCollapseStateSupplier(
 diff --git a/chrome/android/features/tab_ui/tab_management_java_sources.gni b/chrome/android/features/tab_ui/tab_management_java_sources.gni
 --- a/chrome/android/features/tab_ui/tab_management_java_sources.gni
 +++ b/chrome/android/features/tab_ui/tab_management_java_sources.gni
-@@ -186,6 +186,8 @@ internal_tab_management_java_sources = [
+@@ -190,6 +190,8 @@ internal_tab_management_java_sources = [
    "//chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListNotificationHandler.java",
    "//chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListOnScrollListener.java",
    "//chrome/android/features/tab_ui/java/src/org/chromium/chrome/browser/tasks/tab_management/TabListRecyclerView.java",
@@ -1088,7 +1168,7 @@ diff --git a/chrome/android/features/tab_ui/tab_management_java_sources.gni b/ch
 diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/android/java/res/xml/privacy_preferences.xml
 --- a/chrome/android/java/res/xml/privacy_preferences.xml
 +++ b/chrome/android/java/res/xml/privacy_preferences.xml
-@@ -82,6 +82,12 @@ found in the LICENSE file.
+@@ -78,6 +78,12 @@ found in the LICENSE file.
          android:summary="@string/allow_external_intent_requests_summary"
          app:featureName="AllowExternalIntentRequests"
          app:needRestart="false" />
@@ -1104,15 +1184,15 @@ diff --git a/chrome/android/java/res/xml/privacy_preferences.xml b/chrome/androi
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/app/ChromeActivity.java
-@@ -209,6 +209,7 @@ import org.chromium.chrome.browser.tabmodel.TabModelSelectorTabObserver;
+@@ -215,6 +215,7 @@ import org.chromium.chrome.browser.tabmodel.TabModelSelectorTabObserver;
  import org.chromium.chrome.browser.tabmodel.TabModelUtils;
  import org.chromium.chrome.browser.task_manager.TaskManager;
  import org.chromium.chrome.browser.task_manager.TaskManagerFactory;
 +import org.chromium.chrome.browser.tasks.tab_management.TabUiFeatureUtilities;
- import org.chromium.chrome.browser.theme.ThemeModuleUtils;
  import org.chromium.chrome.browser.toolbar.ControlContainer;
  import org.chromium.chrome.browser.toolbar.ToolbarManager;
-@@ -735,8 +736,8 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
+ import org.chromium.chrome.browser.translate.TranslateBridge;
+@@ -746,8 +747,8 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
                      new TabContentManager(
                              this,
                              mBrowserControlsManagerSupplier.get(),
@@ -1433,7 +1513,14 @@ new file mode 100644
 diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/tab_ui/TabListFaviconProvider.java b/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/tab_ui/TabListFaviconProvider.java
 --- a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/tab_ui/TabListFaviconProvider.java
 +++ b/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/tab_ui/TabListFaviconProvider.java
-@@ -36,6 +36,8 @@ import org.chromium.url.GURL;
+@@ -31,12 +31,15 @@ import org.chromium.chrome.browser.profiles.Profile;
+ import org.chromium.chrome.browser.tab.Tab;
+ import org.chromium.chrome.browser.ui.favicon.FaviconHelper;
+ import org.chromium.chrome.browser.ui.favicon.FaviconHelper.FaviconImageCallback;
++import org.chromium.chrome.browser.ui.favicon.FaviconUtils;
+ import org.chromium.components.embedder_support.util.UrlUtilities;
+ import org.chromium.ui.base.ViewUtils;
+ import org.chromium.url.GURL;
  
  import java.lang.annotation.Retention;
  import java.lang.annotation.RetentionPolicy;
@@ -1442,7 +1529,7 @@ diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/
  import java.util.Objects;
  
  /** Provider for processed favicons in Tab list. */
-@@ -133,6 +135,28 @@ public class TabListFaviconProvider {
+@@ -134,6 +137,28 @@ public class TabListFaviconProvider {
          }
      }
  
@@ -1471,7 +1558,7 @@ diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/
      @IntDef({
          StaticTabFaviconType.UNKNOWN,
          StaticTabFaviconType.ROUNDED_GLOBE,
-@@ -261,6 +285,8 @@ public class TabListFaviconProvider {
+@@ -262,6 +287,8 @@ public class TabListFaviconProvider {
      private static LazyTabFaviconResolver sRoundedGlobeFavicon;
      private static LazyTabFaviconResolver sRoundedGlobeFaviconForStrip;
      private static LazyTabFaviconResolver sRoundedGlobeFaviconIncognito;
@@ -1480,7 +1567,17 @@ diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/
  
      /** These icons may fail to load. See crbug.com/324996488. */
      private static LazyTabFaviconResolver sRoundedChromeFavicon;
-@@ -436,6 +462,51 @@ public class TabListFaviconProvider {
+@@ -340,7 +367,8 @@ public class TabListFaviconProvider {
+                 mStripFaviconSize,
+                 mVerticalFaviconSize,
+                 mFaviconCornerRadius,
+-                mFaviconInset);
++                mFaviconInset,
++                FaviconUtils.getDefaultFaviconSize(context));
+     }
+ 
+     /** Destroys the native part of {@link FaviconHelper}. */
+@@ -443,6 +471,51 @@ public class TabListFaviconProvider {
          };
      }
  
@@ -1532,7 +1629,17 @@ diff --git a/chrome/browser/tab_ui/android/java/src/org/chromium/chrome/browser/
      /** Returns the rounded Chrome favicon to use for native or internal pages. */
      public TabFavicon getRoundedChromeFavicon(boolean isIncognito) {
          TabFavicon favicon;
-@@ -819,6 +890,44 @@ public class TabListFaviconProvider {
+@@ -755,7 +828,8 @@ public class TabListFaviconProvider {
+             int stripFaviconSize,
+             int verticalFaviconSize,
+             int cornerRadius,
+-            int inset) {
++            int inset,
++            int defaultFaviconSize) {
+         if (sRoundedGlobeFavicon == null) {
+             sRoundedGlobeFavicon =
+                     new LazyTabFaviconResolver(
+@@ -830,6 +904,44 @@ public class TabListFaviconProvider {
                                          StaticTabFaviconType.ROUNDED_CHROME_INCOGNITO);
                              });
          }
@@ -1705,15 +1812,15 @@ new file mode 100644
 diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/top/ToolbarPhone.java b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/top/ToolbarPhone.java
 --- a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/top/ToolbarPhone.java
 +++ b/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/browser/toolbar/top/ToolbarPhone.java
-@@ -69,6 +69,7 @@ import org.chromium.chrome.browser.browser_controls.BrowserControlsStateProvider
+@@ -67,6 +67,7 @@ import org.chromium.build.annotations.NullUnmarked;
+ import org.chromium.build.annotations.Nullable;
+ import org.chromium.chrome.browser.browser_controls.BrowserControlsStateProvider.ControlsPosition;
  import org.chromium.chrome.browser.flags.ChromeFeatureList;
++import org.chromium.chrome.browser.flags.cromite.sTabSwitcherListMode;
+ import org.chromium.chrome.browser.ntp.NewTabPageUtils;
  import org.chromium.chrome.browser.ntp_customization.NtpCustomizationUtils;
  import org.chromium.chrome.browser.omnibox.LocationBar;
-+import org.chromium.chrome.browser.flags.cromite.sTabSwitcherListMode;
- import org.chromium.chrome.browser.omnibox.LocationBarBackgroundDrawable;
- import org.chromium.chrome.browser.omnibox.LocationBarBackgroundDrawable.HairlineBehavior;
- import org.chromium.chrome.browser.omnibox.LocationBarCoordinator;
-@@ -2214,7 +2215,7 @@ public class ToolbarPhone extends ToolbarLayout
+@@ -2218,7 +2219,7 @@ public class ToolbarPhone extends ToolbarLayout
          // On entering the tab switcher, set the focusability of the url bar to be false. This will
          // occur at the start of the enter event, and will later be reset to true upon finishing the
          // exit event.
@@ -1722,7 +1829,7 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
              mLocationBar.setUrlBarFocusable(false);
          }
  
-@@ -2429,7 +2430,8 @@ public class ToolbarPhone extends ToolbarLayout
+@@ -2434,7 +2435,8 @@ public class ToolbarPhone extends ToolbarLayout
          ToggleTabStackButtonCoordinator tabSwitcherButtonCoordinator =
                  getTabSwitcherButtonCoordinator();
          assumeNonNull(tabSwitcherButtonCoordinator);
@@ -1735,14 +1842,14 @@ diff --git a/chrome/browser/ui/android/toolbar/java/src/org/chromium/chrome/brow
 diff --git a/components/browser_ui/styles/android/BUILD.gn b/components/browser_ui/styles/android/BUILD.gn
 --- a/components/browser_ui/styles/android/BUILD.gn
 +++ b/components/browser_ui/styles/android/BUILD.gn
-@@ -255,6 +255,7 @@ android_resources("java_resources") {
+@@ -260,6 +260,7 @@ android_resources("java_resources") {
      "java/res/drawable/ic_visibility_off_black.xml",
      "java/res/drawable/ic_volume_off_fill_24dp.xml",
      "java/res/drawable/ic_volume_up_fill_24dp.xml",
 +    "java/res/drawable/ic_warning_red_16dp.xml",
      "java/res/drawable/ic_warning_red_24dp.xml",
      "java/res/drawable/ic_warning_red_outline_32dp.xml",
-     "java/res/drawable/ic_web_24dp.xml",
+     "java/res/drawable/list_item_background_bottom.xml",
 diff --git a/components/browser_ui/styles/android/java/res/drawable/ic_warning_red_16dp.xml b/components/browser_ui/styles/android/java/res/drawable/ic_warning_red_16dp.xml
 new file mode 100644
 --- /dev/null
