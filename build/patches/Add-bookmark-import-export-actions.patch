@@ -118,8 +118,8 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDe
      private final BrowserControlsVisibilityDelegate mAppBrowserControlsVisibilityDelegate;
      private final Supplier<@Nullable ShareDelegate> mShareDelegateSupplier;
      private final Supplier<@Nullable EphemeralTabCoordinator> mEphemeralTabCoordinatorSupplier;
-@@ -96,7 +95,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
-     private final Supplier<Integer> mLeftSideUiWidthSupplier;
+@@ -95,7 +94,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
+     private final RecentlyClosedEntriesManager mRecentlyClosedEntriesManager;
  
      public TabbedModeTabDelegateFactory(
 -            Activity activity,

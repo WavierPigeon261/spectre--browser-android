@@ -20,8 +20,8 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../android/java/res/layout/ntp_shortcuts.xml |  65 ++++
  chrome/android/java/res/values/attrs.xml      |   4 +
  chrome/android/java/res/values/dimens.xml     |   2 +
- .../chrome/browser/ChromeTabbedActivity.java  |   1 +
- .../browser/TabbedModeTabDelegateFactory.java |   9 +-
+ .../chrome/browser/ChromeTabbedActivity.java  |   3 +-
+ .../browser/TabbedModeTabDelegateFactory.java |  10 +-
  .../feedback/ChromeFeedbackCollector.java     |   1 +
  .../feedback/SimplifiedNtpFeedbackSource.java |  38 +++
  .../identity_disc/IdentityDiscController.java |   2 +-
@@ -52,7 +52,7 @@ License: GPL-3.0-only - https://spdx.org/licenses/GPL-3.0-only.html
  .../Restore-Simplified-NTP-launch.inc         |  12 +
  .../Restore-Simplified-NTP-launch.inc         |   3 +
  .../Restore-Simplified-NTP-launch.inc         |   1 +
- 46 files changed, 655 insertions(+), 68 deletions(-)
+ 46 files changed, 656 insertions(+), 70 deletions(-)
  create mode 100644 chrome/android/java/res/drawable-hdpi/ic_most_visited_placeholder.png
  create mode 100644 chrome/android/java/res/drawable-mdpi/ic_most_visited_placeholder.png
  create mode 100644 chrome/android/java/res/drawable-xhdpi/ic_most_visited_placeholder.png
@@ -578,14 +578,16 @@ diff --git a/chrome/android/java/res/values/dimens.xml b/chrome/android/java/res
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/ChromeTabbedActivity.java
-@@ -3919,6 +3919,7 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
+@@ -3917,7 +3917,8 @@ public class ChromeTabbedActivity extends ChromeActivity implements PreAttachInt
+                             getStartupMetricsTracker(),
                              mRootUiCoordinator.getExclusiveAccessManager(),
                              mBackPressManager,
-                             mRecentlyClosedEntriesManager,
-+                            mBookmarkManagerOpenerSupplier,
-                             mRootUiCoordinator.getLeftSideUiWidthSupplier());
+-                            mRecentlyClosedEntriesManager);
++                            mRecentlyClosedEntriesManager,
++                            mBookmarkManagerOpenerSupplier);
          }
          return mTabDelegateFactory;
+     }
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDelegateFactory.java b/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDelegateFactory.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDelegateFactory.java
 +++ b/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDelegateFactory.java
@@ -606,31 +608,25 @@ diff --git a/chrome/android/java/src/org/chromium/chrome/browser/TabbedModeTabDe
  /**
   * {@link TabDelegateFactory} class to be used in all {@link Tab} instances owned by a {@link
   * ChromeTabbedActivity}.
-@@ -92,6 +95,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
-     private @Nullable NativePageFactory mNativePageFactory;
-     private final BackPressManager mBackPressManager;
-     private final RecentlyClosedEntriesManager mRecentlyClosedEntriesManager;
-+    private final MonotonicObservableSupplier<BookmarkManagerOpener> mBookmarkManagerOpenerSupplier;
-     private final Supplier<Integer> mLeftSideUiWidthSupplier;
- 
-     public TabbedModeTabDelegateFactory(
-@@ -125,6 +129,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
+@@ -123,7 +126,8 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
+             StartupMetricsTracker startupMetricsTracker,
              @Nullable ExclusiveAccessManager exclusiveAccessManager,
              BackPressManager backPressManager,
-             RecentlyClosedEntriesManager recentlyClosedEntriesManager,
-+            @NonNull MonotonicObservableSupplier<BookmarkManagerOpener> bookmarkManagerOpenerSupplier,
-             Supplier<Integer> leftSideUiWidthSupplier) {
+-            RecentlyClosedEntriesManager recentlyClosedEntriesManager) {
++            RecentlyClosedEntriesManager recentlyClosedEntriesManager,
++            @NonNull MonotonicObservableSupplier<BookmarkManagerOpener> bookmarkManagerOpenerSupplier) {
          mActivity = activity;
          mAppBrowserControlsVisibilityDelegate = appBrowserControlsVisibilityDelegate;
-@@ -156,6 +161,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
+         mShareDelegateSupplier = shareDelegateSupplier;
+@@ -154,6 +158,7 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
          mExclusiveAccessManager = exclusiveAccessManager;
          mBackPressManager = backPressManager;
          mRecentlyClosedEntriesManager = recentlyClosedEntriesManager;
 +        mBookmarkManagerOpenerSupplier = bookmarkManagerOpenerSupplier;
-         mLeftSideUiWidthSupplier = leftSideUiWidthSupplier;
      }
  
-@@ -232,7 +238,8 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
+     @Override
+@@ -228,7 +233,8 @@ public class TabbedModeTabDelegateFactory implements TabDelegateFactory {
                              mSideUiStateProviderSupplier,
                              mStartupMetricsTracker,
                              mBackPressManager,

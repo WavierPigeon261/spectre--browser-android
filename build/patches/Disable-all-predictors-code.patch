@@ -152,7 +152,7 @@ diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
 diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
 --- a/chrome/browser/about_flags.cc
 +++ b/chrome/browser/about_flags.cc
-@@ -9234,6 +9234,7 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9238,6 +9238,7 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(
           ntp_features::kCustomizeChromeWallpaperSearchInspirationCard)},
  
@@ -160,7 +160,7 @@ diff --git a/chrome/browser/about_flags.cc b/chrome/browser/about_flags.cc
      {"wallpaper-search-settings-visibility",
       flag_descriptions::kWallpaperSearchSettingsVisibilityName,
       flag_descriptions::kWallpaperSearchSettingsVisibilityDescription,
-@@ -9241,6 +9242,7 @@ const FeatureEntry kFeatureEntries[] = {
+@@ -9245,6 +9246,7 @@ const FeatureEntry kFeatureEntries[] = {
       FEATURE_VALUE_TYPE(optimization_guide::features::internal::
                              kWallpaperSearchSettingsVisibility)},
  #endif
@@ -1124,7 +1124,7 @@ diff --git a/chrome/browser/predictors/predictors_features.cc b/chrome/browser/p
 diff --git a/chrome/browser/preloading/prefetch/search_prefetch/field_trial_settings.cc b/chrome/browser/preloading/prefetch/search_prefetch/field_trial_settings.cc
 --- a/chrome/browser/preloading/prefetch/search_prefetch/field_trial_settings.cc
 +++ b/chrome/browser/preloading/prefetch/search_prefetch/field_trial_settings.cc
-@@ -256,3 +256,7 @@ bool ShouldSuppressPrefetchForUnsupportedMode(const AutocompleteMatch& match) {
+@@ -263,3 +263,7 @@ bool ShouldSuppressPrefetchForUnsupportedMode(const AutocompleteMatch& match) {
    }
    return ShouldSuppressPrefetchForUnsupportedMode(match.destination_url);
  }
@@ -1135,10 +1135,10 @@ diff --git a/chrome/browser/preloading/prefetch/search_prefetch/field_trial_sett
 diff --git a/chrome/browser/preloading/prefetch/search_prefetch/search_prefetch_url_loader_interceptor.cc b/chrome/browser/preloading/prefetch/search_prefetch/search_prefetch_url_loader_interceptor.cc
 --- a/chrome/browser/preloading/prefetch/search_prefetch/search_prefetch_url_loader_interceptor.cc
 +++ b/chrome/browser/preloading/prefetch/search_prefetch/search_prefetch_url_loader_interceptor.cc
-@@ -79,6 +79,7 @@ SearchPrefetchURLLoader::RequestHandler
- SearchPrefetchURLLoaderInterceptor::MaybeCreateLoaderForRequest(
+@@ -80,6 +80,7 @@ SearchPrefetchURLLoaderInterceptor::MaybeCreateLoaderForRequest(
      const network::ResourceRequest& tentative_resource_request,
-     content::FrameTreeNodeId frame_tree_node_id) {
+     content::FrameTreeNodeId frame_tree_node_id,
+     int64_t navigation_id) {
 +  if ((true)) return {};
    // Do not intercept non-main frame navigations.
    if (!tentative_resource_request.is_outermost_main_frame) {
@@ -1590,7 +1590,7 @@ diff --git a/chrome/renderer/accessibility/read_anything/read_anything_app_contr
  #include "chrome/renderer/accessibility/read_anything/read_aloud_traversal_utils.h"
  #include "chrome/renderer/accessibility/read_anything/read_anything_app_model.h"
  #include "chrome/renderer/accessibility/read_anything/read_anything_node_utils.h"
-@@ -2508,6 +2510,7 @@ void ReadAnythingAppController::OnConnected() {
+@@ -2522,6 +2524,7 @@ void ReadAnythingAppController::OnConnected() {
    render_frame()->GetBrowserInterfaceBroker().GetInterface(
        std::move(page_handler_factory_receiver));
  
@@ -1598,7 +1598,7 @@ diff --git a/chrome/renderer/accessibility/read_anything/read_anything_app_contr
    // Asynchronously check the availability of the sequence-bound dependency
    // parser model used by phrase-based highlighting.
    if (features::IsReadAnythingReadAloudPhraseHighlightingEnabled()) {
-@@ -2517,6 +2520,7 @@ void ReadAnythingAppController::OnConnected() {
+@@ -2531,6 +2534,7 @@ void ReadAnythingAppController::OnConnected() {
                                   OnDependencyParserModelAvailabilityChecked,
                               weak_ptr_factory_.GetWeakPtr()));
    }
@@ -1606,7 +1606,7 @@ diff --git a/chrome/renderer/accessibility/read_anything/read_anything_app_contr
    SetDistillationState(
        read_anything::mojom::ReadAnythingDistillationState::kNotAttempted);
  }
-@@ -2528,9 +2532,11 @@ void ReadAnythingAppController::OnDependencyParserModelAvailabilityChecked(
+@@ -2542,9 +2546,11 @@ void ReadAnythingAppController::OnDependencyParserModelAvailabilityChecked(
      return;
    }
  
@@ -1618,7 +1618,7 @@ diff --git a/chrome/renderer/accessibility/read_anything/read_anything_app_contr
  }
  
  void ReadAnythingAppController::OnCopy() const {
-@@ -2823,8 +2829,10 @@ std::u16string ReadAnythingAppController::GetCurrentTextContent() {
+@@ -2837,8 +2843,10 @@ std::u16string ReadAnythingAppController::GetCurrentTextContent() {
  }
  
  void ReadAnythingAppController::PreprocessTextForSpeech() {
@@ -1629,7 +1629,7 @@ diff --git a/chrome/renderer/accessibility/read_anything/read_anything_app_contr
  }
  
  void ReadAnythingAppController::MovePositionToNextGranularity() {
-@@ -3258,15 +3266,19 @@ bool ReadAnythingAppController::IsDocsLoadMoreButtonVisible() const {
+@@ -3272,15 +3280,19 @@ bool ReadAnythingAppController::IsDocsLoadMoreButtonVisible() const {
  
  void ReadAnythingAppController::UpdateDependencyParserModel(
      base::File model_file) {
@@ -3317,7 +3317,7 @@ diff --git a/third_party/blink/renderer/core/speculation_rules/document_speculat
 diff --git a/third_party/blink/renderer/platform/runtime_enabled_features.json5 b/third_party/blink/renderer/platform/runtime_enabled_features.json5
 --- a/third_party/blink/renderer/platform/runtime_enabled_features.json5
 +++ b/third_party/blink/renderer/platform/runtime_enabled_features.json5
-@@ -4813,7 +4813,7 @@
+@@ -4818,7 +4818,7 @@
        //
        // It also has some feature params defined throughout the codebase.
        name: "Prerender2",
