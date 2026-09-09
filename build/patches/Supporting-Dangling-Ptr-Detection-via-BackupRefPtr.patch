@@ -24,10 +24,11 @@ License: GPL-2.0-or-later - https://spdx.org/licenses/GPL-2.0-or-later.html
  .../compositor/CompositorViewHolder.java      |  2 +-
  .../layouts/LayoutManagerChromeTablet.java    | 12 ++++----
  ...ngling-Ptr-Detection-via-BackupRefPtr.grdp |  9 ++++++
+ .../frame_sinks/frame_sink_manager_impl.cc    |  1 +
  .../webapps/AddToHomescreenMediator.java      |  4 +--
  .../Enable-Partition-Alloc-BRP-Checks.inc     | 11 +++++++
  .../platform/wtf/allocator/partitions.cc      | 10 +------
- 13 files changed, 80 insertions(+), 30 deletions(-)
+ 14 files changed, 81 insertions(+), 30 deletions(-)
  create mode 100644 chrome/browser/ui/android/strings/cromite_android_chrome_strings_grd/Supporting-Dangling-Ptr-Detection-via-BackupRefPtr.grdp
  create mode 100644 cromite_flags/chrome/browser/about_flags_cc/Enable-Partition-Alloc-BRP-Checks.inc
 
@@ -276,6 +277,17 @@ new file mode 100644
 +        Enable checking raw pointer do not become dangling during their lifetime to prevent UAF and write a fixed cookie pattern at the end of each allocation to ensure there is no OOB write.
 +    </message>
 +</grit-part>
+diff --git a/components/viz/service/frame_sinks/frame_sink_manager_impl.cc b/components/viz/service/frame_sinks/frame_sink_manager_impl.cc
+--- a/components/viz/service/frame_sinks/frame_sink_manager_impl.cc
++++ b/components/viz/service/frame_sinks/frame_sink_manager_impl.cc
+@@ -374,6 +374,7 @@ void FrameSinkManagerImpl::CreateCompositorFrameSink(
+ void FrameSinkManagerImpl::DestroyCompositorFrameSink(
+     const FrameSinkId& frame_sink_id,
+     DestroyCompositorFrameSinkCallback callback) {
++  MaybeEraseHitTestQuery(frame_sink_id);
+   sink_map_.erase(frame_sink_id);
+   root_sink_map_.erase(frame_sink_id);
+   std::move(callback).Run();
 diff --git a/components/webapps/browser/android/java/src/org/chromium/components/webapps/AddToHomescreenMediator.java b/components/webapps/browser/android/java/src/org/chromium/components/webapps/AddToHomescreenMediator.java
 --- a/components/webapps/browser/android/java/src/org/chromium/components/webapps/AddToHomescreenMediator.java
 +++ b/components/webapps/browser/android/java/src/org/chromium/components/webapps/AddToHomescreenMediator.java
