@@ -21,15 +21,15 @@ on:
       target_os:
         description: 'targetos [android/win/linux/all]'
         required: true
-        default: 'all'
+        default: 'android'
       build:
         description: 'android arch [arm/arm64/x64/all]'
         required: true
-        default: 'all'
+        default: 'arm64'
       type:
-        description: 'runner? [dev/ci]'
+        description: 'runner? [dev/ci/ubuntu-latest]'
         required: true
-        default: 'ci'
+        default: 'ubuntu-latest'
       debug:
         description: 'debug? [true/false]'
         required: true
