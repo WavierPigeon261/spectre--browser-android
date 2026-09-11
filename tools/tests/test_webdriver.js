@@ -90,7 +90,7 @@ async function testApp(isLocal, config) {
 		}
 	}
 
-	let selectorKey = "org.cromite.cromite";
+	let selectorKey = "org.spectre.search";
 	let isChromium = false;
 	if (config.appName == "chromium") {
 		selectorKey = "org.chromium.chrome"; //.stable"; //"org.chromium.chrome";

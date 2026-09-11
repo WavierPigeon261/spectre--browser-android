@@ -95,9 +95,9 @@ if (target_os == "android") {
   target_os = "android" # fix traffic annotation auditor
   #enable_kythe_annotations = true
 
-  chrome_public_manifest_package = "org.cromite.cromite"
-  system_webview_package_name="org.cromite.webview" #"com.android.webview"
-  system_webview_shell_package_name="org.cromite.webview_shell"
+  chrome_public_manifest_package = "org.spectre.search"
+  system_webview_package_name="org.spectre.webview" #"com.android.webview"
+  system_webview_shell_package_name="org.spectre.webview_shell"
 
   chrome_pgo_phase = 2 # enable pgo
 

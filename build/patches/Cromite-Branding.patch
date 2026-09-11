@@ -133,7 +133,7 @@ diff --git a/chrome/android/java/AndroidManifest.xml b/chrome/android/java/Andro
          android:icon="@drawable/ic_launcher"
          android:roundIcon="@drawable/ic_launcher_round"
 -        android:label="{% block application_label %}@string/app_name{% endblock %}"
-+        android:label="Cromite"
++        android:label="Spectre Browser"
          android:memtagMode="async"
          android:largeHeap="false"
          android:manageSpaceActivity="@string/manage_space_activity"
@@ -9154,10 +9154,10 @@ diff --git a/chrome/android/java/res_chromium_base/values/channel_constants.xml 
 -    <string name="bookmark_widget_title" translatable="false">Chromium bookmarks</string>
 -    <string name="search_widget_title" translatable="false">Chromium search</string>
 -    <string name="quick_action_search_widget_title" translatable="false">Chromium quick action search</string>
-+    <string name="app_name" translatable="false">Cromite</string>
-+    <string name="bookmark_widget_title" translatable="false">Cromite bookmarks</string>
-+    <string name="search_widget_title" translatable="false">Cromite search</string>
-+    <string name="quick_action_search_widget_title" translatable="false">Cromite quick action search</string>
++    <string name="app_name" translatable="false">Spectre Browser</string>
++    <string name="bookmark_widget_title" translatable="false">Spectre Browser bookmarks</string>
++    <string name="search_widget_title" translatable="false">Spectre Browser search</string>
++    <string name="quick_action_search_widget_title" translatable="false">Spectre Browser quick action search</string>
  </resources>
 diff --git a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java b/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
 --- a/chrome/android/java/src/org/chromium/chrome/browser/contextmenu/ChromeContextMenuPopulator.java
